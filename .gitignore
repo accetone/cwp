@@ -1,0 +1,7 @@
+.idea
+node_modules
+npm-debug.log
+.DS_Store
+notes.txt
+xx-sample
+xx-start
