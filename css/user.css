@@ -1,0 +1,155 @@
+img {
+    background: none !important;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.nodejs .resources {
+    display:inline-block; width: 24%;
+}
+
+.nodejs .resources-io {
+    margin: 20px 0 0 50%;
+}
+
+.nodejs .operations td {
+    border: 0;
+}
+
+.nodejs .operations td div {
+    padding: 5px 20px;
+    border: 5px solid #444;
+}
+
+.progress {
+    height: 7px !important;
+}
+
+.slide-number {
+    font-size: 35px !important;
+}
+
+.author {
+    text-align: center;
+}
+
+.author small::first-letter {
+    color: red;
+}
+
+.demo {
+    color: #FFDA44
+}
+
+.demo img {
+    position: relative; top: -4px;
+}
+
+.reveal section .fragment.init_visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.reveal section .fragment.highlight {
+    transition-duration: .3s;
+}
+
+.highlight.fragment.visible,
+.highlight.static {
+    color: #000;
+}
+
+.highlight.yellow.fragment.visible,
+.highlight.yellow.static {
+    background-color: #a0a0f0;
+}
+
+.highlight.red.fragment.visible,
+.highlight.red.static {
+    color: #ab4642;
+}
+
+.highlight.rat.fragment.visible,
+.highlight.rat.static {
+    color: #ab4642;
+}
+
+.nodejs pre code {
+    padding: 0 25px !important;
+    line-height: 35px !important;
+    border: 3px solid rgba(63, 63, 63, 0.99);
+    background: rgba(63, 63, 63, 0.66) !important;
+    max-height: 100% !important;
+}
+
+.nodejs pre {
+    margin: 10px 15px !important
+}
+
+h4 span {
+    color: #a0a0f0 !important;
+}
+
+.red {
+    color: #ab4642 !important;
+}
+
+.green {
+    color: #a1b56c !important;
+}
+
+.magenta {
+    color: #a0a0f0 !important;
+}
+
+.grey {
+    color: #777;
+}
+
+.hljs-comment {
+    color: #999 !important;
+}
+
+.hljs-string {
+    color: #a1b56c !important;
+}
+
+.left {
+    text-align: left;
+}
+
+.deadline {
+    color: white;
+    transform: scale(.8);
+    pointer-events: none;
+    transition-property: color, transform !important;
+    transition-duration: 12s !important;
+    transition-timing-function: linear !important;
+}
+
+.deadline.visible {
+    color: #ab4642;
+    transform: scale(2);
+}
+
+.center {
+    text-align: center;
+}
+
+.reveal pre.small-code {
+    font-size: 0.3em;
+}
+
+.nodejs pre.small-code code {
+    line-height: 16px !important;
+}
+
+.reveal p.half-text {
+    font-size: 0.5em;
+}
+
+.reveal .half {
+    width: 47%;
+    display: inline-block;
+    vertical-align: top;
+}
