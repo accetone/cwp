@@ -2,5 +2,5 @@
 
 [Задания](https://github.com/accetone/cwp/tree/gh-pages/tasks)  
   
-[CWP01](https://accetone.github.io/cwp/01/#/)
-
+[CWP01](https://accetone.github.io/cwp/01/#/)  
+[CWP02](https://accetone.github.io/cwp/02/#/)
