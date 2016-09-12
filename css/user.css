@@ -153,3 +153,18 @@ h4 span {
     display: inline-block;
     vertical-align: top;
 }
+
+.reveal .callstack {
+    border: 1px solid #fff;
+    border-top: none;
+}
+
+.reveal .callstack .item {
+    display: block;
+    height: 60px;
+}
+
+.reveal .queue .item {
+    display: block;
+    height: 60px;
+}
