@@ -168,3 +168,15 @@ h4 span {
     display: block;
     height: 60px;
 }
+
+.reveal section img {
+    box-shadow: none;
+}
+
+.reveal .white-bg {
+    background: #fff;
+}
+
+.reveal img.fullscreen {
+    width: 100%;
+}
