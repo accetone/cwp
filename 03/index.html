@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP03</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Асинхронность</h2>
+        <p class="author">
+            <small>Лекция 03</small>
+        </p>
+    </section>
+
+    <section>
+        <h3>Синхронный подход</h3>
+
+        <pre class="javascript"><code>
+console.log('job started');
+
+let r = xyz();
+
+console.log('result: ' + r);
+
+console.log('job done');
+
+function xyz() {
+    // подготавливаем ответ
+    return 42;
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Асинхронный подход</h3>
+
+        <pre class="javascript"><code>
+console.log('job started');
+
+xyz((r) => {
+    console.log('result: ' + r);
+
+    console.log('job done');
+});
+
+console.log('job in progress');
+
+function xyz(cb) {
+    // подготавливаем ответ
+    setTimeout(() => { cb(42); }, 10);
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">C</span>oncurrency</h3>
+        <h4>Конкурентность</h4>
+    </section>
+
+    <section>
+        <h3><span class="red">P</span>arallelism</h3>
+        <h4>Параллельность</h4>
+    </section>
+
+    <section>
+        <img src="images/Concurrency_vs_Parallelism.png"><br>
+    </section>
+
+    <section>
+        <img src="images/con_and_par.jpg"><br>
+    </section>
+
+    <section>
+        <h3><span class="red">M</span>ultithreading</h3>
+        <h4>Многопоточность</h4>
+    </section>
+
+    <section>
+        <h3><span class="red">A</span>synchrony</h3>
+        <h4>Асинхронность</h4>
+    </section>
+
+    <section>
+        <h3>+ / -</h3>
+        <ul>
+            <li class="left fragment green">нет синхронизации, race, deadlock</li>
+            <li class="left fragment green">меньше накладных расходов</li>
+            <li class="left fragment green">идеально для UI и web-приложений</li>
+            <li class="left fragment red">подход сложнее в освоении</li>
+            <li class="left fragment red">сложнее отлаживать и читать</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Однопоточность</h3>
+
+        <pre class="javascript"><code>
+// on click
+let data = readFromDb();
+
+function readFromDb() {
+    // читаем долго из БД
+    return data;
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Многопоточность</h3>
+
+        <pre class="javascript"><code>
+// on click
+let data = [];
+let t = new Thread(readFromDb, data);
+
+function readFromDb(data) {
+    // читаем долго из БД
+    // заполняем массив data
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Асинхронность</h3>
+
+        <pre class="javascript"><code>
+// on click
+let data = [];
+
+readFromDb((result) => {
+    // заполняем массив data из result
+});
+
+function readFromDb(cb) {
+    // читаем долго из БД
+    cb(data);
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">C</span>allback</h3>
+        <h4>Функция обратного вызова</h4>
+    </section>
+
+    <section class="">
+        <h4>Callback</h4>
+
+        <pre class="javascript"><code>
+let forEach = function (items, algo) {
+    for (let i = 0; i < items.length; i++) {
+        algo(items[i]);
+    }
+};
+
+let print = function (item) {
+    console.log(item);
+};
+
+let send = function (item) {
+    item.sendEmail();
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Callback</h4>
+
+        <pre class="javascript"><code>
+let clients = [
+    { email: 'jonhdoe@gmail.com',
+        sendEmail: () => {} },
+    { email: 'mrsmith@gmail.com',
+        sendEmail: () => {} }
+];
+
+// выводим клиентов
+forEach(clients, print);
+
+// отправляем им email
+forEach(clients, send);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Callback - использование</h4>
+        <ul>
+            <li class="left fragment">меняющийся алгоритм</li>
+            <li class="left fragment">оповещение о событии</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Callback - + / -</h4>
+        <ul>
+            <li class="left fragment green">повторное использование кода</li>
+            <li class="left fragment green">изменение функциональности без изменения метода</li>
+            <li class="left fragment green">создание цепочек вызовов</li>
+            <li class="left fragment red">падение производительности</li>
+            <li class="left fragment red">ухудшение читаемости</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Callback - Node.js style</h3>
+        <pre class="javascript"><code>
+function callback(error, data) {
+    if (error) {
+        // обрабатываем ошибку
+    } else {
+        // обрабатываем данные
+    }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Callback hell / Pyramid of Doom</h3>
+
+        <img class="fragment"  src="images/cb-hell-2.jpg">
+    </section>
+
+    <section>
+        <h3>Callback hell / Pyramid of Doom</h3>
+
+        <img src="images/cb-hell-1.jpg">
+    </section>
+
+    <section>
+        <h3>http://callbackhell.com/</h3>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+fs.readdir(dir, (err, files) => {
+    if (err) { ... }
+
+    files.forEach((name) => {
+        if (!isImage(name)) return;
+
+        fs.readFile(name, (err, image) => {
+            if (err) { ... }
+
+            compress(image, (err, comp) => {
+                fs.writeFile(name, comp, (err) =>{
+                    if (err) { ... }
+                    else { ... }
+                });
+            });
+        });
+    });
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+fs.readdir(dir, processFiles);
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+function processFiles(err, files) {
+    if (err) { ... }
+
+    files.forEach(checkFile);
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+function checkFile(name) {
+    if (!isImage(name)) return;
+
+    fs.readFile(name, compressImage(name));
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+function compressImage(name) {
+    return (err, image) => {
+        if (err) { ... }
+        compress(file, rewriteImage(name));
+    }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+function rewriteImage(name) {
+    return (err, image) => {
+        fs.writeFile(name, image, finishCompress);
+    }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">1. Разбивайте на функции</p>
+        <pre class="javascript"><code>
+function finishCompress(err) {
+    if (err) { ... }
+    else { ... }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript small-code"><code>
+function processFiles(err, files) {
+    if (err) { ... }
+
+    files.forEach(checkFile);
+}
+
+function checkFile(name) {
+    if (!isImage(name)) return;
+
+    fs.readFile(name, compressImage(name));
+}
+
+function compressImage(name) {
+    return (err, image) => {
+        if (err) { ... }
+        compress(file, rewriteImage(name));
+    }
+}
+
+function rewriteImage(name) {
+    return (err, image) => {
+        fs.writeFile(name, image, finishCompress);
+    }
+}
+
+function finishCompress(err) {
+    if (err) { ... }
+    else { ... }
+}
+
+fs.readdir(dir, processFiles);
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left">2. Разбивайте на модули</p>
+        <pre class="javascript"><code>
+...
+
+function readDir(dir) {
+    fs.readdir(dir, processFiles);
+}
+
+module.export = readDir;
+        </code></pre>
+
+        <pre class="javascript"><code>
+const compressImagesDir
+            = require('./compressImagesDir');
+
+compressImagesDir('/bin/images');
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">P</span>ubSub</h3>
+        <h4>Подписчик-Издатель, Event Emitter</h4>
+    </section>
+
+    <section>
+        <h4>PubSub</h4>
+
+        <pre class="javascript"><code>
+let news = {
+    subs: [],
+    onAdd: (cb) => {
+        news.subs.push(cb);
+    },
+    add: (item) => {
+        for (let i = 0; i < news.subs.length; i++)
+            news.subs[i](item);
+    }
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PubSub</h4>
+
+        <pre class="javascript"><code>
+news.onAdd((item) => {
+    console.log('CB#1:' + item);
+});
+
+news.onAdd((item) => {
+    console.log('CB#2:' + item);
+});
+
+news.add('hot news!');
+
+/*
+    CB#1:hot news!
+    CB#2:hot news!
+*/
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PubSub - шина</h4>
+
+        <pre class="javascript"><code>
+function Bus () {
+    let self = this;
+
+    self.events = {};
+
+    self.on = (event, cb) => {
+        if (!self.events[event])
+            self.events[event] = [];
+
+        self.events[event].push(cb);
+    };
+
+    ...
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PubSub - шина</h4>
+
+        <pre class="javascript"><code>
+function Bus () {
+    ...
+
+    self.emit = (event, data) => {
+        if (!self.events[event]) return;
+
+        let cbs = self.events[event];
+
+        for (let i = 0; i < cbs.length; i++)
+            cbs[i](data);
+    };
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PubSub - шина</h4>
+
+        <pre class="javascript"><code>
+let bus = new Bus();
+
+bus.on('newsAdded', (item) => {
+    console.log('CB#1:' + item);
+});
+bus.on('newsAdded', (item) => {
+    console.log('CB#2:' + item);
+});
+bus.on('xyz', (data) => { console.log(data); });
+
+bus.emit('newsAdded', 'hot news!');
+
+/*
+    CB#1:hot news!
+    CB#2:hot news!
+*/
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">P</span>romises</h3>
+    </section>
+
+    <section>
+        <h4>Promises/A+</h4>
+
+        <pre class="javascript"><code>
+function zipDir(dir) {
+    return new Promise((resolve, reject) => {
+        // архивируем директорию
+        resolve(files);
+    });
+};
+
+zipDir('/bin/images')
+    .then((files) => {
+        // обрабатываем файлы
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+</h4>
+
+        <pre class="javascript"><code>
+function zipDir(dir) {
+    return new Promise((resolve, reject) => {
+        // что-то пошло не так
+        reject(err);
+    });
+};
+
+zipDir('/bin/images')
+    .then((files) => { ... })
+    .catch((err) => {
+        // обрабатываем ошибку
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+</h4>
+
+        <pre class="javascript"><code>
+function zipDir(dir) {
+    return new Promise((resolve, reject) => {
+        // что-то пошло не так
+        reject(err);
+    });
+};
+
+zipDir('/bin/images')
+    .then((files) => { ... }, (err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+</h4>
+
+        <pre class="javascript"><code>
+// Deffered Object
+function zipDir(dir) {
+    return new Promise((resolve, reject) => {
+        // Future
+        resolve(files);
+    });
+};
+
+// Promise
+let p = zipDir('/bin/images');
+
+p.then((files) => { ... }, (err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - состояние</h4>
+
+        <ul>
+            <li class="left fragment magenta">pending / ожидание</li>
+            <li class="left fragment green">fullfiled / выполнено</li>
+            <li class="left fragment red">rejected / отклонено</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - обертка</h4>
+
+        <pre class="javascript"><code>
+function resolver(resolve, reject) {
+    return (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+    }
+}
+
+function readDir(dir) {
+    return new Promise((res, rej) => {
+        fs.readir(dir, resolver(res, rej));
+    });
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - цепочка</h4>
+
+        <pre class="javascript"><code>
+function readDir(dir) {
+    return new Promise((res, rej) => {
+        // читаем файлы из папки
+    });
+}
+
+function zip(files) {
+    return new Promise((res, rej) => {
+        // архивируем файлы
+    });
+}
+
+function sendByEmail(file) {
+    return new Promise((res, rej) => {
+        // отправляем файл по email
+    });
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - цепочка</h4>
+
+        <pre class="javascript"><code>
+readDir('/bin/images')
+
+    .then((files) => { return zip(files) })
+
+    .then((file) => { return sendByEmail(file) })
+
+    .then(() => { ... })
+
+    .catch((err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - All</h4>
+
+        <pre class="javascript"><code>
+readDir('/bin/images')
+
+    .then((files) => { return zip(files) })
+
+    .then((file) => {
+        return Promise.all([
+            sendByEmail(user.email, file),
+            sendByEmail(admin.email, file)
+        ]);
+    })
+
+     // results - массив с данными от промиссов
+    .then((results) => { ... })
+
+    .catch((err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Promises/A+ - Race</h4>
+
+        <pre class="javascript"><code>
+readDir('/bin/images')
+
+    .then((files) => { return zip(files) })
+
+    .then((file) => {
+        return Promise.race([
+            sendByEmail(user.email[0], file),
+            sendByEmail(user.email[1], file)
+        ]);
+    })
+
+     // result - данные от выполненного промиса
+    .then((result) => { ... })
+
+    .catch((err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Bluebird</h4>
+
+        <pre class="javascript fragment"><code>
+http://bluebirdjs.com/
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install bluebird
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+const Promise = require('bluebird');
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Bluebird - Promisify</h4>
+
+        <pre class="javascript"><code>
+const fs = require('fs');
+Promise.promisifyAll(fs);
+
+fs.readFileAsync('hero.txt', 'utf-8')
+	.then((content) => console.log(content));
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Bluebird - Spread</h4>
+
+        <pre class="javascript"><code>
+readDir('/bin/images')
+
+    .then((files) => { return zip(files) })
+
+    .then((file) => {
+        return Promise.all([
+            sendByEmail(user.email, file),
+            sendByEmail(admin.email, file)
+        ]);
+    })
+    .spread((result1, result2) => { ... })
+    .catch((err) => { ... });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Bluebird</h4>
+
+        <ul>
+            <li class="left fragment">finally - выполняется всегда</li>
+            <li class="left fragment">join - как all, только для фиксированного числа промисов</li>
+            <li class="left fragment">try - любая ошибка отклоняет промис</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>http://caniuse.com/</h4>
+
+        <img src="images/promises-caniuse.png">
+    </section>
+
+    <section>
+        <h3><span class="red">A</span>sync/Await</h3>
+    </section>
+
+    <section>
+        <h4>Async/Await</h4>
+
+        <pre class="javascript"><code>
+async function read() {
+    let content = await
+        fs.readFileAsync('hero.txt', 'utf-8');
+
+    console.log(content);
+};
+
+read();
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Async/Await - Babel</h4>
+
+        <pre class="javascript fragment"><code>
+http://babeljs.io/
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install --save-dev babel-core
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install --save-dev babel-preset-stage-3
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install --save babel-polyfill
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Async/Await - Babel</h4>
+
+        <p class="left">
+           .babelrc
+        </p>
+        <pre class="javascript"><code>
+{
+  "presets": ["stage-3"]
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Async/Await - Babel</h4>
+
+        <p class="left">
+            babel.js
+        </p>
+        <pre class="javascript"><code>
+const fs = require('fs');
+
+require("babel-core")
+    .transformFile('index.js', (err, result) => {
+        let code = 'require("babel-polyfill");\n'
+            + result.code;
+
+        fs.writeFile('index.es5.js', code);
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Async/Await - Babel</h4>
+
+        <p class="left">
+            index.es5.js
+        </p>
+        
+        <img src="images/babel-code.png">
+    </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
