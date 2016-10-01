@@ -6,3 +6,4 @@
 [CWP02 - Программируем на Node.js](https://accetone.github.io/cwp/02/#/)  
 [CWP03 - Асинхронность](https://accetone.github.io/cwp/03/#/)  
 [CWP04 - Архитектура Node.js](https://accetone.github.io/cwp/04/#/)  
+[CWP05 - Express, часть 1](https://accetone.github.io/cwp/05/#/)

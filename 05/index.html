@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP05</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Express, 1</h2>
+        <p class="author">
+            <small>Лекция 05</small>
+        </p>
+    </section>
+
+    <section>
+        <h4>http://expressjs.com/</h4>
+    </section>
+
+    <section>
+        <h4>Express</h4>
+
+        <ul>
+            <li class="fragment">быстрый</li>
+            <li class="fragment">гибкий</li>
+            <li class="fragment">минималистичный</li>
+            <li class="fragment magenta">веб-фреймворк</li>
+            <li class="fragment green">для Node.js</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Установка</h4>
+
+        <pre class="javascript"><code>
+npm install express
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Node</h4>
+
+        <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.end('Hello world!');
+});
+
+server.listen(3000, '127.0.0.1', () => {
+    console.log('Running');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Express</h4>
+
+        <pre class="javascript"><code>
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.listen(3000, function () {
+    console.log('Running');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Run</h4>
+
+        <pre class="javascript"><code>
+node index.js
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Статика</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('public'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('files'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.use('/static', express.static('public'));
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">R</span>outing</h3>
+        <h4>Маршрутизация</h4>
+    </section>
+
+    <section>
+        <h4>Маршрут</h4>
+
+        <pre class="javascript fragment"><code>
+app.METHOD(PATH, HANDLER)
+            </code></pre>
+
+        <ul>
+            <li class="fragment">PATH / путь</li>
+            <li class="fragment">METHOD / метод http-запроса</li>
+            <li class="fragment">HANDLER / обработчик</li>
+            <li class="fragment">PATH + METHOD = endpoint</li>
+            <li class="fragment">1+ обработчик</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>METHOD</h4>
+
+        <pre class="javascript"><code>
+app.get('/', (req, res) => {
+    res.send('GET');
+});
+
+app.post('/', (req, res) => {
+    res.send('POST');
+});
+
+/*
+    get, post, put, head, delete, options, trace,
+    copy, lock, mkcol, move, purge, propfind,
+    proppatch, unlock, report, mkactivity,
+    checkout, merge, m-search, notify, subscribe,
+    unsubscribe, patch, search, connect
+*/
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>METHOD</h4>
+
+        <pre class="javascript"><code>
+app['m-search']('/', (req, res) => {
+    ...
+});
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>METHOD - GET</h4>
+
+        <ul>
+            <li class="fragment">запрос содержимого</li>
+            <li class="fragment">параметры передаются в URI</li>
+            <li class="fragment">/path/resource?p1=v1&p2=v2</li>
+            <li class="fragment">идемпотентный</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>METHOD - POST</h4>
+
+        <ul>
+            <li class="fragment">передача данных</li>
+            <li class="fragment">параметры передаются в теле запроса</li>
+            <li class="fragment">не идемпотентный</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>METHOD - All</h4>
+
+        <pre class="javascript"><code>
+app.all('/', (req, res) => {
+    console.log('access to the root');
+});
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH</h4>
+
+        <ul>
+            <li class="fragment">строка</li>
+            <li class="fragment">паттерн</li>
+            <li class="fragment">регулярное выражение</li>
+            <li class="fragment">параметры</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>PATH - Строка</h4>
+
+        <pre class="javascript fragment"><code>
+app.get('/', (req, res) => {
+  res.send('root');
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.get('/about', (req, res) => {
+  res.send('about');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH - Паттерн</h4>
+
+        <pre class="javascript fragment"><code>
+// acd, abcd
+app.get('/ab?cd', (req, res) => {
+  res.send('ab?cd');
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+// abcd, abbcd, abbbcd, ...
+app.get('/ab+cd', (req, res) => {
+  res.send('ab+cd');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH - Паттерн</h4>
+
+        <pre class="javascript fragment"><code>
+//  abcd, abxcd, abRANDOMcd, ab123cd, ...
+app.get('/ab*cd', (req, res) => {
+  res.send('ab*cd');
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+// abe and abcde
+app.get('/ab(cd)?e', (req, res) => {
+ res.send('ab(cd)?e');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH - RegExp</h4>
+
+        <pre class="javascript fragment"><code>
+//  все пути содержащие `a`
+app.get(/a/, (req, res) => {
+  res.send('/a/');
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+// все пути заканчивающиеся на `fly`
+app.get(/.*fly$/, (req, res) => {
+  res.send('/.*fly$/');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH - Параметры</h4>
+
+        <pre class="javascript fragment"><code>
+const route = '/users/:userId/books/:bookId';
+
+app.get(route, (req, res) => {
+  res.send(req.params);
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+Request URL:
+    http://localhost:3000/users/34/books/8989
+
+req.params:
+    { "userId": "34", "bookId": "8989" }
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH - Параметры</h4>
+
+        <pre class="javascript fragment"><code>
+const route = '/flights/:from-:to';
+
+app.get(route, (req, res) => {
+  res.send(req.params);
+});
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+Request URL:
+    http://localhost:3000/flights/LAX-SFO
+req.params:
+    { "from": "LAX", "to": "SFO" }
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>PATH</h4>
+
+        <ul>
+            <li class="fragment">паттерн компилируется в регулярное выражение</li>
+            <li class="fragment">'.' и '-' воспринимаются буквально</li>
+            <li class="fragment">параметры - [A-Za-z0-9_]</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>HANDLER</h4>
+
+        <pre class="javascript"><code>
+app.get('/', (req, res) => {
+    console.log('Hello World!');
+});
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>HANDLER - 1+, раздельно</h4>
+
+        <pre class="javascript"><code>
+app.get('/', (req, res, next) => {
+    console.log('Hello World!');
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>HANDLER - 1+, слитно</h4>
+
+        <pre class="javascript"><code>
+const log = (req, res, next) => {
+    console.log('Hello World!');
+    next();
+};
+
+const send = (req, res) => {
+    res.send('Hello World!');
+};
+
+app.get('/', log, send);
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>HANDLER - 1+, массив</h4>
+
+        <pre class="javascript"><code>
+const log = (req, res, next) => {
+    console.log('Hello World!');
+    next();
+};
+
+const send = (req, res) => {
+    res.send('Hello World!');
+};
+
+app.get('/', [log, send]);
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>HANDLER - 1+, массив и функции</h4>
+
+        <pre class="javascript"><code>
+const log = (req, res, next) => {
+    console.log('Hello World!');
+    next();
+};
+
+const send = (req, res) => {
+    res.send('Hello World!');
+};
+
+app.get('/', [log, log], send);
+            </code></pre>
+    </section>
+
+    <section>
+        <h4>HANDLER - Цепочка</h4>
+
+        <pre class="javascript"><code>
+app.route('/book')
+  .get(function(req, res) {
+    res.send('Get a random book');
+  })
+  .post(function(req, res) {
+    res.send('Add a book');
+  })
+  .put(function(req, res) {
+    res.send('Update the book');
+  });
+            </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">M</span>iddleware</h3>
+        <h4>Промежуточные обработчики</h4>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <pre class="javascript fragment"><code>
+app.get('/', (req, res, next) => {
+    console.log('Hello World!');
+    next();
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <p class="left">Может:</p>
+
+        <ul>
+            <li class="fragment">выполнять любой код</li>
+            <li class="fragment">изменять объекты запроса и ответа</li>
+            <li class="fragment">заканчивать цикл обработки</li>
+            <li class="fragment">вызывать следующий middleware из очереди</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <p class="left">Обязан:</p>
+
+        <ul>
+            <li class="fragment">завершить запрос</li>
+            <li class="fragment">или вызвать следующий middleware</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware - Use</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('public'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+const logger = function (req, res, next) {
+  console.log(req.url);
+  next();
+};
+
+app.use(logger);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Порядок</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(logger);
+app.get('/', (req, res) => res.send('Hello'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.get('/', (req, res) => res.send('Hello'));
+app.use(logger);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <pre class="javascript"><code>
+app.use('/api/*', logger);
+
+app.post('/api/news', parse);
+app.post('/api/news', validate);
+app.post('/api/news', writeToDb);
+app.post('/api/news', respond);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Типы</h4>
+
+        <ul>
+            <li class="fragment">уровня приложения</li>
+            <li class="fragment">уровня роутера</li>
+            <li class="fragment">оброботка ошибок</li>
+            <li class="fragment">встроенные</li>
+            <li class="fragment">сторонние</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware - Application-level</h4>
+
+        <pre class="javascript"><code>
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now());
+  next();
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Router-level</h4>
+
+        <pre class="javascript"><code>
+const newsRouter = express.Router();
+
+newsRouter.post('/', parse);
+newsRouter.post('/', validate);
+newsRouter.post('/', writeToDb);
+newsRouter.post('/', respond);
+
+// монтирование роутера
+app.use('/api/news', newsRouter);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Router-level</h4>
+
+        <pre class="javascript"><code>
+api.use('/news', newsRouter);
+api.use('/user', userRouter);
+
+app.use('/api', api);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// 4 входных параметра
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// всегда последние
+app.use(express.static('public'));
+app.use(logger);
+app.use('/api', api);
+app.use(errorHandler);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// 1+
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+const parser = (req, res, next) => {
+    req.params.userId
+            = parseInt(req.params.userId);
+
+    next();
+};
+
+const validator = (req, res, next) => {
+    if (isNaN(req.params.userId)) {
+        next({
+            message: 'User id should be integer'
+        });
+    }
+    else next();
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+const logError = (err, req, res, next) => {
+    console.log(err.message);
+
+    next(err);
+};
+
+const errorHandler = (err, req, res, next) => {
+    res.send(err.message);
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+app.use('/news', () => {
+    throw new Error('stack overflow!');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+app.use('/api/*', (err, req, res, next) => {
+    ...
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Built-in</h4>
+
+        <pre class="javascript"><code>
+const options = {
+  dotfiles: 'ignore',
+  etag: false,
+  extensions: ['htm', 'html'],
+  fallthrough: true,
+  index: false,
+  maxAge: '1h',
+  redirect: false,
+  setHeaders: function (res, path, stat) {
+    res.set('x-timestamp', Date.now());
+  }
+}
+
+app.use(express.static('public', options));
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// dotfiles: 'ignore'
+
+allow
+deny - 403
+ignore - 404 | default
+
+.gitignore
+.idea
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// etag: false
+
+ETag: "686897696a7c876b7e"
+
+If-None-Match: "686897696a7c876b7e"
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// extensions: ['htm', 'html']
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// fallthrough: true
+
+app.use(express.static('public'));
+app.use(express.static('files'));
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// index: false
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// maxAge: '1h'
+
+Cache-Control: max-age=3600
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// redirect: false
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+/*
+    setHeaders: function (res, path, stat) {
+        res.set('x-timestamp', Date.now());
+    }
+*/
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Third-party</h4>
+
+        <pre class="javascript"><code>
+npm install cookie-parser
+        </code></pre>
+
+        <pre class="javascript"><code>
+const cookieParser = require('cookie-parser');
+
+// req.cookies
+app.use(cookieParser());
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Third-party</h4>
+
+        <pre class="javascript"><code>
+npm install body-parser
+        </code></pre>
+
+        <pre class="javascript"><code>
+const bodyParser = require('body-parser');
+
+// req.body
+app.use(bodyParser.json())
+        </code></pre>
+    </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
