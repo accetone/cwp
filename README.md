@@ -8,3 +8,4 @@
 [CWP04 - Архитектура Node.js](https://accetone.github.io/cwp/04/#/)  
 [CWP05 - Express, часть 1](https://accetone.github.io/cwp/05/#/)  
 [CWP06 - Express, часть 2](https://accetone.github.io/cwp/06/#/)  
+[CWP07 - Sequelize (1-51)](https://accetone.github.io/cwp/07/#/)  

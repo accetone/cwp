@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP07</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Sequelize</h2>
+        <p class="author">
+            <small>Лекция 07</small>
+        </p>
+    </section>
+
+    <section>
+        <h4>Sequelize</h4>
+
+        <ul>
+            <li class="fragment">ORM</li>
+            <li class="fragment">основана на promises</li>
+            <li class="fragment">PostgreSQL, MySQL, SQLite, MSSQL</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Sequelize</h4>
+
+        <pre class="javascript"><code>
+https://www.npmjs.com/package/sequelize
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+http://docs.sequelizejs.com/en/v3/
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">I</span>nstall</h3>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+npm install --save sequelize
+
+// Одно из:
+npm install --save pg pg-hstore
+npm install --save mysql2
+npm install --save sqlite3
+npm install --save tedious // MSSQL
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+Please install mysql package manually
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install sequelize
+npm install mysql
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+npm install sequelize mysql
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">G</span>et started</h3>
+    </section>
+
+    <section>
+        <pre class="sql"><code>
+CREATE TABLE Posts (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(500) NOT NULL,
+  content TEXT NOT NULL,
+  date DATE NOT NULL,
+  rate INT NOT NULL DEFAULT 0
+);
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="sql"><code>
+CREATE TABLE Comments (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  postId INT NOT NULL REFERENCES Posts(id),
+  date DATE NOT NULL,
+  text VARCHAR(5000) NOT NULL
+);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>config.json</h4>
+        <pre class="javascript"><code>
+{
+  "db": {
+    "host": "localhost",
+    "name": "my_db",
+    "user": "myuser",
+    "pass": "123#qwe"
+  }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+const Sequelize = require('sequelize');
+const config = require('./config.json');
+
+const dbOptions = {
+    host: config.db.host,
+    dialect: 'mysql',
+    define: { timestamps: false }
+};
+
+const sequelize = new Sequelize(config.db.name,
+    config.db.user, config.db.pass, dbOptions);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+sequelize
+    .authenticate()
+    .then(function() {
+        console.log('Connected');
+    })
+    .catch(function (err) {
+        console.log('Error:', err);
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+const Posts = sequelize.define('Posts', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+
+    title: { type: Sequelize.STRING(500),
+        allowNull: false },
+
+    content: { type: Sequelize.TEXT,
+        allowNull: false },
+
+    date: { type: Sequelize.DATEONLY,
+        allowNull: false },
+
+    rate: { type: Sequelize.INTEGER,
+        allowNull: false }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+const Comments = sequelize.define('Comments', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+
+    postId: { type: Sequelize.INTEGER,
+        allowNull: false },
+
+    text: { type: Sequelize.STRING(5000),
+        allowNull: false },
+
+    date: { type: Sequelize.DATEONLY,
+        allowNull: false }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+Posts
+    .findAll({ raw: true })
+    .then((posts) => {
+        console.log(posts);
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+Executing (default): SELECT `id`, `title`,
+    `content`, `date`, `rate` FROM `Posts`
+    AS `Posts`;
+
+[ { id: 1,
+    title: 'График записи в библиотеку',
+    content: 'График',
+    date: 2016-09-01T00:00:00.000Z,
+    rate: 0 },
+
+  { id: 2,
+    title: 'Встреча ректора БГТУ со студентами',
+    content: 'Фото',
+    date: 2016-09-02T00:00:00.000Z,
+    rate: 0 } ]
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+Comments
+    .findAll({
+        where: { post: 1 },
+        raw: true
+    })
+    .then((comments) => {
+        console.log(comments);
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+Executing (default): SELECT `id`, `postId`, `text`,
+    `date` FROM `Comments` AS `Comments`
+    WHERE `Comments`.`post` = 1;
+
+[ { id: 1, postId: 1, text: 'Первый',
+        date: 2016-09-01T00:00:00.000Z },
+
+  { id: 2, postId: 1, text: 'Второй',
+        date: 2016-09-01T00:00:00.000Z },
+
+  { id: 3, postId: 1, text: 'Третий',
+        date: 2016-09-02T00:00:00.000Z } ]
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+Posts.hasMany(Comments, {
+    as: 'comments',
+    foreignKey: 'postId'
+});
+
+Comments.belongsTo(Posts, {
+    as: 'post',
+    foreignKey: 'postId'
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+        <pre class="javascript"><code>
+Posts
+    .findAll({
+        include: {
+            model: Comments,
+            as: 'comments'
+        }
+    })
+    .then(function(posts) {
+        console.log(posts[0].get({ plain: true}));
+    });
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+SELECT `Posts`.`id`, `Posts`.`title`,
+  `Posts`.`content`, `Posts`.`date`, `Posts`.`rate`,
+  `comments`.`id` AS `comments.id`,
+  `comments`.`postId` AS `comments.postId`,
+  `comments`.`text` AS `comments.text`,
+  `comments`.`date` AS `comments.date`
+
+  FROM `Posts` AS `Posts` LEFT OUTER JOIN
+  `Comments` AS `comments`
+
+  ON `Posts`.`id` = `comments`.`postId`
+        </code></pre>
+    </section>
+
+    <section>
+        <pre class="javascript"><code>
+{ id: 1,
+  title: 'График записи в библиотеку',
+  content: 'График',
+  date: 2016-09-01T00:00:00.000Z,
+  rate: 0,
+  comments:
+   [ { id: 1,
+       postId: 1,
+       text: 'Первый',
+       date: 2016-09-01T00:00:00.000Z },
+     { id: 2,
+       postId: 1,
+       text: 'Второй',
+       date: 2016-09-01T00:00:00.000Z },
+     { id: 3,
+       postId: 1,
+       text: 'Третий',
+       date: 2016-09-02T00:00:00.000Z } ] }
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">M</span>odels</h3>
+    </section>
+
+    <section>
+        <h4>Models - Definition</h4>
+
+        <pre class="javascript"><code>
+const Model = sequelize.define('table_name', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    field_1: Sequelize.STRING(500),
+    field_2: Sequelize.INTEGER
+})
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.STRING            // VARCHAR(255)
+Sequelize.STRING(1234)      // VARCHAR(1234)
+Sequelize.STRING.BINARY     // VARCHAR BINARY
+Sequelize.TEXT              // TEXT
+Sequelize.TEXT('tiny')      // TINYTEXT
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.INTEGER           // INTEGER
+Sequelize.BIGINT            // BIGINT
+Sequelize.BIGINT(11)        // BIGINT(11)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.FLOAT             // FLOAT
+Sequelize.FLOAT(11)         // FLOAT(11)
+Sequelize.FLOAT(11, 12)     // FLOAT(11,12)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.DOUBLE            // DOUBLE
+Sequelize.DOUBLE(11)        // DOUBLE(11)
+Sequelize.DOUBLE(11, 12)    // DOUBLE(11,12)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.DECIMAL           // DECIMAL
+Sequelize.DECIMAL(10, 2)    // DECIMAL(10,2)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.DATE              // DATETIME
+Sequelize.DATE(6)           // DATETIME(6)
+Sequelize.DATEONLY          // DATE without time
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Data types</h4>
+
+        <pre class="javascript"><code>
+Sequelize.BOOLEAN           // TINYINT(1)
+Sequelize.ENUM('value 1', 'value 2')
+Sequelize.BLOB              // BLOB
+Sequelize.BLOB('tiny')      // TINYBLOB
+Sequelize.GEOMETRY          // Spatial column
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+
+    firstname: { type: Sequelize.STRING(200),
+        set: function(value) {
+            this.setDataValue('firstname',
+                capitalize(value));
+        }
+    },
+
+    lastname: { type: Sequelize.STRING(200),
+        set: function(value) {
+            this.setDataValue('lastname',
+                capitalize(value));
+        }
+    }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+function capitalize(value) {
+    value = value.toLowerCase();
+
+    return value[0].toUpperCase()
+        + value.substr(1);
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+Users.findOne()
+    .then((user) => {
+        user.firstname = 'nikita';
+
+        console.log(user.firstname);
+    });
+
+// => Nikita
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    firstname: Sequelize.STRING(200),
+    lastname: Sequelize.STRING(200)
+}, {
+    getterMethods: {
+        name: function() {
+            let firstname = this.firstname;
+            let lastname = this.lastname;
+
+            return `${firstname} ${lastname}`;
+        }
+    },
+    setterMethods: { ... }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+Users.findOne()
+    .then((user) => {
+        console.log(user.name);
+    });
+
+// => Nikita Tsyhanenko
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Getters & Setters</h4>
+
+        <pre class="javascript"><code>
+/* a getter for 'title' property */
+function() {
+    return this.getDataValue('title');
+}
+        </code></pre>
+
+        <pre class="javascript"><code>
+/* a setter for 'title' property */
+function(title) {
+    this.setDataValue('title', title);
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+
+    email: {
+        type: Sequelize.STRING(100),
+        validate: {
+            isEmail: {
+                args: true,
+                msg: 'Incorrect email'
+            },
+            notEmpty: true
+        }
+    }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+let user = Users.build({
+    email: '123'
+});
+
+user.validate().then((result) => {
+    if (!result) return;
+
+    result.errors.forEach((err) => {
+        console.log(err.message);
+    });
+});
+
+// => Incorrect email
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+let user = Users.build({
+    email: ''
+});
+
+user.validate().then((result) => {
+    if (!result) return;
+
+    result.errors.forEach((err) => {
+        console.log(err.message);
+    });
+});
+
+// => Incorrect email
+// => Validation notEmpty failed
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+https://github.com/chriso/validator.js
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+is: /^[a-z]+$/i
+not: /^[a-z]+$/i
+isEmail: true
+isUrl: true
+isIP: true
+isAlpha: true
+isAlphanumeric: true
+isNumeric: true
+isInt: true
+isFloat: true
+isLowercase: true
+isUppercase: true
+equals: 'specific value'
+contains: 'foo'
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+isIn: [['foo', 'bar']]
+notIn: [['foo', 'bar']]
+len: [2,10]
+isDate: true
+isAfter: "2011-11-05"
+isBefore: "2011-11-05"
+max: 23
+min: 11
+isCreditCard: true
+
+// custom validator
+isEven: function(value) {
+    if (parseInt(value) % 2 != 0) {
+        throw new Error('Not even')
+    }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+isEmail: {
+    msg: 'Incorrect email'
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Validations</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    email: Sequelize.STRING(200),
+    login: Sequelize.STRING(200)
+}, {
+    validate: {
+        emailOrLogin: function () {
+            if (!this.email && !this.login) {
+                throw new Error('Either email or
+                    login should be set');
+            }
+        }
+    }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Configuration</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', { ... }, {
+    // updatedAt, createdAt
+    timestamps: false,
+
+    // deletedAt
+    paranoid: true,
+
+    // created_at, updated_at, deleted_at
+    underscored: true
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Configuration</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', { ... }, {
+    createdAt: false,
+    updatedAt: 'updateTimestamp'
+    deletedAt: 'destroyTime',
+    paranoid: true
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Import</h4>
+
+        <pre class="javascript"><code>
+// index.js
+const User = sequelize.import(__dirname
+            + "/model/user");
+
+// model/user.js
+module.exports = function(sequelize, DataTypes) {
+  return sequelize.define("Users", {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    email: Sequelize.STRING(200),
+    login: Sequelize.STRING(200)
+  });
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Synchronization</h4>
+
+        <pre class="javascript"><code>
+Posts.sync()
+Comments.sync()
+
+Posts.sync({force: true})
+
+Comments.drop()
+Posts.drop()
+
+Posts.[sync|drop]().then(function() {
+  // done
+}).catch(function(error) {
+  // error
+})
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Synchronization</h4>
+
+        <pre class="javascript"><code>
+// Create tables that not in DB
+sequelize.sync()
+
+// Force sync all models
+sequelize.sync({ force: true })
+
+// Drop all tables
+sequelize.drop()
+
+sequelize.[sync|drop]().then(function() {
+  // done
+}).catch(function(error) {
+  // error
+})
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Models - Synchronization</h4>
+
+        <pre class="javascript"><code>
+// This will run .sync() only if
+// database name ends with '_test'
+sequelize.sync({ force: true, match: /_test$/ });
+        </code></pre>
+    </section>
+
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
