@@ -1630,7 +1630,434 @@ user.toJson();
         </code></pre>
     </section>
 
-   
+    <section>
+        <h3><span class="red">R</span>elations / Associations</h3>
+    </section>
+
+    <section>
+        <h4>Relations - 1-to-1</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    email: Sequelize.STRING(100)
+});
+
+const Profiles = sequelize.define('Profiles', {
+    id: { type: Sequelize.INTEGER,
+        primaryKey: true },
+    firstname: Sequelize.STRING(200),
+    lastname: Sequelize.STRING(200),
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Relations - 1-to-1</h4>
+
+        <pre class="javascript"><code>
+Users.hasOne(Profiles);
+// => profile.UserId
+// => user.getProfile()
+// => user.setProfile()
+// => user.addProfile()
+
+Users.hasOne(Profiles);
+Profiles.belongsTo(Users);
+// => profile.getUser()
+// => profile.setUser()
+// => profile.addUser()
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Relations - 1-to-1</h4>
+
+        <pre class="javascript"><code>
+Users.hasOne(Profiles, { foreignKey: 'userId' });
+Profiles.belongsTo(Users);
+// => profile.userId
+
+Users.hasOne(Profiles, { as: 'pro' });
+Profiles.belongsTo(Users);
+// => user.getPro()
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Relations - 1-to-Many</h4>
+
+        <pre class="javascript"><code>
+Users.hasMany(Posts);
+Posts.belongsTo(Users);
+
+user.hasPost(post);
+user.hasPosts([post1, post2]);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Relations - Many-to-Many</h4>
+
+        <pre class="javascript"><code>
+Users.belongsToMany(Roles,
+    { through: UserRoles });
+
+Roles.belongsToMany(Users,
+    { through: UserRoles });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Relations - No constraints</h4>
+
+        <pre class="javascript"><code>
+Users.hasOne(Profiles, { foreignKey: 'profileId',
+    contstraints: false });
+
+Profiles.belongsTo(Users,
+    { foreignKey: 'userId' });
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">H</span>ooks</h3>
+    </section>
+
+    <section>
+        <h4>Hooks - Order</h4>
+
+        <pre class="javascript"><code>
+(1)
+  beforeBulkCreate(instances, options, fn)
+  beforeBulkDestroy(options, fn)
+  beforeBulkUpdate(options, fn)
+(2)
+  beforeValidate(instance, options, fn)
+(-)
+  validate
+(3)
+  afterValidate(instance, options, fn)
+  - or -
+  validationFailed(instance, options, error, fn)
+(4)
+  beforeCreate(instance, options, fn)
+  beforeDestroy(instance, options, fn)
+  beforeUpdate(instance, options, fn)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - Order</h4>
+
+        <pre class="javascript"><code>
+  beforeSave(instance, options, fn)
+  beforeUpsert(values, options, fn)
+(-)
+  create
+  destroy
+  update
+(5)
+  afterCreate(instance, options, fn)
+  afterDestroy(instance, options, fn)
+  afterUpdate(instance, options, fn)
+  afterSave(instance, options, fn)
+  afterUpsert(created, options, fn)
+(6)
+  afterBulkCreate(instances, options, fn)
+  afterBulkDestroy(options, fn)
+  afterBulkUpdate(options, fn)
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - In Model</h4>
+
+        <pre class="javascript"><code>
+const Users = sequelize.define('Users', {...}, {
+    hooks: {
+        beforeValidate: function(user, options) {
+          user.mood = 'happy'
+        },
+        afterValidate: function(user, options) {
+          user.username = 'Toni'
+        }
+    }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - hook() Method</h4>
+
+        <pre class="javascript"><code>
+Users.hook('beforeValidate', (user, options) => {
+  user.mood = 'happy';
+});
+
+Users.hook('afterValidate', (user, options) => {
+  user.username = 'Toni';
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - Direct Method</h4>
+
+        <pre class="javascript"><code>
+Users.beforeValidate((user, options) => {
+  user.mood = 'happy';
+});
+
+Users.afterValidate((user, options) => {
+  user.username = 'Toni';
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - Global</h4>
+
+        <pre class="javascript"><code>
+const sequelize = new Sequelize(..., {
+    define: {
+        hooks: {
+            beforeCreate: function () {
+                // Do stuff
+            }
+        }
+    }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hooks - Bulk + Individual</h4>
+
+        <pre class="javascript"><code>
+Model.destroy({ where: {accessLevel: 0},
+    individualHooks: true})
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">T</span>ransactions</h3>
+    </section>
+
+    <section>
+        <h4>Transactions - Managed</h4>
+
+        <pre class="javascript"><code>
+sequelize.transaction(function (t) {
+  // chain all your queries
+  return User.create({name:'Abraham Lincoln'},
+      {transaction: t})
+    .then(function (user) {
+      return user.setShooter({name:'John Boothe'},
+    {transaction: t});
+  });
+}).then(function (result) {
+  // transaction has been committed
+  // result - from promisses chain
+}).catch(function (err) {
+  // transaction has been rolled back
+  // err - from promisses chain
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Transactions - Unmanaged</h4>
+
+        <pre class="javascript"><code>
+return sequelize
+  .transaction()
+  .then(function (t) {
+    return User.create({name:'Homer'},
+        {transaction: t})
+      .then(function (user) {
+        return user.addSibling({name:'Bart'},
+          {transaction: t});
+      })
+      .then(function () {
+        return t.commit();
+      }).catch(function (err) {
+        return t.rollback();
+      });
+  });
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Transactions - Isolation level</h4>
+
+        <pre class="javascript"><code>
+sequelize.transaction({
+  isolationLevel:
+    Sequelize.Transaction
+      .ISOLATION_LEVELS.SERIALIZABLE
+  }, function (t) {...});
+
+// default = REPEATABLE READ
+Sequelize.Transaction
+    .ISOLATION_LEVELS.READ_UNCOMMITTED
+Sequelize.Transaction
+    .ISOLATION_LEVELS.READ_COMMITTED
+Sequelize.Transaction
+    .ISOLATION_LEVELS.REPEATABLE_READ
+Sequelize.Transaction
+    .ISOLATION_LEVELS.SERIALIZABLE
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">L</span>egacy tables</h3>
+    </section>
+
+    <section>
+        <h4>Legacy tables</h4>
+
+        <pre class="javascript"><code>
+sequelize.define('user', {
+  ...
+}, {
+  tableName: 'users'
+});
+
+sequelize.define('modelName', {
+  userId: {
+    type: Sequelize.INTEGER,
+    field: 'user_id'
+  }
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Legacy tables</h4>
+
+        <pre class="javascript"><code>
+sequelize.define('collection', {
+  uid: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  }
+});
+
+User.hasMany(Role, {through: 'user_has_roles',
+    foreignKey: 'user_role_user_id'});
+Role.hasMany(User, {through: 'user_has_roles',
+    foreignKey: 'roles_identifier'});
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">R</span>aw queries</h3>
+    </section>
+
+    <section>
+        <h4>Raw queries - Metadata</h4>
+
+        <pre class="javascript"><code>
+sequelize.query("UPDATE users
+        SET y = 42 WHERE x = 12")
+    .spread(function(results, metadata) { ... })
+
+sequelize.query("SELECT * FROM `users`",
+        { type: sequelize.QueryTypes.SELECT})
+    .then(function(users) { ... })
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Raw queries - Replacements</h4>
+
+        <pre class="javascript"><code>
+sequelize.query('SELECT * FROM projects
+    WHERE status = ?', { replacements: ['active'],
+        type: sequelize.QueryTypes.SELECT }
+).then(function(projects) { ... })
+
+sequelize.query('SELECT * FROM projects
+    WHERE status = :status', { replacements:
+        { status: 'active' },
+        type: sequelize.QueryTypes.SELECT }
+).then(function(projects) { ... })
+        </code></pre>
+    </section>
+
+    <section>
+        <h3><span class="red">M</span>igrations</h3>
+    </section>
+
+    <section>
+        <h4>Migrations - CLI</h4>
+
+        <pre class="javascript"><code>
+npm install -g sequelize-cli
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Migrations</h4>
+
+        <pre class="javascript"><code>
+sequelize init
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+// connections info
+./config/config.json
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+sequelize migration:create
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+./migrations/[date]_[name].js
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Migrations - Up</h4>
+
+        <pre class="javascript"><code>
+return Promise.all([
+  queryInterface.addColumn('Users', 'firstname',
+    { type: Sequelize.STRING }),
+  queryInterface.addColumn('Users', 'lastname',
+    { type: Sequelize.STRING }),
+  queryInterface.dropTable('Profiles')
+]);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Migrations - Down</h4>
+
+        <pre class="javascript"><code>
+return Promise.all([
+  queryInterface.removeColumn('Users','firstname'),
+  queryInterface.removeColumn('Users','lastname'),
+  queryInterface.createTable('Profiles', { ... })
+]);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Migrations - Down</h4>
+
+        <pre class="javascript"><code>
+sequelize db:migrate
+        </code></pre>
+
+        <pre class="javascript"><code>
+sequelize db:migrate:undo
+        </code></pre>
+    </section>
 
 
 
