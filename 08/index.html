@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP08</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Программируем на Express.js</h2>
+        <p class="author">
+            <small>Лекция 08</small>
+        </p>
+    </section>
+
+    <section>
+        <h4>Architecture</h4>
+
+        <img src="images/architecture.png">
+    </section>
+
+    <section>
+        <h4>Project structure</h4>
+
+        <img src="images/project.png">
+    </section>
+
+    <section>
+        <h4>package.json</h4>
+
+        <pre class="javascript"><code>
+{
+  "name": "sample",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.14.0",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "mysql": "^2.11.1",
+    "sequelize": "^3.24.1"
+  }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+const express = require('express');
+const Sequelize = require('sequelize');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
+const errors = require('./utils/errors');
+const config = require('./config');
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>config.json</h4>
+
+        <pre class="javascript"><code>
+{
+  "db": {
+    "host": "127.0.0.1",
+    "name": "my_db",
+    "user": "myuser",
+    "password": "123#qwe"
+  },
+  "env": "dev",
+  "cookie": {
+    "key": "secret key",
+    "auth": "__auth_id"
+  }
+}
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+const postService = require('./services/post')
+    (dbcontext.post, errors);
+
+const userService = require('./services/user')
+    (dbcontext.user, dbcontext.role, errors);
+
+const roleService = require('./services/role')
+    (dbcontext.role, errors);
+
+const authService = require('./services/auth')
+    (dbcontext.user, dbcontext.role, errors);
+
+const cacheService = require('./services/cache');
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+const apiController
+  = require('./controllers/api')
+    (postService, userService, roleService,
+      authService, cacheService, config);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+const logger = require('./utils/logger');
+
+const auth = require('./utils/auth')
+    (authService, config, errors);
+
+const cache = require('./utils/cache')
+    (cacheService);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+const app = express();
+
+app.use(express.static('public'));
+app.use(cookieParser(config.cookie.key));
+app.use(bodyParser.json());
+
+app.use('/api', logger);
+app.use('/api', auth);
+app.use('/api', cache);
+app.use('/api', apiController);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>index.js</h4>
+
+        <pre class="javascript"><code>
+dbcontext.sequelize
+  .sync()
+  .then(() => {
+    app.listen(3000, () =>
+      console.log('Running'));
+  })
+  .catch((err) => console.log(err));
+        </code></pre>
+    </section>
+
+  <section>
+    <h3><span class="red">M</span>odel</h3>
+    <h4>Модель</h4>
+  </section>
+
+  <section>
+    <h4>Модель</h4>
+
+    <ul>
+      <li class="left fragment">класс, структура, схема</li>
+      <li class="left fragment">отражает сущность предметной области</li>
+      <li class="left fragment">абстракция</li>
+      <li class="left fragment">таблица в БД - модель в коде</li>
+    </ul>
+  </section>
+
+    <section>
+        <h4>./models/post.js</h4>
+
+        <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+    return sequelize.define('posts', {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+
+        title: { type: Sequelize.STRING },
+        content: Sequelize.STRING,
+        date: Sequelize.DATEONLY,
+        rating: Sequelize.INTEGER,
+
+        draft: Sequelize.BOOLEAN
+};
+        </code></pre>
+    </section>
+
+  <section>
+    <h4>./models/user.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+    return sequelize.define('users', {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+
+        email: Sequelize.STRING,
+        password: Sequelize.STRING,
+
+        firstname: Sequelize.STRING,
+        lastname: Sequelize.STRING
+    });
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./models/role.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+    return sequelize.define('roles', {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+
+        name: Sequelize.STRING
+    });
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./models/userRole.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+    return sequelize.define('userRoles', {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        }
+    });
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">C</span>ontext</h3>
+    <h4>Контекст / ORM</h4>
+  </section>
+
+  <section>
+    <h4>Контекст</h4>
+
+    <ul>
+      <li class="left fragment">связи между моделями</li>
+      <li class="left fragment">перевод вызова методов в запросы</li>
+      <li class="left fragment">маппинг ответов на объекты</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>./context/db.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  const options = {
+    host: config.db.host,
+    dialect: 'mysql',
+    logging: false,
+    define: {
+      timestamps: true,
+      paranoid: true,
+      defaultScope: {
+        where: { deletedAt: { $eq: null } }
+      }
+    }
+  };
+  ...
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./context/db.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  const sequelize = new Sequelize(config.db.name,
+      config.db.user, config.db.password, options);
+
+  const User = require('../models/user')
+      (Sequelize, sequelize);
+  const Role = require('../models/role')
+      (Sequelize, sequelize);
+  const UserRole = require('../models/userRole')
+      (Sequelize, sequelize);
+  const Post = require('../models/post')
+      (Sequelize, sequelize);
+  ...
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./context/db.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  // User <-> Role
+  User.belongsToMany(Role,
+      { through: UserRole });
+
+  Role.belongsToMany(User,
+      { through: UserRole });
+
+  // Post -> User
+  Post.belongsTo(User);
+  User.hasMany(Post);
+  ...
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./context/db.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  return {
+    user: User,
+    role: Role,
+    post: Post,
+
+    sequelize: sequelize
+  };
+};
+        </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
