@@ -978,6 +978,583 @@ function promiseHandler(res, promise) {
         </code></pre>
   </section>
 
+  <section>
+    <h4>./controllers/base.js</h4>
+
+    <pre class="javascript"><code>
+function BaseController(service, promiseHandler) {
+  let self = this;
+  this.registerRoutes = registerRoutes;
+  this.router = express.Router();
+  this.routes = {
+    '/': [{ method: 'get', cb: readAll }],
+    '/:id': [{ method: 'get', cb: read }],
+    '/create': [{ method: 'post', cb: create }],
+    '/update': [{ method: 'post', cb: update }],
+    '/delete': [{ method: 'post', cb: del }]
+  };
+  ...
+}
+
+module.exports = BaseController;
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => readAll(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  service.readChunk(req.params)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => read(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  service.read(req.params.id)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => create(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  service.create(req.body)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => update(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  service.update(req.body)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => del(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  service.delete(req.body.id)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/base.js => registerRoutes()</h4>
+
+    <pre class="javascript"><code>
+for (let route in self.routes) {
+  if (!self.routes.hasOwnProperty(route)) {
+    continue;
+  }
+
+  let handlers = self.routes[route];
+
+  if (handlers == undefined) continue;
+
+  for (let handler of handlers) {
+    self.router[handler.method](route,
+      handler.cb);
+  }
+}
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/post.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (postService, cacheService,
+    promiseHandler) => {
+  const BaseController = require('./base');
+
+  Object.setPrototypeOf(PostController.prototype,
+    BaseController.prototype);
+
+  function PostController(
+      postService, promiseHandler) {
+    BaseController.call(this, postService,
+      promiseHandler);
+    ...
+  }
+
+  return new PostController(...);
+};
+        </code></pre>
+  </section>
+
+
+  <section>
+    <h4>./controllers/post.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (...) => {
+  ...
+  function PostController(...) {
+    ...
+    this.routes['/']
+      = [{ method: 'get', cb: readAll }];
+    this.routes['/upvote']
+      = [{ method: 'post', cb: upvote }];
+    this.routes['/downvote']
+      = [{ method: 'post', cb: downvote }];
+
+    this.registerRoutes();
+    return this.router;
+  }
+  ...
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/post.js => readAll(req, res)</h4>
+
+    <pre class="javascript"><code>
+postService.readChunk(req.params)
+  .then((posts) => {
+    cacheService.set(req, posts);
+    res.json(posts);
+  })
+  .catch((err) => res.error(err));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/post.js => upvote(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  postService.upvote(req.body.id)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/post.js => downvote(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  postService.downvote(req.body.id)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/user.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (userService,
+    promiseHandler) => {
+  const BaseController = require('./base');
+
+  Object.setPrototypeOf(UserController.prototype,);
+
+  function UserController(userService,
+      promiseHandler) {
+    BaseController.call(this, userService,
+      promiseHandler);
+    ...
+  }
+
+  return new UserController(userService,
+      promiseHandler);
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/user.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (...) => {
+  ...
+  function UserController(...) {
+    ...
+    this.routes['/create'] = undefined;
+    this.routes['/grant']
+      = [{ method: 'post', cb: grant }];
+    this.routes['/revoke']
+      = [{ method: 'post', cb: revoke }];
+
+    this.registerRoutes();
+    return this.router;
+    ...
+  }
+  ...
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/user.js => grant(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  userService.grant(req.body.userId,
+      req.body.roleId)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>ctrls/user.js => revoke(req, res)</h4>
+
+    <pre class="javascript"><code>
+promiseHandler(res,
+  userService.revoke(req.body.userId,
+      req.body.roleId)
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/role.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (roleService, promiseHandler)
+      => {
+    const BaseController = require('./base');
+    Object.setPrototypeOf(
+      RoleController.prototype,
+      BaseController.prototype);
+
+    function RoleController(...) {
+        BaseController.call(this, ...);
+        this.routes['/update'] = undefined;
+        this.registerRoutes();
+        return this.router;
+    }
+
+    return new RoleController(...);
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/auth.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (authService, config) => {
+  const router = express.Router();
+
+  router.post('/login', (req, res) => {...});
+  router.post('/register', (req, res) => {...});
+  router.post('/logout', (req, res) => {...});
+
+  return router;
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/auth.js</h4>
+
+    <pre class="javascript"><code>
+router.post('/login', (req, res) => {
+  authService.login(req.body)
+    .then((userId) => {
+      res.cookie(config.cookie.auth,
+        userId, { signed: true });
+
+      res.json({ success: true });
+    })
+    .catch((err) => res.error(err));
+});
+        </code></pre>
+  </section>
+
+
+  <section>
+    <h4>./controllers/auth.js</h4>
+
+    <pre class="javascript"><code>
+router.post('/register', (req, res) => {
+  authService.register(req.body)
+    .then((user) => res.json(user))
+    .catch((err) => res.error(err));
+});
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./controllers/auth.js</h4>
+
+    <pre class="javascript"><code>
+router.post('/logout', (req, res) => {
+  res.cookie(config.cookie.auth, '');
+  res.json({ success: true });
+});
+        </code></pre>
+  </section>
+  <section>
+    <h3>Utils</h3>
+  </section>
+
+  <section>
+    <h4>./utils/cache.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (cacheService) => {
+  return (req, res, next) => {
+    let data = cacheService.get(req);
+
+    if (data) res.json(data);
+    else next();
+  }
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./utils/auth.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (authService, config, errors)
+    => {
+  return (req, res, next) => {
+    let userId = req.signedCookies
+      [config.cookie.auth];
+    let path = req.url;
+
+    authService.checkPermissions(userId, path)
+        .then(() => next())
+        .catch(() => res.error(
+          errors.accessDenied));
+  };
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./utils/logger.js</h4>
+
+    <pre class="javascript"><code>
+module.exports = (req, res, next) => {
+  res.locals.trace = {
+    date: Date.now(),
+    url: req.url,
+    body: req.body,
+    cookies: req.cookies
+  };
+
+  console.log(res.locals.trace.date);
+  console.log(res.locals.trace.url);
+  console.log(res.locals.trace.body);
+  console.log();
+
+  next();
+};
+        </code></pre>
+  </section>
+
+  <section>
+  <h4>./utils/errors.js</h4>
+
+  <pre class="javascript"><code>
+const express = require('express');
+
+express.response.error = function(error) {
+  if (!error.code) {
+    error = {
+      message: error.toString(),
+      code: 'server_error',
+      status: 500
+    };
+  }
+
+  this.status(error.status).json(error);
+
+  // TODO: log erorr + 'res.locals.trace'
+};
+...
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>./utils/errors.js</h4>
+
+    <pre class="javascript"><code>
+...
+module.exports = {
+  invalidId: {
+    message: 'Invalid id',
+    code: 'invalid_id', status: 400 },
+  notFound: {
+    message: 'Entity not found',
+    code: 'entity_not_found', status: 404 },
+  wrongCredentials: {
+    message: 'Email or password are wrong',
+    code: 'wrong_credentials', status: 404 },
+  accessDenied: {
+    message: 'Access denied',
+    code: 'access_denied', status: 403 }
+};
+        </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>assport.js</h3>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <ul>
+      <li class="left fragment">300+ стратегий аутентификации</li>
+      <li class="left fragment">OpenID и OAuth</li>
+      <li class="left fragment">простота обработки удачных и неудачных попыток</li>
+      <li class="left fragment">долговременные (persistent) сессии</li>
+      <li class="left fragment">динамическая система прав</li>
+      <li class="left fragment">не монтирует свои роуты</li>
+      <li class="left fragment">можно разрабатывать свои стратегии</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+app.post('/login',
+  passport.authenticate('local'),
+  function(req, res) {
+    // If this function gets called,
+    // authentication was successful.
+    // `req.user` contains the authenticated user
+    res.redirect('/users/' + req.user.username);
+  });
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const authRoutes = {
+  successRedirect: '/',
+  failureRedirect: '/login'
+};
+
+app.post('/login',
+  passport.authenticate('local', authRoutes));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+app.get('/login', function(req, res, next) {
+  passport.authenticate('local',
+    (err, user, info) => {
+      ...
+    })(req, res, next);
+});
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport-local
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const passport = require('passport');
+const LocalStrategy
+    = require('passport-local').Strategy;
+
+app.use(passport.initialize());
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const auth = (login, password, done) => {
+    User.findOne({login: login}, (err, user) =>
+      if (err) return done(err);
+      if (!user)
+        return done(null,false,{message: '...'});
+      if (!user.validPassword(password))
+        return done(null,false,{message: '...'});
+
+      return done(null, user);
+    );
+};
+
+passport.use(new LocalStrategy(auth));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport-facebook
+npm install passport-twitter
+npm install passport-google-oauth
+npm install passport-vkontakte
+npm install passport-github2
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const passport = require('passport')
+const TwitterStrategy
+  = require('passport-twitter').Strategy;
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+// https://apps.twitter.com/
+passport.use(new TwitterStrategy({
+    consumerKey: TWITTER_CONSUMER_KEY,
+    consumerSecret: TWITTER_CONSUMER_SECRET,
+    callbackURL:
+      "http://www.example.com/auth/tw/cb"
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOrCreate(..., function(err, user) {
+      if (err) { return done(err); }
+      done(null, user);
+    });
+  }
+));
+        </code></pre>
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
