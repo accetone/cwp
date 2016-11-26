@@ -10,3 +10,4 @@
 [CWP06 - Express, часть 2](https://accetone.github.io/cwp/06/#/)  
 [CWP07 - Sequelize](https://accetone.github.io/cwp/07/#/)  
 [CWP08 - Программируем на Express](https://accetone.github.io/cwp/08/#/)  
+[CWP09 - Модульная система](https://accetone.github.io/cwp/09/#/)  
