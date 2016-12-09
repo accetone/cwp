@@ -2,6 +2,8 @@
 
 [Задания](https://github.com/accetone/cwp/tree/gh-pages/tasks)  
   
+[Доклады](https://accetone.github.io/cwp/cwp/tree/gh-pages/speakers)  
+  
 [CWP01 - Введение](https://accetone.github.io/cwp/01/#/)  
 [CWP02 - Программируем на Node.js](https://accetone.github.io/cwp/02/#/)  
 [CWP03 - Асинхронность](https://accetone.github.io/cwp/03/#/)  
