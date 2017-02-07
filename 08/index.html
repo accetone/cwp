@@ -1525,33 +1525,192 @@ npm install passport-github2
   </section>
 
   <section>
-    <h4>Passport.js</h4>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <a href="https://apps.twitter.com/">apps.twitter.com</a>
+
+    <img src="images/twitter-app-create.png">
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <a href="https://apps.twitter.com/">apps.twitter.com</a>
+
+    <img src="images/twitter-app-keys.png">
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
 
     <pre class="javascript"><code>
-const passport = require('passport')
-const TwitterStrategy
-  = require('passport-twitter').Strategy;
+npm i express
+npm i express-sessio
+npm i passport
+npm i passport-twitter
+
+npm i sequelize
+npm i mysql
+
+npm i bluebired
         </code></pre>
   </section>
 
   <section>
-    <h4>Passport.js</h4>
+    <h4>Passport.js - Twitter Auth</h4>
 
     <pre class="javascript"><code>
-// https://apps.twitter.com/
-passport.use(new TwitterStrategy({
-    consumerKey: TWITTER_CONSUMER_KEY,
-    consumerSecret: TWITTER_CONSUMER_SECRET,
-    callbackURL:
-      "http://www.example.com/auth/tw/cb"
+{
+  "db": {
+    "host": "127.0.0.1",
+    "name": "db",
+    "user": "user",
+    "password": "password"
   },
-  function(token, tokenSecret, profile, done) {
-    User.findOrCreate(..., function(err, user) {
-      if (err) { return done(err); }
-      done(null, user);
-    });
+  "twitter": {
+    "key": "TWITTER_KEY",
+    "secret": "TWITTER_SECRET",
+    "callback":
+      "http://127.0.0.1:3000/auth/twitter/callback"
+  }
+}
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const app = express();
+
+const session = require('express-session');
+
+const config = require('./config');
+const Sequelize = require('sequelize');
+const passport = require('passport');
+const TwitterStrategy
+  = require('passport-twitter');
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+const options = {
+  host: config.db.host,
+  dialect: 'mysql',
+  logging: false,
+  define: { timestamps: false }
+};
+
+const sequelize = new Sequelize(
+  config.db.name,
+  config.db.user,
+  config.db.password,
+  options
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+var User = sequelize.define('users', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
+  twitterId: Sequelize.STRING
+});
+     </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+passport.use(new TwitterStrategy({
+    consumerKey: config.twitter.key,
+    consumerSecret: config.twitter.secret,
+    callbackURL: config.twitter.callback
+  }, (token, tokenSecret, profile, cb) => {
+    User
+      .findOrCreate({
+        where: { twitterId: profile.id }
+      })
+      .then(function (user) {
+        cb(null, user[0].dataValues);
+      });
   }
 ));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+passport.serializeUser(
+  (user, done) => done(null, user)
+);
+
+passport.deserializeUser(
+  (user, done) => done(null, user)
+);
+
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: 'keyboard cat'
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+app.get('/auth/twitter',
+  passport.authenticate('twitter'));
+
+app.get('/auth/twitter/callback',
+  passport.authenticate(
+      'twitter',
+      { failureRedirect: '/login' }
+  ), (req, res) => {
+      res.redirect('/')
+  });
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+app.get('/', function (req, res) {
+  // req.isAuthenticated() or:
+  if (req.user) {
+    res.send('Hello #' + req.user.twitterId + '!');
+  } else {
+    res.send('Hello stranger!')
+  }
+});
+
+sequelize
+  .sync({ force: true })
+  .then(function() {
+    app.listen(3000, function () {
+      console.log('Running');
+    });
+  });
         </code></pre>
   </section>
 
