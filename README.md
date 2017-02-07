@@ -3,7 +3,8 @@
 [Задания](https://github.com/accetone/cwp/tree/gh-pages/tasks)  
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
 [Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exams/Q1.pdf)  
-  
+[Курсовой (темы только для 3/1)](https://github.com/accetone/cwp/tree/gh-pages/course)  
+
 [CWP01 - Введение](https://accetone.github.io/cwp/01/#/)  
 [CWP02 - Программируем на Node.js](https://accetone.github.io/cwp/02/#/)  
 [CWP03 - Асинхронность](https://accetone.github.io/cwp/03/#/)  
