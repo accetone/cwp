@@ -1512,7 +1512,137 @@ module.exports = {
     </code></pre>
   </section>
 
+  <section>
+    <h3><span class="red">J</span>WT</h3>
+  </section>
 
+  <section>
+    <h4>JWT</h4>
+
+    <ul>
+      <li class="left fragment">JSON Web Tokens</li>
+      <li class="left fragment">открытый стандарт</li>
+      <li class="left fragment">аутентификация + авторизация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <pre class="javascript"><code>
+https://jwt.io/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <pre class="javascript"><code>
+npm install jsonwebtoken
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <pre class="javascript"><code>
+jwt.sign(payload, secretOrPrivateKey, options,
+  [callback])
+
+/*
+  payload - строка, объект или буфер
+  secretOrPrivateKey - строка или буфер
+  callback - функция
+  options - объект
+    algorithms - массив допустимых алгоритмов
+    expiresIn - 60, "2 days", "10h", "7d"
+      -> https://github.com/zeit/ms
+*/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <pre class="javascript"><code>
+jwt.verify(token, secretOrPublicKey,
+  [options, callback])
+/*
+  token - строка
+  secretOrPrivateKey - строка или буфер
+  callback - функция
+  options - объект
+    ignoreExpiration - true/false
+    clockTolerance - число секунд просрочки
+*/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <pre class="javascript"><code>
+const jwt = require('jsonwebtoken');
+
+let token = jwt.sign({ id: 42 },
+  config['jwt-secret'],
+  { expiresIn: config['jwt-expires'] });
+
+jwt.verify(token, config['jwt-secret'],
+  (err, payload) => {
+      console.log(payload.id); // 42
+  });
+
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">R</span>EST в Express</h3>
+  </section>
+
+  <section>
+    <h4>Express + REST</h4>
+
+    <pre class="javascript"><code>
+// controllers/base.js
+...
+this.routes = {
+  '/': [
+    { method: 'get', cb: readAll },
+    { method: 'post', cb: create }
+  ],
+  '/:id': [
+    { method: 'get', cb: read },
+    { method: 'put', cb: update },
+    { method: 'delete', cb: del }
+  ]
+};
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express + REST</h4>
+
+    <pre class="javascript"><code>
+// controllers/base.js
+...
+function update(req, res) {
+  req.body.id = req.params.id;
+
+  promiseHandler(res,
+    service.update(req.body)
+  );
+}
+
+function del(req, res) {
+  promiseHandler(res,
+    service.delete(req.params.id)
+  );
+}
+...
+    </code></pre>
+  </section>
 
 </div></div>
 
