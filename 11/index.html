@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP11</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>npm</h2>
+      <p class="author">
+          <small>Лекция 11</small>
+      </p>
+  </section>
+
+  <section>
+    <h3><span class="red">S</span>emver</h3>
+    <h4>Семантическое версионирование</h4>
+  </section>
+
+  <section>
+    <h4>Semver</h4>
+
+    <ul>
+      <li class="left fragment"><a href="http://semver.org/lang/ru/">semver.org</a></li>
+      <li class="left fragment">Dependency hell</li>
+      <li class="left fragment">Набор правил</li>
+      <li class="left fragment">Об изменениях сообщается через версию MAJOR.MINOR.PATCH / X.Y.Z</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - Правила</h4>
+
+    <ul>
+      <li class="left fragment">Объявить публичный API (код или документация)</li>
+      <li class="left fragment">X, Y, Z - целые неотрицательные числа</li>
+      <li class="left fragment">Нельзя изменять уже опубликованные версии</li>
+      <li class="left fragment">Любые изменения - новая версия</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - MAJOR</h4>
+
+    <ul>
+      <li class="left fragment">cделаны обратно несовместимые изменения API</li>
+      <li class="left fragment">0 - начальная разработка / все может измениться</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - MAJOR</h4>
+
+    <ul>
+      <li class="left fragment">ДОЛЖНА быть увеличена, если в публичном API представлены обратно несовместимые изменения</li>
+      <li class="left fragment">МОЖЕТ включать изменения, характерные для уровня минорных версий и патчей</li>
+      <li class="left fragment">Когда увеличивается мажорная версия, минорная и патч-версия ДОЛЖНЫ быть обнулены</li>
+    </ul>
+  </section>
+
+
+
+  <section>
+    <h4>Semver - MINOR</h4>
+
+    <ul>
+      <li class="left fragment">добавляете новый и изменяете старый функционал, не нарушая обратной совместимости</li>
+      <li class="left fragment">ДОЛЖНА быть увеличена, если в публичном API представлен новый обратно совместимый функционал</li>
+      <li class="left fragment">ДОЛЖНА быть увеличена, если какой-либо функционал публичного API помечен как устаревший</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - MINOR</h4>
+
+    <ul>
+      <li class="left fragment">МОЖЕТ быть увеличена в случае реализации нового функционала или существенного усовершенствования в приватном коде</li>
+      <li class="left fragment">Патч-версия ДОЛЖНА быть обнулена, когда увеличивается минорная версия</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - PATCH</h4>
+
+    <ul>
+      <li class="left fragment">делаете обратно совместимые исправления</li>
+      <li class="left fragment">ДОЛЖНА быть увеличена только если содержит обратно совместимые баг-фиксы</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Semver - Additional</h4>
+
+    <ul>
+      <li class="left fragment">Предрелиз - 1.0.0-alpha, 1.0.0-alpha.1, 1.0.0-0.3.7</li>
+      <li class="left fragment">Метаданные - 1.0.0+20130313144700, 1.0.0-beta+exp.sha.5114f85</li>
+      <li class="left fragment">Приоритет определяется по первому отличию при сравнении каждого из идентификаторов слева направо</li>
+      <li class="left fragment">1.0.0 < 2.0.0 < 2.1.0 < 2.1.1</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">n</span>pm</h3>
+    <h4>Node package manager</h4>
+  </section>
+
+  <section>
+    <h4>npm</h4>
+
+    <ul>
+      <li class="left fragment">400+ тыс. пакетов</li>
+      <li class="left fragment">290+ млн. установок в день</li>
+      <li class="left fragment"><a href="https://docs.npmjs.com">docs.npmjs.com</a></li>
+      <li class="left fragment"><a href="https://github.com/npm/npm">github.com/npm/npm</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>npm - package</h4>
+
+    <ul>
+      <li class="left fragment">a) папка с программой и package.json</li>
+      <li class="left fragment">b) gzip архив (a)</li>
+      <li class="left fragment">c) ссылка (b)</li>
+      <li class="left fragment">d) name@version в реестре имеющий (c)</li>
+      <li class="left fragment">e) name@tag указывающий на (d)</li>
+      <li class="left fragment">f) name@latest указывающий на (d)</li>
+      <li class="left fragment">g) ссылка на git-репозиторий с (a)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>npm - install</h4>
+
+    <pre class="javascript"><code>
+// локальная установка
+> npm install package_name
+
+// глобальная
+> npm install -g package_name
+
+// сокращение
+> npm i package_name
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - package.json</h4>
+
+    <pre class="javascript"><code>
+{
+  "name": "my-awesome-package",
+  "version": "1.0.0"
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - package.json</h4>
+
+    <pre class="javascript"><code>
+// lowercase
+// без пробелов
+// одно слово
+// можно - и _
+"name"
+
+// X.Y.Z
+"version"
+
+// создание
+// name, version, main, scripts, keywords
+// author, license, repository
+npm init
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - package.json</h4>
+
+    <pre class="javascript"><code>
+> npm set init.author.email "wombat@npmjs.com"
+> npm set init.author.name "ag_dubs"
+> npm set init.license "MIT"
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - package.json</h4>
+
+    <pre class="javascript"><code>
+// ~/.npm-init.js
+module.exports = {
+  customField: 'Custom Field',
+  otherCustomField: 'This field is really cool'
+}
+
+// or
+module.exports
+  = prompt("what's your favorite ice cream?",
+    "I LIKE THEM ALL");
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - dependencies</h4>
+
+    <pre class="javascript"><code>
+{
+  ...
+
+  "dependencies": {
+    "my_dep": "^1.0.0"
+  },
+  "devDependencies" : {
+    "my_test_framework": "^3.1.0"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - deps</h4>
+
+    <pre class="javascript"><code>
+> npm install package_name --save
+
+> npm install package_name --save-dev
+
+> npm install
+
+> npm install --production
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - deps</h4>
+
+    <pre class="javascript"><code>
+> npm outdated
+
+> npm update
+
+> npm update package
+
+> npm update -g
+
+> npm outdated -g --depth=0
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - deps</h4>
+
+    <img src="images/1.png" height="175" width="327"/>
+  </section>
+
+  <section>
+    <h4>npm - uninstall</h4>
+
+    <pre class="javascript"><code>
+> npm uninstall package --save
+
+> npm uninstall package --save-dev
+
+> npm uninstall package -g
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - deps</h4>
+
+    <img src="images/1.png" height="175" width="327"/>
+  </section>
+
+  <section>
+    <h4>npm - publish</h4>
+
+    <pre class="javascript"><code>
+> npm adduser
+
+> npm login
+
+> npm publish
+
+// README.md, .gitignore, .npmignore
+// https://npmjs.com/package/package_name
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - publish</h4>
+
+    <img src="images/2.png" height="229" width="412"/>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <pre class="javascript"><code>
+> npm view bluebird version
+
+> npm version 1.0.2
+
+> npm version [major | minor | patch]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <pre class="javascript"><code>
+"bluebird": "3.4.7"
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <pre class="javascript"><code>
+// все что выше в пределах major
+"bluebird": "^3.4.5"
+
++:
+3.4.5
+3.4.6
+3.4.7
+
+-:
+4.0.0
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <pre class="javascript"><code>
+// все что выше в пределах minor
+"bluebird": "~3.3.1"
+
++:
+3.3.1
+3.3.2
+3.3.3
+
+-:
+3.4.0
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <pre class="javascript"><code>
+"bluebird": ">3.3.1"
+"bluebird": ">=3.3.1"
+"bluebird": "<3.3.1"
+"bluebird": "3.3.1 - 3.3.3"
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - version</h4>
+
+    <ul>
+      <li class="left"><a href="https://semver.npmjs.com/">Калькулятор версий - semver.npmjs.com</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <img src="images/3.png" height="616" width="892"/>
+  </section>
+
+  <section>
+    <h4>npm - scope</h4>
+
+    <ul>
+      <li class="left fragment">это namespace для модулей</li>
+      <li class="left fragment">@scope/project-name</li>
+      <li class="left fragment">npm publish --access=public</li>
+    </ul>
+
+    <pre class="javascript fragment"><code>
+{
+  "dependencies": {
+    "@username/project-name": "^1.0.0"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - tags</h4>
+
+    <pre class="javascript fragment"><code>
+> npm publish --tag beta
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> npm install bluebird@beta
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> npm dist-tag add bluebird@4.0.0-0 beta
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> npm dist-tag rm bluebird beta
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> npm dist-tag ls bluebird
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - dedupe</h4>
+
+    <img src="images/4.png"/>
+  </section>
+
+  <section>
+    <h4>Добавили D</h4>
+
+    <img src="images/5.png"/>
+  </section>
+
+  <section>
+    <img src="images/6.png"/>
+  </section>
+
+  <section>
+    <h4>Добавили E</h4>
+
+    <img src="images/7.png"/>
+  </section>
+
+  <section>
+    <h4>B v1.0 уже есть наверху</h4>
+
+    <img src="images/8.png"/>
+  </section>
+
+  <section>
+    <h4>Обновили A</h4>
+
+    <img src="images/9.png"/>
+  </section>
+
+  <section>
+    <img src="images/10.png"/>
+  </section>
+
+  <section>
+    <h4>Обновили E</h4>
+
+    <img src="images/11.png"/>
+  </section>
+
+  <section>
+    <h4>B v1.0 заменился на B v2.0, потому что не было зависимостей кроме E</h4>
+
+    <img src="images/12.png"/>
+  </section>
+
+  <section>
+    <pre class="javascript fragment"><code>
+> npm dedupe
+    </code></pre>
+
+    <img class="fragment" src="images/13.png"/>
+  </section>
+
+  <section>
+    <h4>npm - shrinkwrap</h4>
+
+    <pre class="javascript fragment"><code>
+{
+  "name": "A",
+  "version": "0.1.0",
+  "dependencies": {
+    "B": "<0.1.0"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - shrinkwrap</h4>
+
+    <pre class="javascript fragment"><code>
+{
+  "name": "B",
+  "version": "0.0.1",
+  "dependencies": {
+    "C": "<0.1.0"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - shrinkwrap</h4>
+
+    <pre class="javascript fragment"><code>
+{
+  "name": "C",
+  "version": "0.0.1"
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - shrinkwrap</h4>
+
+    <pre class="javascript fragment"><code>
+npm install A
+
+A@0.1.0
+`-- B@0.0.1
+    `-- C@0.0.1
+
+если есть B@0.0.2
+
+A@0.1.0
+`-- B@0.0.2
+    `-- C@0.0.1
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - shrinkwrap</h4>
+
+    <pre class="javascript fragment"><code>
+npm-shrinkwrap.json
+{
+  "name": "A",
+  "version": "1.1.0",
+  "dependencies": {
+    "B": {
+      "version": "1.0.1",
+      "from": "B@^1.0.0",
+      "resolved": "https://registry.npmjs.org/B/-/B-1.0.1.tgz",
+      "dependencies": {
+        "C": {
+          "version": "1.0.1",
+          "from": "org/C#v1.0.1",
+          "resolved": "..."
+        }
+      }
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - unpublish</h4>
+
+    <pre class="javascript fragment"><code>
+npm unpublish [<@scope>/]pkg[@version]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - config</h4>
+
+    <pre class="javascript fragment"><code>
+npm config set save=true
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h3><span class="red">Y</span>arn</h3>
+  </section>
+
+  <section>
+    <img src="images/14.png" />
+  </section>
+
+  <section>
+    <h4>Yarn</h4>
+
+    <ul>
+      <li class="left fragment">Ultra Fast / кэш + паралельность + offline-mod</li>
+      <li class="left fragment">Mega Secure / контрольные суммы пакетов</li>
+      <li class="left fragment">Super Reliable / lock-файлы для версий</li>
+      <li class="left fragment"><a href="https://yarnpkg.com/">yarnpkg.com</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Yarn</h4>
+
+    <pre class="javascript fragment"><code>
+> yarn init
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn add [package]
+> yarn add [package]@[version]
+> yarn add [package]@[tag]
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn remove [package]
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn install
+> yarn install --force
+> yarn install --production
+    </code></pre>
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
