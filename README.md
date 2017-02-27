@@ -16,3 +16,4 @@
 [CWP09 - Модульная система](https://accetone.github.io/cwp/09/#/)  
 [CWP10 - REST](https://accetone.github.io/cwp/10/#/)  
 [CWP11 - npm](https://accetone.github.io/cwp/11/#/)  
+[CWP12 - Деплой](https://accetone.github.io/cwp/12/#/)  
