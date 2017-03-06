@@ -17,3 +17,4 @@
 [CWP10 - REST](https://accetone.github.io/cwp/10/#/)  
 [CWP11 - npm](https://accetone.github.io/cwp/11/#/)  
 [CWP12 - Деплой](https://accetone.github.io/cwp/12/#/)  
+[CWP13 - Тестирование](https://accetone.github.io/cwp/13/#/)  

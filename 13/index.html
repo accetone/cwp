@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP13</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Тестирование</h2>
+    <p class="author">
+        <small>Лекция 13</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>Тестирование - Зачем</h4>
+
+    <ul>
+      <li class="fragment">текущий функционал соответствует заявленному</li>
+      <li class="fragment">ранее обнаружение проблем</li>
+      <li class="fragment">сокращение временных затрат</li>
+      <li class="fragment">как документация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Недостатки</h4>
+
+    <ul>
+      <li class="fragment">надо писать</li>
+      <li class="fragment">надо уметь писать</li>
+      <li class="fragment">надо поддерживать</li>
+      <li class="fragment">нет гарантий</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Режимы</h4>
+
+    <ul>
+      <li class="fragment">ручное</li>
+      <li class="fragment">автоматическое</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Виды</h4>
+
+    <ul>
+      <li class="fragment">модульные</li>
+      <li class="fragment">интеграционные (взаимодействие модулей)</li>
+      <li class="fragment">приемочные (система в целом)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Типы</h4>
+
+    <ul>
+      <li class="fragment">функциональное</li>
+      <li class="fragment">конфигурационное</li>
+      <li class="fragment">нагрузочное</li>
+      <li class="fragment">производительности</li>
+      <li class="fragment">безопасности</li>
+      <li class="fragment">юзабилити</li>
+      <li class="fragment">...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>DD</h3>
+    <h4>Test-driven development</h4>
+  </section>
+
+  <section>
+    <h4>TDD</h4>
+
+    <img src="images/tdd.png">
+  </section>
+
+  <section>
+    <h4>TDD</h4>
+
+    <img src="images/tdd-red-green-refactor.jpg">
+  </section>
+
+  <section>
+    <h4>TDD - Преимущества</h4>
+
+    <ul>
+      <li class="fragment">фокус на функционале</li>
+      <li class="fragment">предварительное обдумывание архитектуры</li>
+      <li class="fragment">стимулирует к меньшей связанности</li>
+      <li class="fragment">более безопасное написание нового кода</li>
+      <li class="fragment">легкий рефакторинг</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>TDD - Недостатки</h4>
+
+    <ul>
+      <li class="fragment">не все можно протестировать</li>
+      <li class="fragment">не все удобно тестировать</li>
+      <li class="fragment">временные затраты</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">U</span>nit-tests</h3>
+    <h4>Модульные тесты</h4>
+  </section>
+
+  <section>
+   <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+class Rectangle {
+  constructor(x1, y1, x2, y2) {
+    this.x1 = x1;
+    this.x2 = x2;
+    this.y1 = y1;
+    this.y2 = y2;
+  }
+
+  width() { return Math.abs(this.x1 - this.x2); }
+  height() { return Math.abs(this.y1 - this.y2); }
+  isSquare() {return this.width() === this.height(); }
+}
+
+module.exports = Rectangle;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <a href="https://facebook.github.io/jest/">Jest - Docs</a>
+      <pre class="javascript"><code>
+npm install --save-dev jest
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      package.json
+      <pre class="javascript"><code>
+{
+  "name": "tests-example",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^18.1.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node"
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe("A suite", () => {
+  it("contains spec with an expectation", () => {
+    expect(true).toBe(true);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm test
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/jest-simple-test.png">
+  </section>
+
+  <section>
+    <img src="images/jest-rectangle-results-1.png">
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+const Rectangle = require('../rectangle');
+
+describe('Тестовый набор для Rectangle', () => {
+  let x1, x2, y1, y2;
+
+  beforeEach(() => { ... });
+
+  describe('>> модуль', () => { ... });
+
+  describe('>> конструктор', () => { ... });
+
+  describe('>> методы width и height', () => { ... });
+
+  describe('>> метод isSquare', () => { ... });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+beforeEach(() => {
+  x1 = 0;
+  y1 = 0;
+  x2 = 3;
+  y2 = 2;
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> модуль', () => {
+  it('должен импортировать функцию', () => {
+      expect(typeof Rectangle).toBe('function');
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  it('должен принимать числа', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.x1).toEqual(x1);
+    expect(rect.x2).toEqual(x2);
+    expect(rect.y1).toEqual(y1);
+    expect(rect.y2).toEqual(y2);
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен приводить параметры к числовому типу', () => {
+    x1 = x1.toString();
+    y1 = y1.toString();
+    x2 = x2.toString();
+    y2 = y2.toString();
+
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.x1).toEqual(parseInt(x1));
+    expect(rect.x2).toEqual(parseInt(x2));
+    expect(rect.y1).toEqual(parseInt(y1));
+    expect(rect.y2).toEqual(parseInt(y2));
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен бросать исключение,
+        если точки одинаковые', () => {
+
+    expect(() => {
+      new Rectangle(x1, y1, x1, y1);
+    }).toThrowError(/Точки совпадают/);
+
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен бросать исключение, если любой из
+        параметров не может быть
+        приведен к числу', () => {
+
+    expect(() => {
+      new Rectangle('asd', y1, x2, y2);
+    }).toThrowError(/Разрешены только числа/);
+
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен приводить параметры к числовому типу
+constructor(x1, y1, x2, y2) {
+  this.x1 = parseFloat(x1);
+  this.x2 = parseFloat(x2);
+  this.y1 = parseFloat(y1);
+  this.y2 = parseFloat(y2);
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен бросать исключение, если любой
+// из параметров не может быть приведен к числу
+constructor(x1, y1, x2, y2) {
+  ...
+
+  if (isNaN(this.x1)
+    || isNaN(this.x2)
+    || isNaN(this.y1)
+    || isNaN(this.y2)) {
+    throw new Error('[Rectangle]: Разрешены только числа');
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/jest-highlight-1.png">
+  </section>
+
+  <section>
+    <img src="images/jest-highlight-2.png">
+  </section>
+
+  <section>
+    <h3><span class="red">J</span>est</h3>
+  </section>
+
+  <section>
+    <h4>Jest - Globals</h4>
+
+    <pre class="javascript"><code>
+afterAll(fn)
+beforeAll(fn)
+
+afterEach(fn)
+beforeEach(fn)
+
+describe(name, fn)
+  .skip
+  .only
+
+require.requireActual(moduleName)
+require.requireMock(moduleName)
+
+test(name, fn)
+it(name, fn)
+  .skip
+  .only
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Globals</h4>
+
+    <pre class="javascript"><code>
+describe.only('my beverage', () => {
+  test('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+});
+
+describe('my other beverage', () => {
+  // ... will be skipped
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Globals</h4>
+
+    <pre class="javascript"><code>
+describe('my beverage', () => {
+  test('is delicious', () => {
+    expect(myBeverage.delicious).toBeTruthy();
+  });
+});
+
+describe.skip('my other beverage', () => {
+  // ... will be skipped
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect(value)
+test('the best flavor is grapefruit', () => {
+  expect(bestLaCroixFlavor()).toBe('grapefruit');
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect.anything()
+test('not null or undefined', () => {
+  let beverage = barmen.getSome();
+
+  expect(beverage).toEqual(expect.anything());
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect.any(constructor)
+test('any of type', () => {
+  let randomNumber = Magic.getNumber();
+
+  expect(randomNumber)
+    .toEqual(expect.any(Number));
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect.arrayContaining(array)
+const expected = [1, 2, 3, 4, 5, 6];
+
+it('matches even with an unexpected number 7', () => {
+
+  expect([4, 1, 6, 7, 3, 5, 2, 5, 4, 6])
+    .toEqual(expect.arrayContaining(expected));
+
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect.assertions(number)
+test('prepareState prepares a valid state', () => {
+  expect.assertions(1);
+
+  prepareState((state) => {
+    expect(validateState(state)).toBeTruthy();
+  })
+
+  return waitOnState();
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// expect.objectContaining(object)
+test('onPress gets called with the right thing', () => {
+  let onPress = jest.fn();
+
+  simulatePresses(onPress);
+
+  expect(onPress)
+    .toBeCalledWith(expect.objectContaining({
+      x: expect.any(Number),
+      y: expect.any(Number),
+    }));
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .not
+test('the best flavor is not coconut', () => {
+  expect(bestLaCroixFlavor())
+    .not.toBe('coconut');
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toBe(value)
+const can = {
+  ounces: 12,
+  name: 'pamplemousse',
+};
+
+describe('the can', () => {
+  test('has 12 ounces', () => {
+    expect(can.ounces).toBe(12);
+  });
+
+  test('has a sophisticated name', () => {
+    expect(can.name).toBe('pamplemousse');
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toHaveBeenCalled()
+describe('drinkAll', () => {
+  test('drinks something lemon-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'lemon');
+    expect(drink).toHaveBeenCalled();
+  });
+
+  test('does not drink something octopus-flavored', () => {
+    let drink = jest.fn();
+    drinkAll(drink, 'octopus');
+    expect(drink).not.toHaveBeenCalled();
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toHaveBeenCalledTimes(number)
+test('drinkEach drinks each drink', () => {
+  let drink = jest.fn();
+  drinkEach(drink, ['lemon', 'octopus']);
+  expect(drink).toHaveBeenCalledTimes(2);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toHaveBeenCalledWith(arg1, arg2, ...)
+test(`registration applies correctly
+      to orange La Croix`, () => {
+
+  let beverage = new LaCroix('orange');
+  register(beverage);
+  let f = jest.fn();
+  applyToAll(f);
+  expect(f).toHaveBeenCalledWith(beverage);
+
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toHaveBeenLastCalledWith(arg1, arg2, ...)
+test(`applying to all flavors
+      does mango last`, () => {
+
+  let drink = jest.fn();
+  applyToAllFlavors(drink);
+  expect(drink)
+    .toHaveBeenLastCalledWith('mango');
+
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toBeCloseTo(number, numDigits)
+test('adding works sanely with simple decimals', () => {
+  expect(0.2 + 0.1).toBe(0.3); // Fails!
+});
+
+test('adding works sanely with simple decimals', () => {
+  expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toBeDefined()
+test('there is a new flavor idea', () => {
+  expect(fetchNewFlavorIdea()).toBeDefined();
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toBeGreaterThan(number)
+// .toBeGreaterThanOrEqual(number)
+// .toBeLessThan(number)
+// .toBeLessThanOrEqual(number)
+test('ounces per can is more than 10', () => {
+  expect(ouncesPerCan()).toBeGreaterThan(10);
+});
+      </code></pre>
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
