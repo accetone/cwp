@@ -343,6 +343,79 @@ describe('>> конструктор', () => {
 
   <section>
     <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> методы width и height', () => {
+  it('должны вычислять соответствующие величины', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    let width = Math.abs(x1 - x2),
+      height = Math.abs(y1 - y2);
+
+    expect(rect.width()).toEqual(width);
+    expect(rect.height()).toEqual(height);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> методы width и height', () => {
+  it('должны вычислять соответствующие величины вне зависимости от порядка точек', () => {
+    let rect1 = new Rectangle(x1, y1, x2, y2),
+      rect2 = new Rectangle(x2, y2, x1, y1);
+
+    let width = Math.abs(x1 - x2),
+      height = Math.abs(y1 - y2);
+
+    expect(rect1.width()).toEqual(width);
+    expect(rect2.width()).toEqual(width);
+    expect(rect1.height()).toEqual(height);
+    expect(rect2.height()).toEqual(height);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> метод isSquare', () => {
+  it('должен возвращять true, если стороны равны', () => {
+    y2 = 3;
+
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.isSquare()).toBe(true);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> метод isSquare', () => {
+  it('должен возвращять false, если стороны неравны', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.isSquare()).toBe(false);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
       rectangle.js
       <pre class="javascript"><code>
 // должен приводить параметры к числовому типу
@@ -371,9 +444,32 @@ constructor(x1, y1, x2, y2) {
     || isNaN(this.y2)) {
     throw new Error('[Rectangle]: Разрешены только числа');
   }
+
+  ...
 }
       </code></pre>
     </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен бросать исключение, если любой
+// из параметров не может быть приведен к числу
+constructor(x1, y1, x2, y2) {
+  ...
+
+  if (this.x1 === this.x2 && this.y1 === this.y2) {
+    throw new Error('[Rectangle]: Точки совпадают');
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/jest-rectangle-results-2.png">
   </section>
 
   <section>
@@ -677,6 +773,1183 @@ test('ounces per can is more than 10', () => {
       </code></pre>
   </section>
 
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toBeInstanceOf(Class)
+class A {}
+
+expect(new A()).toBeInstanceOf(A);
+expect(() => {}).toBeInstanceOf(Function);
+expect(new A()).toBeInstanceOf(Function); // throws
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toContain(item)
+test('the flavor list contains lime', () => {
+  expect(getAllFlavors()).toContain('lime');
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toContainEqual(item)
+describe('my beverage', () => {
+  test('is delicious and not sour', () => {
+    const myBeverage = {delicious: true, sour: false};
+    expect(myBeverages()).toContainEqual(myBeverage);
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toEqual(value)
+const can1 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+const can2 = {
+  flavor: 'grapefruit',
+  ounces: 12,
+};
+
+describe('the La Croix cans on my desk', () => {
+  test('have all the same properties', () => {
+    expect(can1).toEqual(can2);
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+// .toThrow(error)
+test('throws on octopus', () => {
+  expect(() => {
+    drinkFlavor('octopus');
+  }).toThrow();
+});
+
+function drinkFlavor(flavor) {
+  if (flavor == 'octopus') {
+    throw new DisgustingFlavorError(
+      'yuck, octopus flavor'
+    );
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+expect.stringContaining(string)
+expect.stringMatching(regexp)
+
+.toBeFalsy()
+.toBeNull()
+.toBeTruthy()
+.toBeUndefined()
+
+.toHaveLength(number)
+.toMatch(regexpOrString)
+.toMatchObject(object)
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+expect.extend({
+  toBeDivisibleBy(received, argument) {
+    const pass = (received % argument == 0);
+    if (pass) {
+      return {
+        pass: true,
+        message: () => `expected ${received} not to be divisible by ${argument}`,
+      }
+    } else {
+      return {
+        pass: false,
+        message: () => `expected ${received} to be divisible by ${argument}`,
+      }
+    }
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Expect</h4>
+
+    <pre class="javascript"><code>
+test('even and odd numbers', () => {
+  expect(100).toBeDivisibleBy(2);
+  expect(101).not.toBeDivisibleBy(2);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mock.calls
+const mockFn = jest.fn();
+
+mockFn('arg1', 'arg2');
+mockFn('arg3', 'arg4');
+
+console.log(mockFn.mock.calls);
+
+>
+[
+  ['arg1', 'arg2'],
+  ['arg3', 'arg4']
+]
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mock.instances
+var mockFn = jest.fn();
+
+var a = new mockFn();
+var b = new mockFn();
+
+mockFn.mock.instances[0] === a; // true
+mockFn.mock.instances[1] === b; // true
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mockClear()
+Сбрасывает
+  mockFn.mock.calls
+  и mockFn.mock.instances
+      </code></pre>
+  </section>
+
+
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mockReset()
+Возвращает mockFn
+  к исходному состоянию
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mockImplementation(fn)
+const mockFn = jest.fn()
+  .mockImplementation(scalar => 42 + scalar);
+
+// or: jest.fn(scalar => 42 + scalar);
+
+const a = mockFn(0);
+const b = mockFn(1);
+
+a === 42; // true
+b === 43; // true
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mockImplementation(fn)
+const mockFn = jest.fn()
+  .mockImplementation(scalar => 42 + scalar);
+
+// or: jest.fn(scalar => 42 + scalar);
+
+const a = mockFn(0);
+const b = mockFn(1);
+
+a === 42; // true
+b === 43; // true
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Mock Functions</h4>
+
+    <pre class="javascript"><code>
+// mockFn.mockImplementationOnce(fn)
+var myMockFn = jest.fn(() => 'default')
+  .mockImplementationOnce(() => 'first call')
+  .mockImplementationOnce(() => 'second call');
+
+console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+> 'first call', 'second call', 'default', 'default'
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// timerGame.js
+'use strict';
+
+function timerGame(callback) {
+  console.log('Ready....go!');
+  setTimeout(() => {
+    console.log('Times up -- stop!');
+    callback && callback();
+  }, 1000);
+}
+
+module.exports = timerGame;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/timerGame-test.js
+jest.useFakeTimers();
+
+test('waits 1 second before ending the game', () => {
+  const timerGame = require('../timerGame');
+  timerGame();
+
+  expect(setTimeout.mock.calls.length).toBe(1);
+  expect(setTimeout.mock.calls[0][1]).toBe(1000);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/timerGame-test.js
+jest.useFakeTimers();
+
+test('calls the callback after 1 second', () => {
+  const timerGame = require('../timerGame');
+  const callback = jest.fn();
+
+  timerGame(callback);
+
+  expect(callback).not.toBeCalled();
+
+  jest.runAllTimers();
+
+  expect(callback).toBeCalled();
+  expect(callback.mock.calls.length).toBe(1);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// infiniteTimerGame.js
+function infiniteTimerGame(callback) {
+  console.log('Ready....go!');
+
+  setTimeout(() => {
+    console.log('Times up! Wait 10 seconds.');
+    callback && callback();
+
+    setTimeout(() => {
+      infiniteTimerGame(callback);
+    }, 10000);
+
+  }, 1000);
+}
+
+module.exports = infiniteTimerGame;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/infiniteTimerGame-test.js
+jest.useFakeTimers();
+
+describe('infiniteTimerGame', () => {
+  test('schedules a 10-second timer after 1 second', () => {
+    const infiniteTimerGame = require('../infiniteTimerGame');
+    const callback = jest.fn();
+
+    infiniteTimerGame(callback);
+
+    expect(setTimeout.mock.calls.length).toBe(1);
+    expect(setTimeout.mock.calls[0][1]).toBe(1000);
+
+    ...
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/infiniteTimerGame-test.js
+jest.useFakeTimers();
+
+describe('infiniteTimerGame', () => {
+  test('schedules a 10-second timer after 1 second', () => {
+    ...
+
+    jest.runOnlyPendingTimers();
+
+    expect(callback).toBeCalled();
+
+    expect(setTimeout.mock.calls.length).toBe(2);
+    expect(setTimeout.mock.calls[1][1]).toBe(10000);
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/infiniteTimerGame-test.js
+jest.useFakeTimers();
+
+describe('infiniteTimerGame', () => {
+  test('schedules a 10-second timer after 1 second', () => {
+    ...
+
+    jest.runOnlyPendingTimers();
+
+    expect(callback).toBeCalled();
+
+    expect(setTimeout.mock.calls.length).toBe(2);
+    expect(setTimeout.mock.calls[1][1]).toBe(10000);
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Timers</h4>
+
+    <pre class="javascript"><code>
+// __tests__/infiniteTimerGame-test.js
+jest.useFakeTimers();
+
+it('call callback 3 times', () => {
+  const timerGame = require('../infiniteTimerGame');
+  const callback = jest.fn();
+
+  timerGame(callback);
+
+  expect(callback).not.toBeCalled();
+
+  jest.runTimersToTime(23000);
+
+  expect(callback).toHaveBeenCalledTimes(3);
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Async</h4>
+
+    <pre class="javascript"><code>
+npm install --save-dev babel-jest
+npm install --save-dev babel-preset-es2017
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Async</h4>
+
+    <pre class="javascript"><code>
+// .babelrc
+{
+  "presets": ["es2017"]
+}
+
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Async</h4>
+
+    <pre class="javascript"><code>
+// user.js
+export function getUserName(userID) {
+  return new Promise(() => {
+      ...
+  });
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Async</h4>
+
+    <pre class="javascript"><code>
+// __tests__/user-test.js
+it('works with async/await', async () => {
+  const userName = await user.getUserName(4);
+
+  expect(userName).toEqual('Mark');
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Async</h4>
+
+    <pre class="javascript"><code>
+// __tests__/user-test.js
+it('tests error with async/await', async () => {
+  expect.assertions(1);
+  try {
+    await user.getUserName(2);
+  } catch (object) {
+    expect(object.error)
+      .toEqual('User with 2 not found.');
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Manual Mocks</h4>
+
+    <pre class="javascript"><code>
+// FileSummarizer.js
+const fs = require('fs');
+
+exports.summarizeFilesInDirectorySync
+  = function(directory) {
+
+  return fs
+    .readdirSync(directory)
+    .map(fileName => ({
+      fileName,
+      directory,
+    }));
+
+};
+      </code></pre>
+  </section>
+
+  <section>
+  <h4>Jest - Manual Mocks</h4>
+
+  <pre class="javascript"><code>
+// __mocks__/fs.js
+const path = require('path');
+const fs = jest.genMockFromModule('fs');
+let mockFiles = Object.create(null);
+
+function __setMockFiles(newMockFiles) {
+  mockFiles = Object.create(null);
+  for (const file in newMockFiles) {
+    const dir = path.dirname(file);
+    if (!mockFiles[dir]) {
+      mockFiles[dir] = [];
+    }
+    mockFiles[dir].push(path.basename(file));
+  }
+}
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Manual Mocks</h4>
+
+  <pre class="javascript"><code>
+// __mocks__/fs.js
+...
+
+function readdirSync(directoryPath) {
+  return mockFiles[directoryPath] || [];
+}
+
+fs.__setMockFiles = __setMockFiles;
+fs.readdirSync = readdirSync;
+
+module.exports = fs;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Manual Mocks</h4>
+
+    <pre class="javascript"><code>
+// __tests__/FileSummarizer-test.js
+jest.mock('fs');
+
+describe('listFilesInDirectorySync', () => {
+  const MOCK_FILE_INFO = {
+    '/path/to/file1.js': 'console.log("file1 contents");',
+    '/path/to/file2.txt': 'file2 contents',
+  };
+
+  beforeEach(() => {
+    require('fs').__setMockFiles(MOCK_FILE_INFO);
+  });
+
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Jest - Manual Mocks</h4>
+
+    <pre class="javascript"><code>
+// __tests__/FileSummarizer-test.js
+jest.mock('fs');
+
+describe('listFilesInDirectorySync', () => {
+  ...
+
+  test('includes all files in the directory in the summary', () => {
+    const FileSummarizer = require('../FileSummarizer');
+
+    const fileSummary
+      = FileSummarizer
+        .summarizeFilesInDirectorySync('/path/to');
+
+    expect(fileSummary.length).toBe(2);
+  });
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">Т</span>естируем Express</h3>
+    <h4>Модулями</h4>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+module.exports = BaseService;
+
+function BaseService(repository, errors) {
+  const defaults = {
+    readChunk: {
+      limit: 10,
+      page: 1,
+      order: 'asc',
+      orderField: 'id'
+    }
+  };
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+module.exports = BaseService;
+
+function BaseService(repository, errors) {
+  ...
+
+  let self = this;
+
+  this.readChunk = readChunk;
+  this.read = read;
+  this.baseCreate = baseCreate;
+  this.baseUpdate = baseUpdate;
+  this.delete = del;
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function readChunk(options) {
+  return new Promise((resolve, reject) => {
+    options = Object.assign({},
+        defaults.readChunk, options);
+
+    let limit = options.limit;
+    let offset = (options.page - 1) * limit;
+
+    ...
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function readChunk(options) {
+  return new Promise((resolve, reject) => {
+    ...
+
+    repository
+      .findAll({
+        limit: limit,
+        offset: offset,
+        order: [[
+          options.orderField,
+          options.order.toUpperCase()
+        ]],
+        raw: true
+      })
+      .then(resolve).catch(reject);
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function read(id) {
+  return new Promise((resolve, reject) => {
+    id = parseInt(id);
+
+    if (isNaN(id)) {
+      reject(errors.invalidId);
+      return;
+    }
+
+    ...
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function read(id) {
+  return new Promise((resolve, reject) => {
+    ...
+
+    repository.findById(id, { raw: true })
+      .then((entity) => {
+        if (entity == null) reject(errors.notFound);
+        else resolve(entity);
+      })
+      .catch(reject);
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function baseCreate(data) {
+  return new Promise((resolve, reject) => {
+    repository.create(data)
+      .then(resolve).catch(reject);
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function baseUpdate(id, data) {
+  return new Promise((resolve, reject) => {
+    repository.update(data, {
+        where: { id: id },
+        limit: 1
+      })
+      .then((data) => {
+        return data[1][0];
+      })
+      .then(resolve).catch(reject);
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      baseService.js
+      <pre class="javascript"><code>
+function del(id) {
+  return new Promise((resolve, reject) => {
+    repository.destroy({ where: { id: id } })
+      .then(() => resolve({ success: true }))
+      .catch(reject);
+  });
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+const data = {
+  42: {
+    id: 42,
+    name: 'Batman'
+  }
+};
+
+const repository
+  = require('./mocks/repository')(data);
+const errors = require('../errors');
+
+const Service = require('../baseService');
+const service = new Service(repository, errors);
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      errors.js
+      <pre class="javascript"><code>
+module.exports = {
+  invalidId: {
+    message: 'Invalid id',
+    code: 'invalid_id',
+    status: 400
+  },
+  notFound: {
+    message: 'Entity not found',
+    code: 'entity_not_found',
+    status: 404
+  }
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/mocks/repository.js
+      <pre class="javascript"><code>
+module.exports = (data) => {
+  const mock = {
+    findAll: jest.fn((params)
+      => Promise.resolve(data)),
+
+    findById: jest.fn((id)
+      => Promise.resolve(data[id])),
+
+    create: jest.fn((data)
+      => Promise.resolve(data)),
+
+    update: jest.fn((data)
+      => Promise.resolve([1, [data]])),
+
+    destroy: jest.fn(()
+      => Promise.resolve(1))
+  };
+
+  ...
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/mocks/repository.js
+      <pre class="javascript"><code>
+module.exports = (data) => {
+  ...
+
+  mock.mockClear = () => {
+    mock.findAll.mockClear();
+    mock.findById.mockClear();
+    mock.create.mockClear();
+    mock.update.mockClear();
+    mock.destroy.mockClear();
+  };
+
+  return mock;
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+...
+
+describe('Тестовый набор для Service.Base', () => {
+  beforeEach(() => repository.mockClear());
+
+  describe('>> модуль', () => { ... });
+
+  describe('>> постраничное чтение', () => { ... });
+
+  describe('>> чтение', () => { ... });
+
+  describe('>> создание', () => { ... });
+
+  describe('>> обновление', () => { ... });
+
+  describe('>> удаление', () => { ... });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> модуль
+it('должен импортировать функцию', () => {
+  expect(typeof Service).toBe('function');
+});
+
+it('должен создавать объект', () => {
+  expect(typeof service).toBe('object');
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> постраничное чтение
+it('должно возвращать promise', () => {
+
+  expect(service.readChunk())
+    .toBeInstanceOf(Promise);
+
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> постраничное чтение
+it('должно возвращать массив записей', async () => {
+  let records = await service.readChunk();
+
+  expect(records).toEqual(data);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> постраничное чтение
+it('должно использовать дефолтные значения', async () => {
+  await service.readChunk();
+  await service.readChunk({ limit: 100 });
+  await service.readChunk({ page: 3 });
+  await service.readChunk({ orderField: 'name' });
+  await service.readChunk({ order: 'desc' });
+
+  expect(repository.findAll)
+    .toHaveBeenCalledTimes(5);
+
+  expect(repository.findAll.mock.calls[0][0])
+    .toMatchObject({ limit: 10, offset: 0,
+      order: [['id','ASC']]
+    });
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> постраничное чтение
+it('должно использовать дефолтные значения', async () => {
+  ...
+
+  expect(repository.findAll.mock.calls[2][0])
+    .toMatchObject({ offset: 20 });
+
+  expect(repository.findAll.mock.calls[3][0])
+    .toMatchObject({ order: [['name','ASC']] });
+
+  expect(repository.findAll.mock.calls[4][0])
+    .toMatchObject({ order: [['id','DESC']] });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> постраничное чтение
+it('должно расcчитывать смещение', async () => {
+  await service.readChunk({ limit: 10, page: 1 });
+  await service.readChunk({ limit: 5, page: 2 });
+
+  expect(repository.findAll)
+    .toHaveBeenCalledTimes(2);
+
+  expect(repository.findAll.mock
+    .calls[0][0].offset).toBe(0);
+  expect(repository.findAll.mock
+    .calls[1][0].offset).toBe(5);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> чтение
+it('должно возвращать promise', () => {
+  expect(service.read())
+    .toBeInstanceOf(Promise);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> чтение
+it('должно возвращать запись по id', async () => {
+  let record = await service.read(42);
+
+  expect(repository.findById)
+    .toHaveBeenCalled();
+
+  expect(record).toEqual(data[42]);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> чтение
+it(`должно возвращать ошибку,
+        если запись не найдена`, async () => {
+  expect.assertions(2);
+
+  try {
+    await await service.read(9000);
+  } catch (error) {
+
+    expect(repository.findById)
+      .toHaveBeenCalled();
+
+    expect(error).toEqual(errors.notFound);
+
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> чтение
+it(`должно возвращать ошибку,
+        если id не целое число`, async () => {
+  expect.assertions(2);
+
+  try {
+    await await service.read('surprise!');
+  } catch (error) {
+
+    expect(repository.findById)
+      .not.toHaveBeenCalled();
+
+    expect(error).toEqual(errors.invalidId);
+
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> создание
+it('должно возвращать promise', () => {
+  expect(service.baseCreate())
+    .toBeInstanceOf(Promise);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> создание
+it('должно создавать объект', async () => {
+  let record =
+    await service.baseCreate(data[42]);
+
+  expect(repository.create)
+    .toHaveBeenCalled();
+
+  expect(repository.create.mock.calls[0][0])
+    .toEqual(data[42]);
+
+  expect(record).toEqual(data[42]);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> обновление
+it('должно возвращать promise', () => {
+  expect(service.baseUpdate())
+    .toBeInstanceOf(Promise);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> обновление
+it('должно обновлять объект', async () => {
+  let record =
+    await service.baseUpdate(42, data[42]);
+
+  expect(repository.update)
+    .toHaveBeenCalled();
+
+  expect(repository.update.mock.calls[0][0])
+    .toEqual(data[42]);
+
+  expect(repository.update.mock.calls[0][1])
+    .toEqual({ where: { id: 42 }, limit: 1 });
+
+  expect(record).toEqual(data[42]);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> удаление
+it('должно возвращать promise', () => {
+  expect(service.delete())
+    .toBeInstanceOf(Promise);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/services.base.spec.js
+      <pre class="javascript"><code>
+// >> удаление
+it('должно удалять объект', async () => {
+  let result = await service.delete(42);
+
+  expect(repository.destroy)
+    .toHaveBeenCalled();
+
+  expect(repository.update.mock.calls[0][0])
+    .toEqual({ where: { id: 42 }});
+
+  expect(result).toEqual({ success: true });
+});
+      </code></pre>
+    </div>
+  </section>
 
 </div></div>
 
