@@ -1951,6 +1951,451 @@ it('должно удалять объект', async () => {
     </div>
   </section>
 
+  <section>
+    <h3><span class="red">Т</span>естируем Express</h3>
+    <h4>Целиком</h4>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm install supertest --save-dev
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      app.js
+      <pre class="javascript"><code>
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const heroes = [
+  { id: Date.now() + 1, name: 'Rick Grimes' },
+  { id: Date.now() + 2, name: 'Carl Grimes' },
+  { id: Date.now() + 3, name: 'Daryl Dixon' }
+];
+
+const app = express();
+
+app.use(bodyParser.json());
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      app.js
+      <pre class="javascript"><code>
+...
+
+app.get('/heroes', (req, res) => {
+  res.json({ heroes });
+});
+
+app.get('/heroes/:id', (req, res) => {
+  let id = parseInt(req.params.id);
+  let hero = heroes.find(x => x.id === id);
+
+  res.json(hero);
+});
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      app.js
+      <pre class="javascript"><code>
+...
+
+app.post('/heroes', (req, res) => {
+  let hero = req.body;
+
+  hero.id = Date.now() + heroes.length;
+  heroes.push(hero);
+
+  res.status(201).json(hero);
+});
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      app.js
+      <pre class="javascript"><code>
+...
+
+app.put('/heroes/:id', (req, res) => {
+  let id = parseInt(req.params.id);
+  let index = heroes.findIndex(x => x.id === id);
+  let hero = req.body;
+
+  hero.id = id;
+  Object.assign(heroes[index], hero);
+
+  res.json(heroes[index]);
+});
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      app.js
+      <pre class="javascript"><code>
+...
+
+app.delete('/heroes/:id', (req, res) => {
+  let id = parseInt(req.params.id);
+  let index = heroes.findIndex(x => x.id === id);
+  let hero = heroes[index];
+
+  heroes.splice(index, 1);
+
+  res.json(hero);
+});
+
+module.exports = app;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+const app = require('../app');
+const request = require('supertest')(app);
+
+function getHeroes() {
+  return request
+    .get('/heroes')
+    .expect(200)
+    .then((res) => res.body.heroes);
+}
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+function getHero(id) {
+  return request
+    .get(`/heroes/${id}`)
+    .expect(200)
+    .then((res) => res.body);
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+function createHero(hero) {
+  return request
+    .post('/heroes')
+    .send(hero)
+    .expect(201)
+    .then((res) => res.body);
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+function updateHero(hero) {
+  return request
+    .put(`/heroes/${hero.id}`)
+    .send(hero)
+    .expect(200)
+    .then((res) => res.body)
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+function deleteHero(hero) {
+  return request
+    .delete(`/heroes/${hero.id}`)
+    .expect(200)
+    .then((res) => res.body)
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+it('возвращает список героев', async () => {
+  expect.assertions(1);
+
+  const heroes = await getHeroes();
+
+  expect(heroes).toContainEqual(
+    expect.objectContaining({
+        name: 'Rick Grimes'
+    })
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+it('возвращает героя', async () => {
+  expect.assertions(1);
+
+  const heroes = await getHeroes();
+  let daryl = heroes
+    .find((hero) => hero.name === 'Daryl Dixon');
+
+  const hero = await getHero(daryl.id);
+
+  expect(hero).toEqual(daryl);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+it('добавляет героя', async () => {
+  expect.assertions(2);
+
+  const glenn = { name: 'Glenn Rhee' };
+
+  const hero = await createHero(glenn);
+  const heroes = await getHeroes();
+
+  expect(hero).toMatchObject(glenn);
+  expect(heroes).toContainEqual(
+    expect.objectContaining(glenn)
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+it('обновляет героя', async () => {
+  expect.assertions(1);
+
+  let heroes = await getHeroes();
+
+  let rick = heroes
+    .find((hero) => hero.name === 'Rick Grimes');
+
+  rick.status = 'Alive';
+
+  await updateHero(rick);
+  heroes = await getHeroes();
+
+  expect(heroes).toContainEqual(
+    expect.objectContaining(rick)
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/app.spec.js
+      <pre class="javascript"><code>
+it('удаляет героя', async () => {
+  expect.assertions(1);
+
+  let heroes = await getHeroes();
+
+  let carl = heroes
+    .find((hero) => hero.name === 'Carl Grimes');
+
+  await deleteHero(carl);
+
+  heroes = await getHeroes();
+
+  expect(heroes).not.toContainEqual(
+    expect.objectContaining(carl)
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>ravis CI</h3>
+  </section>
+
+  <section>
+    <div class="left">
+      .travis.yml
+      <pre class="javascript"><code>
+language: node_js
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+node_js:
+  - "node"
+  - "6"
+before_script:
+  - npm install
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/travis-1.png">
+  </section>
+
+  <section>
+    <img src="images/travis-2.png">
+  </section>
+
+  <section>
+    <img src="images/travis-3.png">
+  </section>
+
+  <section>
+    <img src="images/travis-4.png">
+  </section>
+
+  <section>
+    <img src="images/travis-5.png">
+  </section>
+
+  <section>
+    <img src="images/travis-6.png">
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>DD + Gulp</h3>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm install --save-dev gulp
+npm install --save-dev gulp-jest
+npm install --save-dev jest-cli
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      gulpfile.js
+      <pre class="javascript"><code>
+const gulp = require('gulp');
+const jest = require('gulp-jest').default;
+
+gulp.task('tdd', ['jest'], () => {
+  gulp.watch('**/*.js', ['jest']);
+});
+
+gulp.task('jest', () => {
+  return gulp.src('__tests__')
+    .pipe(jest());
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      package.json
+      <pre class="javascript"><code>
+{
+  "scripts": {
+      "test": "gulp tdd"
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm test
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">S</span>iege</h3>
+    <h4>Нагрузочное тестирование</h4>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm install --save-dev siege
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+// benchmark.js
+const siege = require('siege');
+
+siege(__dirname + '/app.js')
+  .on(3000)
+  .for(10000).times
+  .get('/heroes')
+  .attack();
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+node benchmark.js
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/siege.png">
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>

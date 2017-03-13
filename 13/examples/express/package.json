@@ -1,0 +1,25 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "dependencies": {
+    "babel-jest": "^19.0.0",
+    "babel-preset-es2017": "^6.22.0",
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "jest": "^19.0.2"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jest": "^1.0.0",
+    "jest-cli": "^19.0.2",
+    "siege": "^0.2.0",
+    "supertest": "^3.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true
+  }
+}
