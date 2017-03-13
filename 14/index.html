@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP14</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>React</h2>
+      <p class="author">
+          <small>Лекция 14</small>
+      </p>
+  </section>
+
+  <section>
+    <img src="images/react.png" width="400px">
+  </section>
+  
+  <section>
+    <h4>React</h4>
+
+    <ul class="left">
+      <li class="fragment"><a href="https://facebook.github.io/react/">Оффициальный сайт</a></li>
+      <li class="fragment">View библиотека от Facebook</li>
+      <li class="fragment">Декларативная</li>
+      <li class="fragment">Компонентно-ориентированная</li>
+      <li class="fragment">Learn Once, Write Anywhere</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React</h4>
+
+    <ul class="left">
+      <li class="fragment">Virtual DOM (Document Object Model)</li>
+      <li class="fragment">Тестируемость</li>
+      <li class="fragment">Переиспользование</li>
+      <li class="fragment">Props и State</li>
+      <li class="fragment">Чистые компоненты</li>
+      <li class="fragment">JSX</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React - Sandbox</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/react@15/dist/react.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/react-dom@15/dist/react-dom.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/babel-standalone@6.15.0/babel.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/babel-polyfill@6.16.0//dist/polyfill.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/babel&quot;&gt;
+  ...
+&lt;/script&gt;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Hello World</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const App = React.createClass({
+  render: () => {
+    return (
+      &lt;div&gt;
+        Hello from React!
+      &lt;/div&gt;
+    );
+  }
+});
+
+ReactDOM.render(
+  &lt;App/&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Hello World</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+var App = React.createClass({
+  displayName: "App",
+
+  render: function render() {
+    return React.createElement(
+      "div",
+      null,
+      "Hello from React!"
+    );
+  }
+});
+
+ReactDOM.render(
+  React.createElement(App),
+  document.getElementById('app')
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Hello World</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+class App extends React.Component {
+  render() {
+    return &lt;div&gt;Hello from React!&lt;/div&gt;
+  }
+}
+
+ReactDOM.render(
+  &lt;App/&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Hello World</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.click = this.click.bind(this);
+  }
+
+  render() {
+    return &lt;div onClick={this.click}&gt;Hi&lt;/div&gt;;
+  }
+
+  click() { console.log(this.props.title); }
+}
+
+ReactDOM.render(&lt;App title='Next Facebook!'/&gt;,
+  document.getElementById('app'));
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Hello World</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const App = React.createClass({
+  render() {
+    return &lt;div onClick={this.click}&gt;Hi&lt;/div&gt;
+  },
+
+  click() {
+    console.log(this.props.title);
+  }
+});
+
+ReactDOM.render(&lt;App title='Next Facebook!'/&gt;,
+  document.getElementById('app'));
+      </code></pre>
+    </div>
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>

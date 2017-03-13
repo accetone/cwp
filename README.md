@@ -18,3 +18,4 @@
 [CWP11 - npm](https://accetone.github.io/cwp/11/#/)  
 [CWP12 - Деплой](https://accetone.github.io/cwp/12/#/)  
 [CWP13 - Тестирование](https://accetone.github.io/cwp/13/#/)  
+[CWP14 - React](https://accetone.github.io/cwp/14/#/)  
