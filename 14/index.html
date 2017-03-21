@@ -179,6 +179,891 @@ ReactDOM.render(&lt;App title='Next Facebook!'/&gt;,
     </div>
   </section>
 
+  <section>
+    <h4>React - Virtual DOM</h4>
+
+    <img src="images/deeper.jpg">
+  </section>
+
+  <section>
+    <h4>React - Virtual DOM</h4>
+
+    <ul class="left">
+      <li class="fragment">абстракция над DOM</li>
+      <li class="fragment">приложение работает с VDOM, который после всех изменений сам рассчитывает как более оптимально сделать изменения в DOM</li>
+      <li class="fragment">dirty cheking vs observable</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React - Virtual DOM</h4>
+
+    <ul class="left">
+      <li class="fragment">произошло изменение</li>
+      <li class="fragment">сделать снапшот VDOM</li>
+      <li class="fragment">сгенерировать новый VDOM</li>
+      <li class="fragment">вычислить дельту</li>
+      <li class="fragment">внести изменения в DOM</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React - JSX</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+function formatName(user) {
+  return user.firstName + ' ' + user.lastName;
+}
+
+const user = {
+  firstName: 'Harper',
+  lastName: 'Perez'
+};
+
+const element = (
+  &lt;h1&gt;
+    Hello, {formatName(user)}!
+  &lt;/h1&gt;
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - JSX</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+&lt;MyComponent message={'hello world'} /&gt;
+&lt;MyComponent onClick={this._onClick} /&gt;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - JSX</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+&lt;MyContainer&gt;
+  &lt;MyFirstComponent /&gt;
+  &lt;MySecondComponent /&gt;
+&lt;/MyContainer&gt;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Props & State</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const Hello = React.createClass({
+  render: function () {
+    return &lt;div&gt;Hello {this.props.name}!&lt;/div&gt;
+  }
+});
+
+ReactDOM.render(
+  &lt;Hello name=&quot;Moto&quot;/&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>React - Props & State</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const Hello = React.createClass({
+  getInitialState: function () {
+    return { names: ['Rick', 'Carl', 'Negan'],
+      current: 0 };
+  },
+
+  componentWillMount: function () {
+    setInterval(() =&gt; { this.setState({
+        current: (this.state.current + 1) % 3
+    })}, 1000);
+  },
+
+  render: function () {
+    return (&lt;div&gt;Hello
+      {this.state.names[this.state.current]}!
+    &lt;/div&gt;);
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>O-DO LIST</h3>
+  </section>
+
+  <section>
+    <img src="images/todo-1.png">
+  </section>
+
+  <section>
+    <img src="images/todo-0.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  constructor() {
+    this.list = [];
+  }
+
+  getItems() {
+    return this.list;
+  }
+
+  getActiveItems() {
+    return this.list.filter(x => !x.completed);
+  }
+
+  getCompletedItems() {
+    return this.list.filter(x => x.completed);
+  }
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  ...
+
+  getActiveCount() {
+    return this.list
+        .filter(x => !x.completed)
+        .length;
+  }
+
+  getCompletedCount() {
+    return this.list
+        .filter(x => x.completed)
+        .length;
+  }
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+  <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  ...
+
+  addItem(text) {
+    let item = {
+      id: Date.now() + this.list.length,
+      text: text,
+      completed: false
+    };
+
+    this.list.push(item);
+
+    return item;
+  }
+
+  ...
+}
+      </code></pre>
+  </div>
+</section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  ...
+
+  removeItem(id) {
+    let index = this.list
+      .findIndex(x => x.id === id);
+
+    this.list.splice(index, 1);
+  }
+
+  removeCompleted() {
+    this.list = this.getActiveItems();
+  }
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+  <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  ...
+
+  updateItem(id, text) {
+    let index = this.list
+      .findIndex(x => x.id === id);
+
+    this.list[index].text = text;
+  }
+
+  toggleItem(id) {
+    let index = this.list
+      .findIndex(x => x.id === id);
+
+    this.list[index].completed
+      = !this.list[index].completed;
+  }
+
+  ...
+}
+      </code></pre>
+  </div>
+</section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class ToDoModel {
+  ...
+
+  switchAllTo(completed) {
+    this.list
+      .forEach(x => x.completed = completed);
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class NavModel {
+  constructor() {
+    this.links = [
+      { title: 'All' },
+      { title: 'Active' },
+      { title: 'Completed' }
+    ];
+
+    this.active = this.links[0];
+  }
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+class NavModel {
+  ...
+
+  getLinks() {
+    return this.links;
+  }
+
+  getActive() {
+    return this.active;
+  }
+
+  setActive(link) {
+    this.active = link;
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-2.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  render: function () {
+    return (
+      &lt;div className=&quot;todo&quot;&gt;
+        ...
+      &lt;/div&gt;
+    );
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  &lt;div className=&quot;todo__title&quot;&gt;React ToDo&lt;/div&gt;
+  &lt;Nav links={this.state.links}
+      activeLink={this.state.activeLink}
+      navigate={this._navigate}/&gt;
+  &lt;ToDoSummary remains={this.state.remains}
+      completed={this.state.completed}/&gt;
+  &lt;ToDoList tasks={this.state.tasks}
+      areAllComplete={this.state.areAllCompleted}
+      toggleItem={this._toggleItem}
+      toggleAll={this._toogleAll}
+      removeItem={this._removeItem}
+      updateItem={this._updateItem}
+  /&gt;
+  &lt;ToDoForm addItem={this._addItem}/&gt;
+  &lt;ToDoClear
+      removeCompleted={this._removeCompleted}/&gt;
+&lt;/div&gt;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  getInitialState: function() {
+    return this._getState();
+  },
+
+  _rerender: function () {
+    this.setState(this._getState());
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  _getState: function() {
+    const state = {
+      remains: todoModel.getActiveCount(),
+      completed: todoModel.getCompletedCount(),
+
+      links: navModel.getLinks(),
+      activeLink: navModel.getActive()
+    };
+
+    state.areAllCompleted = state.remains === 0;
+
+    ...
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  _getState: function() {
+    ...
+
+    if (state.activeLink.title === 'All') {
+      state.tasks = todoModel.getItems();
+    } else if (state.activeLink.title === 'Completed') {
+      state.tasks = todoModel.getCompletedItems();
+    } else {
+      state.tasks = todoModel.getActiveItems();
+    }
+
+    return state;
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  _toggleItem: function (id) {
+    todoModel.toggleItem(id);
+    this._rerender();
+  },
+
+  _toogleAll: function () {
+    todoModel.switchAllTo(!this.state.areAllCompleted);
+    this._rerender();
+  },
+
+  _removeItem: function (id) {
+    todoModel.removeItem(id);
+    this._rerender();
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  _addItem: function (text) {
+    todoModel.addItem(text);
+    this._rerender();
+  },
+
+  _updateItem: function (id, text) {
+    todoModel.updateItem(id, text);
+    this._rerender();
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDo = React.createClass({
+  ...
+
+  _removeCompleted: function () {
+    todoModel.removeCompleted();
+    this._rerender();
+  },
+
+  _navigate: function (link) {
+    navModel.setActive(link);
+    this._rerender();
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-3.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const Nav = React.createClass({
+  render: function () {
+    const items = this.props.links.map((link) =&gt; {
+      return (
+        &lt;NavItem key={link.title}
+            link={link}
+            navigate={this.props.navigate}
+            isActive={link.title
+                === this.props.activeLink.title}
+        /&gt;
+      )
+    });
+
+    return (
+        &lt;div className=&quot;nav&quot;&gt;
+          {items}
+        &lt;/div&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-4.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const NavItem = React.createClass({
+  render: function () {
+    return (
+      &lt;div className={'nav__item'
+          + (this.props.isActive
+            ? ' nav__item_active' : '')}
+          onClick={this._navigate}&gt;
+
+        {this.props.link.title}
+
+      &lt;/div&gt;
+    );
+  },
+
+  _navigate: function () {
+    this.props.navigate(this.props.link)
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-5.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoSummary = React.createClass({
+  render: function() {
+    return (
+        &lt;div className=&quot;todo-info&quot;&gt;
+        &lt;span className=&quot;todo-info__remains&quot;&gt;
+          {this.props.remains} remains
+        &lt;/span&gt;
+          {' '}
+          &lt;span className=&quot;todo-info__completed&quot;&gt;
+          / {this.props.completed} completed
+        &lt;/span&gt;
+        &lt;/div&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-6.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoList = React.createClass({
+  render: function () {
+    const items = this.props.tasks.map((task) =&gt; {
+      return (
+        &lt;ToDoItem key={task.id}
+            task={task}
+            toggleItem={this.props.toggleItem}
+            removeItem={this.props.removeItem}
+            updateItem={this.props.updateItem}
+        /&gt;
+      );
+    });
+
+    ...
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoList = React.createClass({
+  render: function () {
+    ...
+
+    return (
+      &lt;div className=&quot;todo__list&quot;&gt;
+        &lt;div className=&quot;todo__toggle-all&quot;&gt;
+          &lt;input type=&quot;checkbox&quot;
+              className=&quot;todo__checkbox&quot;
+              checked={this.props.areAllComplete}
+              onChange={this.props.toggleAll}/&gt;
+          {' '}
+          Complete all
+        &lt;/div&gt;
+
+        {items}
+      &lt;/div&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-7.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoItem = React.createClass({
+  getInitialState: function () {
+    return { isEditing: false }
+  },
+
+  __edit: function () {
+    this.setState({ isEditing: true });
+  },
+
+  _save: function (text) {
+    this.setState({ isEditing: false });
+    this.props.updateItem(
+      this.props.task.id,
+      text
+    );
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoItem = React.createClass({
+  ...
+
+  _toggleItem: function () {
+    this.props.toggleItem(this.props.task.id);
+  },
+
+  _removeItem: function () {
+    this.props.removeItem(this.props.task.id);
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoItem = React.createClass({
+  ...
+
+  render: function () {
+    const text = this.state.isEditing ? (
+      &lt;ToDoTextInput
+        className=&quot;todo__text todo__text_editing&quot;
+        text={this.props.task.text}
+        onSave={this._save}/&gt;
+      )
+      : (&lt;span className={'todo__text'
+            + (this.props.task.completed
+            ? ' todo__text_completed' : '')}
+          onDoubleClick={this.__edit}&gt;
+          {this.props.task.text}
+        &lt;/span&gt;
+      );
+
+      ...
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoItem = React.createClass({
+  ...
+
+  render: function () {
+    ...
+
+    return (
+      &lt;div className=&quot;todo__item&quot;&gt;
+        &lt;input type=&quot;checkbox&quot;
+          className=&quot;todo__checkbox&quot;
+          checked={this.props.task.completed}
+          onChange={this._toggleItem}/&gt;
+        &lt;span className=&quot;todo__destroy&quot;
+          onClick={this._removeItem}&gt;-&lt;/span&gt;
+        {' '}
+        {text}
+      &lt;/div&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-8.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoForm = React.createClass({
+  render: function () {
+    return (
+      &lt;div className=&quot;todo__form&quot;&gt;
+        &lt;ToDoTextInput
+            className=&quot;todo__text-input&quot;
+            placeholder=&quot;I need to do...&quot;
+            onSave={this._save}
+        /&gt;
+      &lt;/div&gt;
+    );
+  },
+
+  _save: function (text) {
+    this.props.addItem(text);
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-9.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoTextInput = React.createClass({
+  getInitialState: function () {
+    return {
+      text: this.props.text
+        ? this.props.text : ''
+    };
+  },
+
+  _save: function() {
+    this.props.onSave(this.state.text);
+    this.setState({ text: '' });
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoTextInput = React.createClass({
+  ...
+
+  _onChange: function(event) {
+    this.setState({
+      text: event.target.value
+    });
+  },
+
+  _onKeyDown: function(event) {
+    if (event.keyCode !== 13) return;
+
+    this._save();
+  },
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoTextInput = React.createClass({
+  ...
+
+  render: function () {
+    return (
+      &lt;input className={this.props.className}
+        placeholder={this.props.placeholder}
+        value={this.state.text}
+        onChange={this._onChange}
+        onKeyDown={this._onKeyDown}/&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/todo-10.png">
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+const ToDoClear = React.createClass({
+  render: function () {
+    return (
+      &lt;div className=&quot;todo__clear&quot;
+           onClick={this.props.removeCompleted}&gt;
+        Clear
+      &lt;/div&gt;
+    );
+  }
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+let sleep = todoModel.addItem('Sleep');
+todoModel.addItem('Eat');
+todoModel.addItem('Code');
+todoModel.addItem('Repeat');
+
+todoModel.toggleItem(sleep.id);
+
+ReactDOM.render(
+  &lt;ToDo/&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+    </div>
+  </section>
+
 
 </div></div>
 
