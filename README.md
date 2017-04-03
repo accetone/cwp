@@ -19,3 +19,4 @@
 [CWP12 - Деплой](https://accetone.github.io/cwp/12/#/)  
 [CWP13 - Тестирование](https://accetone.github.io/cwp/13/#/)  
 [CWP14 - React](https://accetone.github.io/cwp/14/#/)  
+[CWP15 - Flux / Redux](https://accetone.github.io/cwp/15/#/)  
