@@ -1981,7 +1981,504 @@ ReactDOM.render(
 );
       </code></pre>
   </section>
-  
+
+  <section>
+    <h3><span class="red">T</span>ime Travel</h3>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// simple state
+{
+  counter: 10
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// state for undo/redo feature
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ],
+    present: 10,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 1
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+    present: 9,
+    future: [ 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 2
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+    present: 8,
+    future: [ 9, 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+{
+  past: Array&lt;T&gt;,
+  present: T,
+  future: Array&lt;T&gt;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Global Undo/Redo
+{
+  past: [
+    { counterA: 1, counterB: 1 },
+    { counterA: 1, counterB: 0 },
+    { counterA: 0, counterB: 0 }
+  ],
+  present: { counterA: 2, counterB: 1 },
+  future: []
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Separate Undo/Redo
+{
+  counterA: {
+    past: [ 1, 0 ],
+    present: 2,
+    future: []
+  },
+  counterB: {
+    past: [ 0 ],
+    present: 1,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Undo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь последний элемент из past</li>
+      <li class="fragment">добавить present в начало future</li>
+      <li class="fragment">заменить present на извлеченный из past элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Redo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь первый элемент из future</li>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">заменить present на извлеченный из future элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Other Action Rules</h4>
+
+    <ul>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">установить present в обновленный state</li>
+      <li class="fragment">очистить future</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save redux-undo
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://unpkg.com/redux-undo@1.0.0-beta7/dist/redux-undo.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import undoable from 'redux-undo';
+
+undoable(reducer)
+undoable(reducer, config)
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import { ActionCreators } from 'redux-undo';
+
+store.dispatch(ActionCreators.undo());
+
+ActionCreators.undo()
+ActionCreators.redo()
+
+ActionCreators.jump(-2) // undo 2 steps
+ActionCreators.jump(5)  // redo 5 steps
+
+ActionCreators.jumpToPast(index)
+ActionCreators.jumpToFuture(index)
+
+ActionCreators.clearHistory()
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+undoable(reducer, {
+  limit: false,
+  filter: () => true,
+  debug: false,
+  neverSkipReducer: false,
+
+  undoType: ActionTypes.UNDO,
+  redoType: ActionTypes.REDO,
+
+  jumpType: ActionTypes.JUMP,
+
+  jumpToPastType: ActionTypes.JUMP_TO_PAST,
+  jumpToFutureType: ActionTypes.JUMP_TO_FUTURE,
+
+  clearHistoryType: ActionTypes.CLEAR_HISTORY
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const reducer = Redux.combineReducers({
+  tasks: ReduxUndo.default(tasks),
+  activeLink,
+  links
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const store = Redux.createStore(reducer, {
+  tasks: {
+    past: [],
+    present: [...],
+    future: []
+  },
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+const TimeTravelPanel = React.createClass({
+  render: function () {
+    return (&lt;div className=&quot;time-panel&quot;&gt;
+        &lt;div className={'time-panel__button '
+            + (this.props.canUndo ? ''
+              : 'time-panel__button_disabled')}
+          onClick={this.props.undo}&gt;Undo&lt;/div&gt;
+
+        &lt;div className={'time-panel__button '
+          + (this.props.canRedo ? ''
+            : 'time-panel__button_disabled')}
+          onClick={this.props.redo}&gt;Redo&lt;/div&gt;
+    &lt;/div&gt;);
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+const ToDo = React.createClass({
+  render: function () {
+    return (
+      &lt;div className=&quot;todo&quot;&gt;
+        ...
+        &lt;TimeTravelPanel
+          undo={this.props.undo}
+          redo={this.props.redo}
+          canUndo={this.props.canUndo}
+          canRedo={this.props.canRedo}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+function canUndo(model) {
+  return model.past
+    && model.past.length !== 0;
+}
+
+function canRedo(model) {
+  return model.future
+    && model.future.length !== 0;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    tasks: getVisibleTasks(
+      state.tasks.present,
+      state.activeLink
+    ),
+
+    completed: getCompletedCount(
+      state.tasks.present
+    ),
+
+    remains: getRemainsCount(
+      state.tasks.present
+    ),
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    ...
+    areAllCompleted: areAllCompleted(
+      state.tasks.present
+    ),
+
+    activeLink: state.activeLink,
+    links: state.links,
+
+    canUndo: canUndo(state.tasks),
+    canRedo: canRedo(state.tasks)
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    undo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.undo()
+      );
+    },
+
+    redo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.redo()
+      );
+    }
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">G</span>ulp + Webpack</h3>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+npm install --save-dev webpack
+npm install --save-dev gulp
+npm install --save-dev gulp-webpack
+
+npm install --save-dev react
+npm install --save-dev react-dom
+npm install --save-dev redux
+npm install --save-dev react-redux
+npm install --save-dev redux-undo
+
+npm install --save-dev babel-core
+npm install --save-dev babel-loader
+npm install --save-dev babel-preset-es2015
+npm install --save-dev babel-preset-react
+npm install --save-dev babel-preset-stage-2
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+/app
+
+-/actions
+--nav.js
+--todo.js
+
+-/constants
+--nav.js
+--todo.js
+
+-/containers
+--todo.js
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+/app
+...
+
+-/reducers
+--activeLink.js
+--index.js
+--links.js
+--tasks.js
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+/app
+...
+
+-/views
+--nav.js
+--nav-item.js
+--time-travel-panel.js
+--todo.js
+--todo-clear.js
+--todo-form.js
+--todo-item.js
+--todo-list.js
+--todo-summary.js
+--todo-text-input.js
+
+-index.js
+-store.js
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+module.exports = {
+  module: {
+    loaders: [{
+      test: /\.jsx?$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['stage-2', 'es2015', 'react']
+      }
+    }]
+  },
+  entry: ['babel-polyfill', './app/index.js'],
+  output: {
+    filename: 'bundle.js',
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Gulp + Webpack</h4>
+
+    <pre class="javascript"><code>
+const gulp = require('gulp'),
+    webpack = require('gulp-webpack'),
+    webpackConfig = require('./webpack.config.js');
+
+gulp.task('compile__js', function () {
+    return gulp.src('./app/index.js')
+        .pipe(webpack(webpackConfig))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('watch__js', ['compile__js'], () => {
+    gulp.watch([
+        './app/**/*.js'
+    ], ['compile__js']);
+});
+      </code></pre>
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
