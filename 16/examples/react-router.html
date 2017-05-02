@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Router</title>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    .todo__title {
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .todo-info {
+      margin: 16px 0 8px;
+    }
+
+    .todo-info__completed {
+      color: #d8d8d8;
+    }
+
+    .todo__toggle-all, .todo__item {
+      position: relative;
+      height: 30px;
+      line-height: 30px;
+    }
+
+    .todo__checkbox {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      -webkit-appearance: none;
+      border: 1px solid #d8d8d8;
+      border-radius: 16px;
+      outline: none;
+      position: relative;
+      top: 5px;
+    }
+
+    .todo__checkbox:checked:after {
+      content: 'X';
+      color: #d8d8d8;
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 10px;
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      line-height: 16px;
+    }
+
+    .todo__checkbox:hover {
+      color: #F44336;
+      border-color: #F44336;
+      cursor: pointer;
+    }
+
+    .todo__checkbox:hover:checked:after {
+      color: #F44336;
+      cursor: pointer;
+    }
+
+    .todo__text-input {
+      width: 172px;
+      margin: 12px 0;
+      outline: none;
+      border: none;
+      border-bottom: 2px solid #d8d8d8;
+      padding: 8px 4px;
+    }
+
+    .todo__text-input:focus {
+      border-bottom-color: #F44336;
+    }
+
+    .todo__clear {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #F44336;
+      color: #fff;
+      width: 148px;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .todo__clear:hover {
+      background: #EF5350;
+    }
+
+    .todo__clear:active {
+      background: #E53935;
+    }
+
+    .todo__text_completed {
+      text-decoration: line-through;
+    }
+
+    .todo__text_editing {
+
+    }
+
+    .todo__destroy {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      line-height: 16px;
+      text-align: center;
+      border: 1px solid #d8d8d8;
+      color: #d8d8d8;
+      cursor: pointer;
+      border-radius: 24px;
+      margin-left: 4px;
+    }
+
+    .todo__destroy:hover {
+      color: #F44336;
+      border-color: #F44336;
+    }
+
+    .nav__item {
+      display: inline-block;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .nav__item_active {
+      font-weight: bold;
+      color: #B71C1C;
+    }
+
+    .time-panel {
+      margin-top:8px;
+    }
+
+    .time-panel__button {
+      display: inline-block;
+      width: 86px;
+      height: 35px;
+      line-height: 35px;
+      margin-right: 8px;
+      text-align: center;
+      background: #f44336;
+      color: #fff;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .time-panel__button:hover {
+      background: #EF5350;
+    }
+
+    .time-panel__button:active {
+      background: #E53935;
+    }
+
+    .time-panel__button_disabled, .time-panel__button_disabled:hover, .time-panel__button_disabled:active {
+      background: gray;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@15/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+<script src="https://unpkg.com/redux@3.6.0/dist/redux.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.3/react-redux.js"></script>
+<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
+<script src="https://unpkg.com/redux-undo@1.0.0-beta7/dist/redux-undo.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+<script src="https://unpkg.com/babel-polyfill@6.16.0//dist/polyfill.min.js"></script>
+
+<script type="text/babel">
+const Home = () => (
+  <div>
+    <h2>Home</h2>
+  </div>
+);
+
+const About = () => (
+  <div>
+    <h2>About</h2>
+  </div>
+);
+
+const frameworks = [
+  {name:'angular', desc: 'Superheroic JavaScript MVW Framework'},
+  {name:'ember', desc: 'A framework for creating ambitious web applications'},
+  {name:'react', desc: 'A JavaScript library for building user interfaces'},
+];
+
+const Framework = (props) => {
+  const framework = frameworks.find(x => x.name === props.match.params.name);
+
+  return (
+    <div>
+      <h3>{framework.name}</h3>
+      <p>{framework.desc}</p>
+    </div>);
+};
+
+const Frameworks = (props) => (
+  <div>
+    <h2>Frameworks</h2>
+
+    {frameworks.map(x =>
+      <div key={x.name}>
+        <ReactRouterDOM.Link to={`${props.match.url}/${x.name}`}>
+          {x.name}
+        </ReactRouterDOM.Link>
+      </div>
+    )}
+
+    <hr/>
+
+    <ReactRouterDOM.Route path={`${props.match.url}/:name`} component={Framework}/>
+    <ReactRouterDOM.Route exact path={props.match.url} render={() => (
+      <h3>Please select a framework.</h3>
+    )}/>
+  </div>
+);
+
+const App = () => (
+  <ReactRouterDOM.HashRouter>
+    <div>
+      <ul>
+        <li><ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link></li>
+        <li><ReactRouterDOM.Link to="/about">About</ReactRouterDOM.Link></li>
+        <li><ReactRouterDOM.Link to="/frameworks">Frameworks</ReactRouterDOM.Link></li>
+      </ul>
+
+      <hr/>
+
+      <ReactRouterDOM.Route exact path="/" component={Home}/>
+      <ReactRouterDOM.Route path="/about" component={About}/>
+      <ReactRouterDOM.Route path="/frameworks" component={Frameworks} />
+    </div>
+  </ReactRouterDOM.HashRouter>
+);
+
+ReactDOM.render(
+  <App/>,
+  document.getElementById('app')
+);
+</script>
+</body>
+</html>
