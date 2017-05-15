@@ -1087,6 +1087,558 @@ strict: bool
     </code></pre>
   </section>
 
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The number of entries in the history stack
+length - (number)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The current action (PUSH, REPLACE, or POP)
+action - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The current location
+location - (object)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The path of the URL
+location.pathname - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The URL query string
+location.search - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The URL hash fragment
+location.hash - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// location-specific state that was provided
+// e.g. push(path, state)
+// only available in browser and memory history.
+location.state - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Pushes a new entry onto the history stack
+push(path, [state]) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Replaces the current entry on the history stack
+replace(path, [state]) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Moves the pointer in the history stack by n
+go(n) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Equivalent to go(-1)
+goBack() - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Equivalent to go(1)
+goForward() - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Prevents navigation
+block(prompt) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// Key/value pairs parsed from the URL
+// corresponding to the dynamic
+// segments of the path
+params - (object)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// true if the entire URL was matched
+isExact - (boolean)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// The path pattern used to match.
+path - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="html"><code>
+// The matched portion of the URL
+url - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+matchPath('/users/123', {
+  path: '/users/:id',
+  exact: true,
+  strict: false
+})
+
+=>
+
+{ isExact: true,
+  params: { id: "123" },
+  path: "/users/:id",
+  url: "/users/123" }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+withRouter(connect(...)(MyComponent)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+class UpdateBlocker extends React.PureComponent {
+  render() {
+    return this.props.children
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="html"><code>
+// location = { pathname: '/about' }
+&lt;UpdateBlocker&gt;
+
+  &lt;NavLink to='/about'&gt;About&lt;/NavLink&gt;
+  // &lt;a href='/about' class='active'&gt;About&lt;/a&gt;
+
+  &lt;NavLink to='/faq'&gt;F.A.Q.&lt;/NavLink&gt;
+  // &lt;a href='/faq'&gt;F.A.Q.&lt;/a&gt;
+
+&lt;/UpdateBlocker&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="html"><code>
+// location = { pathname: '/faq' }
+&lt;UpdateBlocker&gt;
+
+  // the links will not re-render,
+  // so they retain their previous attributes
+
+  &lt;NavLink to='/about'&gt;About&lt;/NavLink&gt;
+  // &lt;a href='/about' class='active'&gt;About&lt;/a&gt;
+
+  &lt;NavLink to='/faq'&gt;F.A.Q.&lt;/NavLink&gt;
+  // &lt;a href='/faq'&gt;F.A.Q.&lt;/a&gt;
+
+&lt;/UpdateBlocker&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+const BlockAvoider = withRouter(UpdateBlocker)
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">R</span>edux Saga</h3>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <ul>
+      <li class="fragment">удобная работа с сайд-эффектами</li>
+      <li class="fragment">на генераторах</li>
+      <li class="fragment">легкое тестирование</li>
+      <li class="fragment"><a href="https://redux-saga.js.org/">redux-saga.js.org</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+npm install --save redux-saga
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script
+  src=&quot;https://unpkg.com/redux-saga/dist/redux-saga.js&quot;
+&gt;&lt;/script&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { call, put } from 'redux-saga/effects'
+
+export function* fetchData(action) {
+ try {
+
+  const data = yield call(
+    Api.fetchUser,
+    action.payload.url
+  )
+
+  yield put({type: "FETCH_SUCCEEDED", data})
+
+ } catch (error) {
+
+  yield put({type: "FETCH_FAILED", error})
+
+ }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga/effects'
+
+function* watchFetchData() {
+  yield takeEvery('FETCH_REQUESTED', fetchData)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import {
+  createStore,
+  applyMiddleware
+} from 'redux';
+
+import createSagaMiddleware from 'redux-saga'
+
+import reducer from './reducers';
+
+import sagas from './sagas/watchFetchData';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+    reducer,
+    /* initial state */,
+    applyMiddleware(sagaMiddleware)
+);
+
+sagaMiddleware.run(sagas);
+
+export default store;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeLatest } from 'redux-saga/effects'
+
+function* watchFetchData() {
+  yield takeLatest('FETCH_REQUESTED', fetchData)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga'
+
+// FETCH_USERS
+function* fetchUsers(action) { ... }
+
+// CREATE_USER
+function* createUser(action) { ... }
+
+// use them in parallel
+export default function* rootSaga() {
+  yield takeEvery('FETCH_USERS', fetchUsers)
+  yield takeEvery('CREATE_USER', createUser)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Effects</h4>
+
+    <pre class="javascript"><code>
+// эффект - объект с интрукциями
+// для sagaMiddleware о необходимых действиях
+yield call(
+  Api.fetchUser,
+  action.payload.url
+)
+
+=>
+
+{
+  CALL: {
+    fn: Api.fetch,
+    args: ['/users/42']
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga/effects'
+import Api from './path/to/api'
+
+function* watchFetchProducts() {
+  yield takeEvery(
+    'PRODUCTS_REQUESTED',
+    fetchProducts
+  )
+}
+
+function* fetchProducts() {
+  // yield a Promise
+  const products = yield Api.fetch('/products')
+
+  console.log(products)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+// trying write a test
+const iterator = fetchProducts()
+assert.deepEqual(iterator.next().value, ??)
+
+// need to mock Api.fetch
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { call } from 'redux-saga/effects'
+
+function* fetchProducts() {
+  const products = yield call(
+    Api.fetch,
+    '/products'
+  )
+}
+
+=>
+
+{
+  CALL: {
+    fn: Api.fetch,
+    args: ['./products']
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { call } from 'redux-saga/effects'
+import Api from '...'
+
+const iterator = fetchProducts()
+
+assert.deepEqual(
+  iterator.next().value,
+  call(Api.fetch, '/products')
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Complex logic</h4>
+
+    <pre class="javascript"><code>
+import { take, put } from 'redux-saga/effects'
+
+function* watchFirstThreeTodosCreation() {
+  for (let i = 0; i < 3; i++) {
+    const action = yield take('TODO_CREATED')
+  }
+
+  yield put({type: 'SHOW_CONGRATULATION'})
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+import { fork, call, take, put, cancel }
+  from 'redux-saga/effects'
+import Api from '...'
+
+function* authorize(user, password) {
+  try {
+    const token = yield call(
+      Api.authorize,
+      user, password
+    )
+    yield put({type: 'LOGIN_SUCCESS', token})
+    yield call(Api.storeItem, {token})
+  } catch(error) {
+    yield put({type: 'LOGIN_ERROR', error})
+  }
+}
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+...
+function* loginFlow() {
+  while (true) {
+    const {user, password}
+      = yield take('LOGIN_REQUEST')
+
+    const task = yield fork(authorize, user, password)
+
+    const action
+      = yield take(['LOGOUT', 'LOGIN_ERROR'])
+
+    if (action.type === 'LOGOUT')
+      yield cancel(task)
+
+    yield call(Api.clearItem, 'token')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+function* authorize(user, password) {
+  try {
+    ...
+  } catch(error) {
+    ...
+  } finally {
+    if (yield cancelled()) {
+      // cancellation handling code here
+    }
+  }
+}
+    </code></pre>
+  </section>
 
 </div></div>
 
