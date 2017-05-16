@@ -1640,6 +1640,265 @@ function* authorize(user, password) {
     </code></pre>
   </section>
 
+  <section>
+    <h4>Redux Saga - Parallel</h4>
+
+    <pre class="javascript"><code>
+import { call } from 'redux-saga/effects'
+
+// correct, effects will get executed in parallel
+const [users, repos]  = yield all([
+  call(fetch, '/users'),
+  call(fetch, '/repos')
+])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Race</h4>
+
+    <pre class="javascript"><code>
+import { race, take, put } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+
+function* fetchPostsWithTimeout() {
+  const {posts, timeout} = yield race({
+    posts: call(fetchApi, '/posts'),
+    timeout: call(delay, 1000)
+  })
+
+  if (posts)
+    put({type: 'POSTS_RECEIVED', posts})
+  else
+    put({type: 'TIMEOUT_ERROR'})
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Race</h4>
+
+    <pre class="javascript"><code>
+// other tasks are autocancel
+import { race, take, put } from 'redux-saga/effects'
+
+function* backgroundTask() {
+  while (true) { ... }
+}
+
+function* watchStartBackgroundTask() {
+  while (true) {
+    yield take('START_BACKGROUND_TASK')
+    yield race({
+      task: call(backgroundTask),
+      cancel: take('CANCEL_TASK')
+    })
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Outside of Redux</h4>
+
+    <pre class="javascript"><code>
+import { runSaga } from 'redux-saga'
+
+function* saga() { ... }
+
+const myIO = {
+  subscribe: ...,
+  dispatch: ...,
+  getState: ...,
+}
+
+runSaga(
+  myIO
+  saga,
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+import { take, actionChannel, call, ... }
+  from 'redux-saga/effects'
+
+function* watchRequests() {
+  // will buffer messages
+  const requestChan
+    = yield actionChannel('REQUEST')
+
+  while (true) {
+    const {payload} = yield take(requestChan)
+
+    yield call(handleRequest, payload)
+  }
+}
+
+function* handleRequest(payload) { ... }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+import { eventChannel, END } from 'redux-saga'
+
+function countdown(secs) {
+  return eventChannel(emitter => {
+      const iv = setInterval(() => {
+        secs -= 1
+        if (secs > 0) emitter(secs)
+        else emitter(END)
+      }, 1000);
+
+      return () => {
+        clearInterval(iv)
+      }
+    }
+  )
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* saga() {
+  const chan = yield call(countdown, value)
+
+  try {
+    while (true) {
+      // take(END) will cause the saga
+      // to terminate by jumping
+      // to the finally block
+      let seconds = yield take(chan)
+
+      console.log(`countdown: ${seconds}`)
+    }
+  } finally {
+    console.log('countdown terminated')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function createSocketChannel(socket) {
+  return eventChannel(emit => {
+    const pingHandler = (event)
+      => emit(event.payload)
+
+    socket.on('ping', pingHandler)
+
+    return ()
+      => socket.off('ping', pingHandler)
+  })
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* pong(socket) {
+  yield call(delay, 5000)
+  yield apply(socket, socket.emit, ['pong'])
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* watchOnPings() {
+  const socketChannel
+    = yield call(createSocketChannel, socket)
+
+  while (true) {
+    const payload = yield take(socketChannel)
+
+    yield put({
+      type: INCOMING_PONG_PAYLOAD, payload
+    })
+
+    yield fork(pong, socket)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Throttling</h4>
+
+    <pre class="javascript"><code>
+import { throttle } from 'redux-saga/effects'
+
+function* handleInput(input) {
+  // ...
+}
+
+function* watchInput() {
+  yield throttle(500,
+    'INPUT_CHANGED',
+    handleInput
+  )
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Debouncing</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga'
+
+function* handleInput(input) {
+  yield call(delay, 500)
+  ...
+}
+
+function* watchInput() {
+  let task
+  while (true) {
+    const { input } = yield take('INPUT_CHANGED')
+
+    if (task) yield cancel(task)
+
+    task = yield fork(handleInput, input)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Debouncing</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga'
+
+function* handleInput({ input }) {
+  yield call(delay, 500)
+  ...
+}
+
+function* watchInput() {
+  // will cancel current running handleInput task
+  yield takeLatest('INPUT_CHANGED', handleInput);
+}
+    </code></pre>
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
