@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP01</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Программирование серверных кроссплатформенных приложений</h2>
+        <p class="author">
+            <small>Лекция 01</small>
+        </p>
+    </section>
+
+    <section>
+        <h3>Кроссплатформенность</h3>
+        <div class=" resources"><img src="images/linux.png"></div>
+        <div class=" resources"><img src="images/win.png"></div>
+        <div class=" resources"><img src="images/mac.png"></div>
+    </section>
+
+    <section>
+        <h3>С++</h3>
+        <table class="operations">
+            <tr><td colspan="3"><div class="center">Исходный код</div></td></tr>
+            <tr><td><div class="center">Компиляция</div></td><td><div class="center">Компиляция</div></td><td><div class="center">Компиляция</div></td></tr>
+            <tr><td><div class="center">Приложение</div></td><td><div class="center">Приложение</div></td><td><div class="center">Приложение</div></td></tr>
+            <tr><td><div class="center">Linux</div></td><td><div class="center">Windows</div></td><td><div class="center">OS X</div></td></tr>
+        </table>
+    </section>
+
+    <section>
+        <h3>Java / С#</h3>
+        <table class="operations">
+            <tr><td colspan="3"><div class="center">Исходный код</div></td></tr>
+            <tr><td colspan="3"><div class="center">Компиляция</div></td></tr>
+            <tr><td colspan="3"><div class="center">Приложение</div></td></tr>
+            <tr><td colspan="3"><div class="center">Виртуальная машина</div></td></tr>
+            <tr><td><div class="center">Linux</div></td><td><div class="center">Windows</div></td><td><div class="center">OS X</div></td></tr>
+        </table>
+    </section>
+
+    <section>
+        <h3>Кроссплатформенные<br>web-приложения ?</h3>
+    </section>
+
+    <section>
+        <h3>Web-приложения</h3>
+        <ul>
+            <li class="left fragment">находятся на сервере</li>
+            <li class="left fragment">backend + frontend</li>
+            <li class="left fragment"><span class="red">backend</span>-код выполняется на сервере</li>
+            <li class="left fragment"><span class="magenta">frontend</span>-код выполняется на клиенте</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Кроссплатформенные<br>web-приложения</h3>
+        <p class="fragment red">Но зачем ?</p>
+    </section>
+
+    <section  data-transition="fade">
+        <h3>Технологии</h3>
+        <p class="left fragment">ASP.NET Core</p>
+        <p class="left fragment">Node.js</p>
+        <p class="left fragment">Ruby on Rails</p>
+        <p class="left fragment">Java + фреймворк</p>
+        <p class="left fragment">PHP + фреймворк</p>
+        <p class="left fragment">Python + фреймворк</p>
+    </section>
+
+    <section data-transition="fade">
+        <h3>Технологии</h3>
+        <p class="left">ASP.NET Core</p>
+        <p class="left red">Node.js</p>
+        <p class="left">Ruby on Rails</p>
+        <p class="left ">Java + фреймворк</p>
+        <p class="left ">PHP + фреймворк</p>
+        <p class="left ">Python + фреймворк</p>
+    </section>
+
+    <section>
+        <h2>Node.js</h2>
+    </section>
+
+    <section>
+        <h3>Кратко</h3>
+        <ul>
+            <li class="fragment">Javascript + V8</li>
+            <li class="fragment">Асинхронный</li>
+            <li class="fragment">Событийно-ориентированный</li>
+            <li class="fragment">Однопоточный</li>
+            <li class="fragment">Не блокирующий</li>
+            <li class="fragment">Основная сфера: web-приложения</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Создатель</h3>
+        <p>
+            <img src="images/ryan-dahl.png">
+            <div><small>Райан Дал</small></div>
+        </p>
+    </section>
+
+    <section>
+        <h3>История</h3>
+        <ul>
+            <li class="fragment">2009: Первая версия, npm, JSConf</li>
+            <li class="fragment">2010: Express, поддержка на Heroku</li>
+            <li class="fragment">2011: NPM 1.0, LinkedIn, Uber</li>
+            <li class="fragment">2012: Стабильная версия (0.8.х)</li>
+            <li class="fragment">2013: MEAN-стэк, Koa</li>
+            <li class="fragment">2014: Netflix, io.js</li>
+            <li class="fragment">2015: Слияние в 4.x.x</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Версионирование</h3>
+        <p class="left fragment">Две ветки</p>
+        <p class="left fragment"><span class="green">6.x.x</span> - Long Term Support</p>
+        <p class="left fragment"><span class="magenta">8.x.x</span> - Current</p>
+        <p class="left fragment">Stability Index - Deprecated (0), Experimental (1), Stable (2), Locked (3)</p>
+    </section>
+
+    <section>
+        <h3>Установка</h3>
+        <ul>
+            <li class="fragment"><a href="https://nodejs.org/en/">nodejs.org</a></li>
+            <li class="fragment">node --version<br>npm --version</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Hello World!</h2>
+    </section>
+
+    <section>
+        <p class="left">
+            Создаём index.js
+
+            <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.end('Hello world!');
+});
+
+server.listen(2000, '127.0.0.1', () => {
+    console.log('Running');
+});
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left ">Запускаем через консоль</p>
+        <pre class="javascript"><code>
+node index.js
+        </code></pre>
+    </section>
+
+    <section>
+        <p class="left ">Открываем в браузере</p>
+        <pre class="javascript"><code>
+http://127.0.0.1:2000/
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Brave New World</h2>
+        <h3>with Node.js</h3>
+    </section>
+
+    <section>
+        <h3>Javascript на клиенте и сервере</h3>
+        <ul>
+            <li class="fragment">Общая кодовая база</li>
+            <li class="fragment">Вся команда легче ориентируется в проекте</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Javascript и Node популярны</h3>
+    </section>
+
+    <section>
+        <p><img src="images/js-popularity.png"></p>
+    </section>
+
+    <section>
+        <p><img src="images/ieee-spectrum-2017.png"></p>
+    </section>
+
+    <section>
+        <p><img src="images/node-popularity.png"></p>
+    </section>
+
+    <section>
+        <h3>Оффициальный язык<br>open-source</h3>
+        <p class="fragment left">На Github более <span class="red">2,000,000</span> репозиториев</p>
+        <p class="fragment left">Из них <span class="red">15% (300k+)</span> - JS</p>
+        <p class="fragment left">NPM самый крупный open-source пакетный менеджер, <span class="red">300k+ пакетов</span></p>
+    </section>
+
+    <section>
+        <h3>Desktop + Mobile в подарок</h3>        
+    </section>
+    
+    <section>
+        <h3>Electron</h3>
+        <p class="fragment"><img src="images/electron.png"></p>
+        <p><span class="fragment">Slack,</span> <span class="fragment">Atom,</span> <span class="fragment">Visual Studio Code</span></p>
+    </section>
+
+    <section>
+        <h3>Ionic</h3>
+        <p class="fragment"><img src="images/ionic.png"></p>
+        <p><span class="fragment">Rio 2016,</span> <span class="fragment">Euro 2016</span></p>
+    </section>
+
+    <section>
+        <h3>Инструменты</h3>
+        <ul>
+            <li class="fragment">Visual Studio</li>
+            <li class="fragment">Visual Studio Code</li>
+            <li class="fragment">Atom</li>
+            <li class="fragment">WebStorm</li>
+            <li class="fragment">Sublime Text</li>
+            <li class="fragment">Brackets</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Что почитать по JS</h3>
+
+        <p>Вы не знаете JS</p>
+        <p><a href="https://github.com/azat-io/you-dont-know-js-ru">github.com/azat-io/you-dont-know-js-ru</a></p>
+        <p>Выразительный Javascript</p>
+        <p><a href="https://github.com/karmazzin/eloquentjavascript_ru">github.com/karmazzin/eloquentjavascript_ru</a></p>
+        <p>JavaScript: сильные стороны</p>
+    </section>
+
+    <section>
+        <h3>Слайды</h3>
+
+        <p><a href="https://github.com/accetone/cwp">github.com/accetone/cwp</a></p>
+        <p><img src="images/qr.svg"></p>
+    </section>
+
+    <section>
+        <h3>Информация</h3>
+
+        <p class="fragment">Папка examples</p>
+        <p class="fragment">Группа в Slack</p>
+    </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
