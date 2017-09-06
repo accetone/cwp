@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР03</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Работа с файлами в Node.js</div>
+    <div class="header__id">ЛР03</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-03</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы <span class="task__inline-code">server.js</span>, <span class="task__inline-code">client.js</span> и <span class="task__inline-code">qa.json</span> из предыдущей работы
+  </div>
+
+  <div class="task__statement">
+    Переименовываем <span class="task__inline-code">client.js</span> в <span class="task__inline-code">client-qa.js</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Нам необходимо расширить функционал предыдущей работы
+  </div>
+
+  <div class="task__statement">
+    1. Создать файл для нового клиента <span class="task__inline-code">client-files.js</span>
+  </div>
+
+  <div class="task__statement">
+    2. Для начала взаимодействия клиент отправляет строку <span class="task__inline-code">FILES</span>
+  </div>
+
+  <div class="task__statement">
+    3. Cервер подтверждает правильность полученной команды строкой <span class="task__inline-code">ACK</span> или отказывает строкой <span class="task__inline-code">DEC</span> c отключением клиента
+  </div>
+
+  <div class="task__statement">
+    4. Клиент принимает один или более адресов директорий через аргументы командной строки
+  </div>
+
+  <div class="task__statement">
+    5. Клиент должен передать все файлы из указанных директорий на сервер
+  </div>
+
+  <div class="task__statement">
+    6. Сервер принимает адрес директории для сохранения файлов через переменную окружения с значением по-умолчанию
+  </div>
+
+  <div class="task__statement">
+    7. Сервер сохраняет файлы от клиента в отдельную директорию по идентификатору клиента
+  </div>
+
+  <div class="task__statement">
+    8. Сервер принимает максимальное число одновременных клиентов для команды <span class="task__inline-code">FILES</span> через переменную окружения с значением по-умолчанию
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте взаимодействие клиента с сервером
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте взаимодействие трех клиентов с сервером при ограничении в два
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте логи сервера
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/buffer.html">Документация по типу Buffer</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/fs.html">Документация модуля fs</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

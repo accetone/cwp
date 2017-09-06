@@ -7,3 +7,4 @@
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
 [CWP/TASK/01 - Знакомство с Node.js](https://accetone.github.io/cwp/tasks/01.html)  
 [CWP/TASK/02 - Работа с сокетами в Node.js](https://accetone.github.io/cwp/tasks/02.html)  
+[CWP/TASK/03 - Работа с файлами в Node.js](https://accetone.github.io/cwp/tasks/03.html)  
