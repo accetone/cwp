@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP02</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Базовый JS и Node.js</h2>
+        <p class="author">
+            <small>Лекция 02</small>
+        </p>
+    </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+var, let, const
+
+for, while, do while
+
+if, else, else if,
+switch
+
+Boolean, Number, String, Object, Symbol,
+Null, Undefined
+
+console.log
+
+// Single-line comment
+/*
+    Multi-line comment
+*/
+
+try {...} catch(error) {...} finally {...}
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+function / first class object
+
+function sum(a, b, c) { ... }
+function (a, b, c) { ... }
+(a, b, c) => {...}
+
+const sum = function (a, b, c) { ... };
+const sum = (a, b, c) => {...};
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Hoisting
+/* -Correct- */
+sum(1, 2, 3);
+
+function sum(a, b, c) { ... }
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Hoisting
+/* -Incorrect- */
+sum(1, 2, 3);
+
+const sum = function (a, b, c) { ... };
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Hoisting
+/* -Correct- */
+const sum = function (a, b, c) { ... };
+
+sum(1, 2, 3);
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Arguments
+function sum() {
+  const sum = 0;
+
+  for (let i = 0; i < arguments.length; i++) {
+    sum += arguments[i];
+  }
+}
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Objects
+const hero = {
+  name: 'John Snow',
+  title: 'King of the North'
+};
+
+console.log( hero.name );
+console.log( hero['name'] );
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Objects
+const hero = {
+  name: {
+    first: 'John',
+    last: 'Snow'
+  },
+  title: 'King of the North'
+};
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Arrays
+const nerds = [
+  'Sheldon',
+  'Leonard',
+  'Hovard',
+  'Rajesh'
+];
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Arrays
+const wtf = [
+  'Sheldon',
+  'Leonard',
+  'Hovard',
+  'Rajesh',
+  42,
+  {
+    name: 'John Snow',
+    title: 'King of the North'
+  },
+  [3, 2, 1]
+];
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Arrays
+nerds.concat
+nerds.forEach
+nerds.filter
+nerds.find
+nerds.findIndex
+nerds.includes
+nerds.join
+nerds.map
+nerds.push
+nerds.pop
+nerds.reduce
+nerds.shift
+nerds.unshift
+nerds.slice
+nerds.splice
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Равентсво (==) и идентичность (===)
+123 == '123'
+123 === '123'
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+    <pre class="javascript"><code>
+// Равентсво (==) и идентичность (===)
+123 == '123'    // true
+123 === '123'   // false
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+      Замыкания
+
+    <pre class="javascript"><code>
+var functions = [];
+
+for (var i = 0; i < 9; i++) {
+    functions[i] = function (a) { return a*i; }
+}
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+      Замыкания
+
+    <pre class="javascript"><code>
+functions[1](5)
+            </code></pre>
+
+    <pre class="javascript fragment"><code>
+45
+            </code></pre>
+    </p>
+
+    <pre class="javascript fragment"><code>
+functions[4](4)
+            </code></pre>
+
+    <pre class="javascript fragment"><code>
+36
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+      Замыкания
+
+    <pre class="javascript"><code>
+functions[5](6)
+            </code></pre>
+
+    <pre class="javascript fragment"><code>
+54
+            </code></pre>
+    </p>
+
+    <pre class="javascript fragment"><code>
+functions[7](3)
+            </code></pre>
+
+    <pre class="javascript fragment"><code>
+27
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+      Замыкания
+
+    <pre class="javascript"><code>
+var functions = [];
+
+for (var i = 0; i < 9; i++) {
+    (function (b) {
+        functions[b]
+            = function (a) { return a*b; }
+    })(i);
+}
+            </code></pre>
+    </p>
+  </section>
+
+  <section>
+    <p class="left">
+      Замыкания
+
+    <pre class="javascript"><code>
+var functions = [];
+
+for (let i = 0; i < 9; i++) {
+    functions[i] = function(a) { return a*i; }
+}
+            </code></pre>
+    </p>
+  </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end('Hello world!');
+});
+
+server.listen(2000, '127.0.0.1', () => {
+  console.log('Running');
+});
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+            <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer(handler);
+
+server.listen(2000, '127.0.0.1', () => {
+  console.log('Running');
+});
+
+function handler(req, res) {
+  response.end('Hello world!');
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer(handler);
+
+server.listen(2000, '127.0.0.1', () => {
+  console.log('Running');
+});
+
+// так работать не будет
+const handler = function (req, res) {
+  response.end('Hello world!');
+};
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+            <pre class="javascript"><code>
+function handler(req, res) {
+  res.end(req.url);
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-01.png">
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+let news = [
+  {
+    id: 1,
+    title: 'Иностранные студенты на практике в БГТУ',
+    date: '03.08.16'
+  },
+  {
+    id: 2,
+    title: 'День знаний',
+    date: '01.09.16'
+  }
+];
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+if (req.url === '/') {
+  welcome(req, res);
+}
+else if (req.url === '/news') {
+  newsList(req, res);
+}
+else if (req.url.startsWith('/news?id=')) {
+  newsItem(req, res);
+}
+else if (req.url.startsWith('/news/create')) {
+  newsCreate(req, res);
+}
+    </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+else if (req.url.startsWith('/news/update')) {
+  newsUpdate(req, res);
+}
+else if (req.url.startsWith('/news/delete')) {
+  newsDelete(req, res);
+}
+else {
+  error404(req, res);
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function welcome(req, res) {
+  res.setHeader('Content-Type', 'text/html');
+  res.end('Welcome to our <b>Node.js</b> app');
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-02.png"><br>
+        <img class="fragment" src="images/scr-03.png"><br>
+        <img class="fragment" src="images/scr-04.png">
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function newsList(req, res) {
+  res.setHeader('Content-Type',
+    'text/html; charset=utf-8');
+
+  news.forEach((item) => {
+    res.write(`[${item.date}] ${item.title}<br/>`);
+  });
+
+  res.end();
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-05.png"><br>
+        <img class="fragment" src="images/scr-06.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+        <pre class="javascript"><code>
+Array.forEach(callback, thisArg)
+
+callback - function (item, index, arr) {}
+thisArg - переопределение this
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+const a = ['a', 'b', 'c'];
+
+a.forEach((item, index) => {
+  console.log(index, item);
+});
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+0 "a"
+1 "b"
+2 "c"
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function newsItem(req, res) {
+  res.setHeader('Content-Type',
+    'text/html; charset=utf-8');
+
+  const id = req.url.replace('/news?id=', '');
+  const item = news.filter(function (item) {
+    return item.id == id;
+  })[0];
+
+  res.write(`[${item.date}] ${item.title}`);
+
+  res.end();
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-07.png"><br>
+    </section>
+
+    <section>
+        <img src="images/scr-08.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+        <pre class="javascript"><code>
+Array.filter(callback, thisArg)
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+const a = ['a', 'b', 'c'];
+
+const b = a.filter((item, index) => {
+  return index % 2 === 0;
+});
+
+b.forEach((item, index) => {
+  console.log(index, item);
+});
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+0 "a"
+1 "c"
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function newsCreate(req, res) {
+  parseBody(req, (err, params) => {
+    const item = {
+      id: news.length + 1,
+      title: params.title,
+      date: params.date
+    };
+
+    news.push(item);
+
+    res.end('created');
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-09.png"><br>
+        <img class="fragment" src="images/scr-10.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function parseBody(req, cb) {
+  let body = [];
+  const params = {};
+
+  req.on('data', function(chunk) {
+      body.push(chunk);
+  }).on('end', function() {
+    // был массивом стал строкой
+    body = Buffer.concat(body).toString();
+
+    body = body.split('\r\n');
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+    body = body.filter((item) => {
+      return !item.startsWith('------')
+        && item !== '';
+    });
+
+    for (let i = 0; i < body.length; i += 2) {
+      const key = body[i]
+        .replace('Content-Disposition: form-data; name="', '')
+        .replace('"', '');
+
+      params[key] = body[i + 1];
+    }
+
+    cb(null, params);
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+
+        <pre class="javascript"><code>
+body = Buffer.concat(body).toString();
+            </code></pre>
+        </p>
+
+        <pre class="javascript"><code>
+------WebKitFormBoundaryN9WJU8ddNCt0tuOa
+Content-Disposition: form-data; name="title"
+
+Сенсация
+------WebKitFormBoundaryN9WJU8ddNCt0tuOa
+Content-Disposition: form-data; name="date"
+
+30.07.2025
+------WebKitFormBoundaryN9WJU8ddNCt0tuOa--
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+
+        <pre class="javascript"><code>
+body = body.split('\r\n');
+            </code></pre>
+        </p>
+
+        <pre class="javascript"><code>
+[ '------WebKitFormBoundaryzCDCOBXGeQ1oJkx3',
+'Content-Disposition: form-data; name="title"',
+'',
+'Сенсация',
+'------WebKitFormBoundaryzCDCOBXGeQ1oJkx3',
+'Content-Disposition: form-data; name="date"',
+'',
+'30.07.2025',
+'------WebKitFormBoundaryzCDCOBXGeQ1oJkx3--',
+'' ]
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+
+        <pre class="javascript"><code>
+body = body.filter((item) => {
+  return !item.startsWith('------')
+    && item !== '';
+});
+            </code></pre>
+        </p>
+
+        <pre class="javascript"><code>
+[ 'Content-Disposition: form-data; name="title"',
+  'Сенсация',
+  'Content-Disposition: form-data; name="date"',
+  '30.07.2025' ]
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+        <pre class="javascript"><code>
+for (let i = 0; i < body.length; i += 2) {
+  const key = body[i]
+    .replace('Content-Disposition: form-data; name="', '')
+    .replace('"', '');
+
+  params[key] = body[i + 1];
+}
+            </code></pre>
+        </p>
+
+        <pre class="javascript"><code>
+{
+  title: 'Сенсация',
+  date: '30.07.2025'
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+        <pre class="javascript"><code>
+function parseBodyJson(req, cb) {
+  let body = [];
+
+  req.on('data', function(chunk) {
+    body.push(chunk);
+  }).on('end', function() {
+    body = Buffer.concat(body).toString();
+
+    let params = JSON.parse(body);
+
+    cb(null, params);
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+        <pre class="javascript"><code>
+Array.map(callback, thisArg)
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+const a = ['a', 'b', 'c'];
+
+const b = a.map((item) => {
+  return item + item;
+});
+
+b.forEach((item, index) => {
+  console.log(index, item);
+});
+            </code></pre>
+
+        <pre class="javascript fragment"><code>
+0 "aa"
+1 "bb"
+2 "cc"
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function newsUpdate(req, res) {
+  parseBody(req, (err, params) => {
+    const item = news.filter((item) => {
+      return item.id == params.id;
+    })[0];
+
+    item.date = params.date;
+    item.title = params.title;
+
+    res.end('updated');
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-11.png"><br>
+        <img class="fragment" src="images/scr-12.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function newsDelete(req, res) {
+  parseBody(req, (err, params) => {
+    news = news.filter((item) => {
+      return item.id != params.id;
+    });
+
+    res.end('deleted');
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-13.png"><br>
+        <img class="fragment" src="images/scr-14.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+            site.css
+
+        <pre class="css"><code>
+body {
+  color: #ff2c2d;
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function handler(req, res) {
+  ...
+  else if (req.url === '/site.css') {
+    sendCss(req, res);
+  }
+  ...
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+const fs = require('fs');
+
+function sendCss(req, res) {
+  fs.readFile('site.css', 'utf-8', (err, data) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.end(data);
+  });
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <img src="images/scr-15.png"><br>
+    </section>
+
+    <section>
+        <p class="left">
+            send.js
+
+        <pre class="javascript"><code>
+const fs = require('fs');
+
+function sendCss(req, res) {
+  fs.readFile('site.css', 'utf-8', (err, data) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.end(data);
+  });
+}
+
+module.exports = {
+    css: sendCss
+};
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+const send = require('./send');
+
+...
+
+function handler(req, res) {
+  ...
+  else if (req.url === '/site.css') {
+    send.css(req, res);
+  }
+  ...
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.js
+
+        <pre class="javascript"><code>
+function handler(req, res) {
+  if (req.url === '/') {
+    fs.readFile('index.html', 'utf-8', (err, data) => {
+      res.setHeader('Content-Type',
+          'text/html; charset=utf-8');
+
+      res.end(data);
+    });
+  }
+  else if (req.url === '/data') {
+    res.setHeader('Content-Type',
+      'application/json');
+
+    res.end(JSON.stringify(data));
+  }
+}
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.html
+
+        <pre class="javascript"><code>
+<button id="getData">Get Data</button>
+
+<div>
+    <div>Data:</div>
+    <div id="data"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <p class="left">
+            index.html
+
+        <pre class="javascript"><code>
+<script>
+var dataDiv = $('#data');
+
+$('#getData').on('click', function () {
+  $.get('/data').then(function (data) {
+    dataDiv.html('');
+
+    for (let i = 0; i < data.length; i++) {
+      dataDiv.append(data[i].id
+        + ' ' + data[i].title + '<br/>');
+    }
+  });
+});
+</script>
+            </code></pre>
+        </p>
+    </section>
+
+    <section>
+        <h4>WebStorm - ES6 highlight</h4>
+
+        <img src="images/ws-1.png">
+    </section>
+
+    <section>
+        <h4>WebStorm - Node autocomplete</h4>
+
+        <img src="images/ws-2.png">
+    </section>
+
+    <section>
+        <h4>WebStorm - Startup tasks</h4>
+
+        <img src="images/ws-3.png">
+    </section>
+
+    <section>
+        <h4>WebStorm - Startup tasks</h4>
+
+        <img src="images/ws-4.png">
+    </section>
+
+    <section>
+        <h4>WebStorm - Startup tasks</h4>
+
+        <img src="images/ws-5.png">
+    </section>
+
+    <section>
+        <p class="left">
+            <small class="magenta">Какая функция создаёт сервер?</small><br>
+            <small class="fragment">http.createServer</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Как функция запускает ожидание запросов?</small><br>
+            <small class="fragment">server.listen</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Какой оператор сравнения не приводит типы?</small><br>
+            <small class="fragment">===</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Какая функция и у какого объекта позволяет установить заголовок ответа?</small><br>
+            <small class="fragment">res.setHeader</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Что нужно сделать что бы ответы корректно распознавались?</small><br>
+            <small class="fragment">Заголовок Content/Type</small>
+        </p>
+    </section>
+
+    <section>
+        <p class="left fragment">
+            <small class="magenta">Что такое замыкания?</small><br>
+            <small class="fragment">Внешние переменные функции</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Что делает forEach?</small><br>
+            <small class="fragment">Выполняет действие над элементами массива</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Что делает filter?</small><br>
+            <small class="fragment">Выполняет фильтрацию массива</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Что делает map?</small><br>
+            <small class="fragment">Выполняет преобразование массива</small>
+        </p>
+
+        <p class="left fragment">
+            <small class="magenta">Как импортировать модуль?</small><br>
+            <small class="fragment">require('имя или путь модуля')</small>
+        </p>
+    </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        keyboard: {
+            13: 'prev',
+            32: 'next'
+        },
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
