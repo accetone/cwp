@@ -3,6 +3,7 @@
 #### Лекции
 [CWP/LECTION/01 - Введение](https://accetone.github.io/cwp/01)  
 [CWP/LECTION/02 - Базовый JS и Node.js](https://accetone.github.io/cwp/02)  
+[CWP/LECTION/03 - Асинхронность](https://accetone.github.io/cwp/03)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
