@@ -10,4 +10,5 @@
 [CWP/TASK/01 - Знакомство с Node.js](https://accetone.github.io/cwp/tasks/01.html)  
 [CWP/TASK/02 - Работа с сокетами в Node.js](https://accetone.github.io/cwp/tasks/02.html)  
 [CWP/TASK/03 - Работа с файлами в Node.js](https://accetone.github.io/cwp/tasks/03.html)  
-[CWP/TASK/04 - Работа с потоками в Node.js](https://accetone.github.io/cwp/tasks/04.html)  
+[CWP/TASK/04 - Работа с потоками в Node.js](https://accetone.github.io/cwp/tasks/04.html)  
+[CWP/TASK/05 - HTTP-сервер на Node.js, часть 1](https://accetone.github.io/cwp/tasks/05.html)  
