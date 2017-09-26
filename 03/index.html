@@ -870,7 +870,124 @@ readDir('/tmp/images')
     <img src="images/promises-caniuse.png">
   </section>
 
- 
+  <section>
+    <h3><span class="red">A</span>sync/Await</h3>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function read() {
+  let content = await
+    fs.readFileAsync('hero.txt', 'utf-8');
+
+  console.log(content);
+};
+
+read();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function magic() {
+  try {
+    const files = await readDir('/tmp/images');
+
+    const archive = await zip(files);
+
+    await Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+
+    ...
+  } catch (error) {
+    ...
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+(async function () {
+  ...
+})();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <pre class="javascript fragment"><code>
+http://babeljs.io/
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save-dev babel-core
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save-dev babel-preset-es-2017
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save babel-polyfill
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+https://babeljs.io/repl/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+       .babelrc
+    </p>
+    <pre class="javascript"><code>
+{
+  "presets": ["es-2017"]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+      babel.js
+    </p>
+    <pre class="javascript"><code>
+const fs = require('fs');
+
+require("babel-core")
+  .transformFile('index.js', (err, result) => {
+    let code = 'require("babel-polyfill");\n'
+      + result.code;
+
+    fs.writeFile('index.es5.js', code);
+  });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+      index.es5.js
+    </p>
+
+    <img src="images/babel-code.png">
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
