@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP04</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Архитектура Node.js</h2>
+        <p class="author">
+            <small>Лекция 04</small>
+        </p>
+    </section>
+
+    <section>
+        <h4>Ресурсы</h4>
+
+        <div>
+            <div class="fragment resources">
+                <img src="images/cpu.png"><br>
+                CPU
+            </div>
+            <div class="fragment resources">
+                <img src="images/mem.png"><br>
+                MEMORY
+            </div>
+            <div class="fragment resources">
+                <img src="images/hdd.png"><br>
+                DISK
+            </div>
+            <div class="fragment resources">
+                <img src="images/net.png"><br>
+                NETWORK
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h4>CPU bound</h4>
+
+        <ul>
+            <li class="fragment">вычисление факториала</li>
+            <li class="fragment">вычисление хэша</li>
+            <li class="fragment">процесс шифрования</li>
+            <li class="fragment">игровая арифметика</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>I/O bound</h4>
+
+        <ul>
+            <li class="fragment">поиск по файлу</li>
+            <li class="fragment">подсчет числа строк в файле</li>
+            <li class="fragment">стримминг файла</li>
+            <li class="fragment">копирование директории</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Однопоточность</h4>
+        
+        <img src="images/single-thread.png">
+    </section>
+
+    <section>
+        <h4>Многопоточность</h4>
+
+        <img src="images/multithreading.png">
+    </section>
+
+    <section>
+        <h4>Не блокирующий I/O</h4>
+
+        <img src="images/non-blocking.png">
+    </section>
+    
+    <section>
+        <h3><span class="red">Apache</span> vs <span class="green">Nginx</span></h3>
+
+        <img src="images/nginx-vs-apache-0.png">
+    </section>
+
+    <section>
+        <h4>Apache vs Nginx</h4>
+
+        <p class="half-text">Запросов в секунду в зависимости от количества одновременных подключений</p>
+
+        <img src="images/nginx-vs-apache-1.png">
+    </section>
+
+    <section>
+        <h4>Apache vs Nginx</h4>
+
+        <p class="half-text">Потребляемая память в зависимости от количества одновременных подключений</p>
+
+        <img src="images/nginx-vs-apache-2.png">
+    </section>
+
+    <section>
+        <h4>Операции в web-приложении</h4>
+
+        <ul>
+            <li class="fragment">Чтение HTTP запроса <span class="fragment red">I/O</span></li>
+            <li class="fragment">Парсинг HTTP запроса <span class="fragment magenta">CPU</span></li>
+            <li class="fragment">Запрос в БД <span class="fragment red">I/O</span></li>
+            <li class="fragment">Запрос к API <span class="fragment red">I/O</span></li>
+            <li class="fragment">Генерация HTML <span class="fragment magenta">CPU</span></li>
+            <li class="fragment">Отправка HTML <span class="fragment red">I/O</span></li>
+        </ul>
+    </section>
+
+    <section>
+        <h3><span class="red">Н</span>еблокирующий I/O</h3>
+    </section>
+
+    <section>
+        <h4>Синхронный блокирующий I/O</h4>
+
+        <img style="background: #fff !important;" class="fullscreen" src="images/sync-block-io.gif">
+    </section>
+
+    <section>
+        <h4>Синхронный неблокирующий I/O</h4>
+
+        <img style="background: #fff !important;" class="fullscreen" src="images/sync-non-block-io.gif">
+    </section>
+
+    <section>
+        <h4>Асинхронный блокирующий I/O</h4>
+
+        <img style="background: #fff !important;" class="fullscreen" src="images/async-block-io.gif">
+    </section>
+
+    <section>
+        <h4>Асинхронный неблокирующий I/O</h4>
+
+        <img style="background: #fff !important;" class="fullscreen" src="images/async-non-block-io.gif">
+    </section>
+
+    <section>
+        <h4>I/O latency в циклах CPU</h4>
+
+        <ul>
+            <li class="fragment">L1-кэш - <span class="green">3</span> цикла</li>
+            <li class="fragment">L2-кэш - <span class="green">14</span> циклов</li>
+            <li class="fragment">RAM - <span class="magenta">250</span> циклов</li>
+            <li class="fragment">Диск - <span class="red">41 000 000</span> циклов</li>
+            <li class="fragment">Сеть - <span class="red">250 000 000</span> циклов</li>
+            <li class="fragment">Latency Numbers Every Programmer Should Know / GitHub Gist</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3><span class="red">R</span>eactor</h3>
+    </section>
+    
+    <section>
+        <img src="images/reactor.png">
+    </section>
+
+    <section>
+        <h3><span class="red">N</span>ode.js</h3>
+    </section>
+
+    <section>
+        <h4>Node.js - Internals</h4>
+        <img src="images/nodejs.png" >
+    </section>
+
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <img src="images/eventloop.png">
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+> console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">console.log(1)</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+> console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+> setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">setTimeout(...)</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+> setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item">timeout((callback), 3000)</div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+> a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">a()</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item">timeout((callback), 3000)</div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+> f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">console.log(3)</div>
+            <div class="item filled">a()</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item">timeout((callback), 3000)</div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+> f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">a()</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item">timeout((callback), 3000)</div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+> a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item">timeout((callback), 3000)</div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+> a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+> console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">console.log(4)</div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">main()</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+> setTimeout(function () {
+   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+>   console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">console.log(2)</div>
+            <div class="item filled">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+> setTimeout(function () {
+  console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item filled">(callback)</div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section data-transition="none">
+        <h4>Node.js - Event Loop</h4>
+
+        <pre class="javascript half"><code>
+f a() { console.log(3); }
+console.log(1);
+setTimeout(function () {
+  console.log(2);
+}, 3000);
+a();
+console.log(4);
+        </code></pre>
+
+        <div class="half callstack half-text">
+            <div class="item">Call Stack</div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>Tasks Queue:</div>
+            <div class="item empty"></div>
+        </div>
+
+        <div class="queue half-text left">
+            <div>API Workers:</div>
+            <div class="item empty"></div>
+        </div>
+    </section>
+
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <h4>http://latentflip.com/loupe</h4>
+    </section>
+
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <img src="images/event-loop-order.png">
+    </section>
+
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <img src="images/event-loop-order-2.png">
+    </section>
+
+  <section>
+    <h4>Node.js - Event Loop</h4>
+
+
+    <pre class="javascript"><code>console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');</code></pre>
+
+    <pre class="javascript fragment"><code>
+// https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+script start, script end, promise1, promise2,
+setTimeout</code></pre>
+  </section>
+
+    <section>
+      <h4>Node.js - Event Loop</h4>
+
+      <p>
+        <ul>
+          <li class="fragment">макро-задачи - выполняются по одной за один проход цикла</li>
+          <li class="fragment">микро-задачи - на каждом проходе цикл выполняет все накопившееся</li>
+        </ul>
+      </p>
+    </section>
+
+    <section>
+      <h4>Node.js - Event Loop</h4>
+
+      <p>
+      <ul>
+        <li class="fragment">макро-задачи (tasks queue): <span class="fragment">setTimeout,</span> <span class="fragment">setInterval,</span> <span class="fragment">setImmediate,</span> <span class="fragment">requestAnimationFrame,</span> <span class="fragment">I/O,</span> <span class="fragment">UI rendering</span></li>
+        <li class="fragment">микро-задачи - <span class="fragment">process.nextTick,</span> <span class="fragment">Object.observe,</span> <span class="fragment">Promises (resolved)</span></li>
+      </ul>
+      </p>
+    </section>
+
+    <section>
+        <h4>Node.js и ES6+</h4>
+        <ul>
+            <li class="fragment">node --v8-options</li>
+            <li class="fragment">node -p process.versions.v8</li>
+            <li class="fragment">http://node.green/</li>
+        </ul>
+    </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
