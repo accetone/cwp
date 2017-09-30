@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР06</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">HTTP-сервер на Node.js</div>
+    <div class="header__id">ЛР06</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-06</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-05</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Нам необходимо расширить функционал нашего сервера
+  </div>
+
+  <div class="task__statement">
+    1. Для <span class="task__inline-code">/articles/readall</span> добавить возможность запросить сотрировку по любому полю по-убыванию или по-возрастанию. Через параметры запроса, например:
+    <pre><code class="task__code json">{
+  ...,
+  "sortField": "author",
+  "sortOrder": "asc"
+}</code></pre>
+    Значения по-умолчанию
+    <pre><code class="task__code json">{
+  ...,
+  "sortField": "date",
+  "sortOrder": "desc"
+}</code></pre>
+  </div>
+
+  <div class="task__statement">
+    2. Для <span class="task__inline-code">/articles/readall</span> добавить возможность запросить постраничный вывод с указанием номера страницы и количества записей на странице. Например
+    <pre><code class="task__code json">{
+  ...,
+  "page": "2",
+  "limit": "25"
+}</code></pre>
+    Значения по-умолчанию
+    <pre><code class="task__code json">{
+  ...,
+  "page": "1",
+  "limit": "10"
+}</code></pre>
+  </div>
+
+  <div class="task__statement">
+    3. <span class="task__inline-code">/articles/readall</span> должно возвращать ответ в следующей форме
+    <pre><code class="task__code json">{
+  "items": [ ... статьи ],
+  "meta": {
+    "page": 2,
+    "pages": 5,
+    "count": 43
+    "limit": 10
+  }
+}</code></pre>
+  </div>
+
+  <div class="task__statement">
+    4. Для <span class="task__inline-code">/api/articles/readall</span> добавить возможность запросить статьи с комментариями или без. Например
+    <pre><code class="task__code json">{
+  ...,
+  "includeDeps": true
+}</code></pre>
+    Значения по-умолчанию
+    <pre><code class="task__code json">{
+  ...,
+  "includeDeps": false
+}</code></pre>
+  </div>
+
+  <div class="task__statement">
+    5. Добавить URL <span class="task__inline-code">/api/logs</span>, который будет отправлять логи сервера в формате JSON. Для удобства можем начать хранить логи в формате JSON
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте запросы через Postman
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте логи сервера через HTTP
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/http.html">Документация модуля http</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
