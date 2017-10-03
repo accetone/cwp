@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP05</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+    <section class="large">
+        <h2>Express, 1</h2>
+        <p class="author">
+            <small>Лекция 05</small>
+        </p>
+    </section>
+
+    <section>
+        <h4>http://expressjs.com/</h4>
+    </section>
+
+    <section>
+        <h4>Express</h4>
+
+        <ul>
+            <li class="fragment">быстрый</li>
+            <li class="fragment">гибкий</li>
+            <li class="fragment">минималистичный</li>
+            <li class="fragment magenta">веб-фреймворк</li>
+            <li class="fragment green">для Node.js</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Установка</h4>
+
+        <pre class="javascript"><code>
+npm install express
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Node</h4>
+
+        <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end('Hello world!');
+});
+
+server.listen(3000, '127.0.0.1', () => {
+  console.log('Running');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Express</h4>
+
+        <pre class="javascript"><code>
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, function () {
+  console.log('Running');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Hello World: Run</h4>
+
+        <pre class="javascript"><code>
+node index.js
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Статика</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('public'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('files'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.use('/static', express.static('public'));
+        </code></pre>
+    </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>
