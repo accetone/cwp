@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP06</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>ES.next</h2>
+    <p class="author">
+      <small>Лекция 06</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>ECMAScript</h4>
+
+    <ul>
+      <li class="fragment">ES3 - 1999</li>
+      <li class="fragment">ES5 - 2009</li>
+      <li class="fragment">ES6 - 2015</li>
+      <li class="fragment">годовой цикл</li>
+      <li class="fragment">Babel</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo} = pony
+
+var foo = pony.foo</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo: baz} = pony
+
+var baz = pony.foo</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo='baz'} = pony
+
+var foo = pony.foo
+if (!foo) foo = 'baz'</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo, bar: baz} = pony
+
+var foo = pony.foo,
+    bar = pony.baz;</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo: {bar}} = pony
+
+var bar = pony.foo.bar</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var [a, b] = [0, 1]
+// a = 0, b = 1</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var [a, , b] = [0, 1, 2]
+// a = 0, b = 2</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>function foo ({ a, b=2 }) {}
+
+foo({ a: 3, b: 3 })</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для массивов</h4>
+
+    <pre class="javascript"><code>fn(...[1, 2, 3])
+
+fn(1, 2, 3)</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для массивов</h4>
+
+    <pre class="javascript"><code>[1, 2, ...[3, 4, 5], 6, 7]</code></pre>
+  </section>
+
+  <section>
+    <h4>Оставшиеся параметры</h4>
+
+    <pre class="javascript"><code>function foo (...everything) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Оставшиеся параметры</h4>
+
+    <pre class="javascript"><code>function foo (bar, ...rest) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>[1, 2].map (x => x * 2)</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>p1 => expr
+p1 => { return expr; }
+p1 => ({ foo: 'bar' })</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>(  )     => expr
+(p1)     => expr
+ p1      => expr
+(p1, p2) => expr</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  this.age = 0;
+
+  setInterval(function () {
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  var self = this;
+
+  this.age = 0;
+
+  setInterval(function () {
+    self.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  this.age = 0;
+
+  setInterval(()=> {
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы шаблонов</h4>
+
+    <pre class="javascript"><code>var rating = 5;
+
+`ponyfoo.com is ${rating}`
+`ponyfoo.com is ${2 * 3}`
+`ponyfoo.com is ${foo()}`</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы шаблонов</h4>
+
+    <pre class="javascript"><code>function fn(template, ...expressions) {
+/*
+  template = [
+    'foo, ',
+    ' and ',
+    ''
+  ]
+
+  expressions = [
+    bar,
+    baz
+  ]
+*/
+}
+
+fn`foo, ${bar} and ${baz}`</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>{ foo }
+
+{ foo: foo }</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>var prefix = 'moz'
+
+var obj = { [prefix + 'Foo'] : 'bar' }</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>{
+  foo () {}
+}
+
+{
+  foo: function () {}
+}</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>if (...) {
+  var a = 5;
+}
+
+console.log(a); // 5</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>if (...) {
+  let a = 5;
+}
+
+console.log(a); // ReferenceError</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>const a = { foo: 42 };
+
+a = { bar: 9000 }; // TypeError</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>const a = { foo: 42 };
+
+a.foo = 9000;
+a.bar = 9000;</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор возведения в степень</h4>
+
+    <pre class="javascript"><code>x ** y
+
+Math.pow(x, y)</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.assign</h4>
+
+    <pre class="javascript"><code>const a = { a: 1 }, b = { b: 2 };
+
+const c = Object.assign({}, a, b);
+
+// { a: 1, b: 2}</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.assign</h4>
+
+    <pre class="javascript"><code>const a = { a: 1 }, b = { b: 2 };
+
+const c = Object.assign({}, a, b);
+
+// { a: 1, b: 2}</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.keys</h4>
+
+    <pre class="javascript"><code>const a = { a: 1, b: 2 }
+
+const keys = Object.keys(a);
+
+// ['a', 'b']</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.entries</h4>
+
+    <pre class="javascript"><code>Object.entries({ one: 1, two: 2 })
+
+// [ [ 'one', 1 ], [ 'two', 2 ] ]</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>let obj = {
+    first: 'Jane',
+    last: 'Doe',
+};</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>let arr = [
+  'red',
+  'green',
+  'blue',
+];</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>function foo(
+  param1,
+  param2,
+) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>foo(
+  'abc',
+  'def',
+);</code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+</script>
+</body>
+</html>
