@@ -17,4 +17,6 @@
 [CWP/TASK/05 - HTTP-сервер на Node.js, часть 1](https://accetone.github.io/cwp/tasks/05.html)  
 [CWP/TASK/06 - HTTP-сервер на Node.js, часть 2](https://accetone.github.io/cwp/tasks/06.html)  
 [CWP/TASK/07 - Раздача статики в Node.js](https://accetone.github.io/cwp/tasks/07.html)  
-[CWP/TASK/08 - HTTP-сервер и TCP-сокеты](https://accetone.github.io/cwp/tasks/08.html)  
+[CWP/TASK/08 - HTTP-сервер и TCP-сокеты](https://accetone.github.io/cwp/tasks/08.html)  
+[CWP/TASK/09 - Promises](https://accetone.github.io/cwp/tasks/09.html)  
+[CWP/TASK/10 - Express.js, часть 1](https://accetone.github.io/cwp/tasks/10.html)  
