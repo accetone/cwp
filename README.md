@@ -22,4 +22,6 @@
 [CWP/TASK/08 - HTTP-сервер и TCP-сокеты](https://accetone.github.io/cwp/tasks/08.html)  
 [CWP/TASK/09 - Promises](https://accetone.github.io/cwp/tasks/09.html)  
 [CWP/TASK/10 - Express.js, часть 1](https://accetone.github.io/cwp/tasks/10.html)  
-[CWP/TASK/11 - Express.js, часть 2](https://accetone.github.io/cwp/tasks/11.html)  
+[CWP/TASK/11 - Express.js, часть 2](https://accetone.github.io/cwp/tasks/11.html)  
+[CWP/TASK/12 - Sequelize, часть 1](https://accetone.github.io/cwp/tasks/12.html)  
+[CWP/TASK/13 - Express + Sequelize](https://accetone.github.io/cwp/tasks/13.html)  
