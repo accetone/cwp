@@ -24,4 +24,5 @@
 [CWP/TASK/10 - Express.js, часть 1](https://accetone.github.io/cwp/tasks/10.html)  
 [CWP/TASK/11 - Express.js, часть 2](https://accetone.github.io/cwp/tasks/11.html)  
 [CWP/TASK/12 - Sequelize, часть 1](https://accetone.github.io/cwp/tasks/12.html)  
-[CWP/TASK/13 - Express + Sequelize](https://accetone.github.io/cwp/tasks/13.html)  
+[CWP/TASK/13 - Express + Sequelize](https://accetone.github.io/cwp/tasks/13.html)  
+[CWP/TASK/14 - Sequelize, часть 2](https://accetone.github.io/cwp/tasks/14.html)  
