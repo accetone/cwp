@@ -28,3 +28,6 @@
 [CWP/TASK/14 - Sequelize, часть 2](https://accetone.github.io/cwp/tasks/14.html)  
 [CWP/TASK/15 - Аутентификация](https://accetone.github.io/cwp/tasks/15.html)  
 [CWP/TASK/16 - async/await](https://accetone.github.io/cwp/tasks/16.html)  
+
+#### Дополнительно
+[Доклады](https://github.com/accetone/cwp/tree/master/speakers)  
