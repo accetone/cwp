@@ -31,4 +31,4 @@
 [CWP/TASK/17 - Загрузка файлов](https://accetone.github.io/cwp/tasks/17.html)  
 
 #### Дополнительно
-[Доклады](https://github.com/accetone/cwp/tree/master/speakers)  
+[Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
