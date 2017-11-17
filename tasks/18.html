@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР18</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Классы</div>
+    <div class="header__id">ЛР18</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-18</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеку <a class="task__link" href="https://www.npmjs.com/package/moment" target="_blank">moment</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">logger.js</span>
+  </div>
+
+  <div class="task__statement">
+    Опишем класс <span class="task__inline-code">Logger</span>
+  </div>
+
+  <div class="task__statement">
+    1. Конструктор с параметрами: prefix, defaultLevel, dateFormat. Значения параметров сохраняются в объект класса. Предусмотрим случай, когда пользователь может не передать какой-то из параметров
+  </div>
+
+  <div class="task__statement">
+    2. Метод format(message, level) - который формирует строку для лога на основании сообщения, уровня логирования, префикса и формата даты. Для форматирования даты используем библиотеку <span class="task__inline-code">moment</span>.<br>
+    Шаблон строки: Отформатированная дата | Префикс | Уровень логирования | Сообщение
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">console-logger.js</span>
+  </div>
+
+  <div class="task__statement">
+    Опишем класс <span class="task__inline-code">ConsoleLogger</span> наследующий <span class="task__inline-code">Logger</span>
+  </div>
+
+  <div class="task__statement">
+    1. Конструктор с такими же параметрами как и у родителя с вызовом родительского конструктора
+  </div>
+
+  <div class="task__statement">
+    2. Переопределим метод format(message, level)<br>
+    Шаблон строки: Отформатированная дата | Префикс | Сообщение
+  </div>
+
+  <div class="task__statement">
+    3. Метод log(message, level)<br>
+    - выводит на консоль отформатированное сообщение (методом format)<br>
+    - в зависимости от значения level используется различные методы из console<br>
+    -- 'LOG' - console.log<br>
+    -- 'INFO' - console.info<br>
+    -- 'WARN' - console.warn<br>
+    -- 'ERROR' - console.error<br>
+    - в случае отстутствия или недопустимого значения level используем defaultLevel
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">file-logger.js</span>
+  </div>
+
+  <div class="task__statement">
+    Опишем класс <span class="task__inline-code">FileLogger</span> наследующий <span class="task__inline-code">Logger</span>
+  </div>
+
+  <div class="task__statement">
+    1. Конструктор с параметрами file, prefix, defaultLevel, dateFormat с вызовом родительского конструктора. В качестве file пользователь может передать как строку, так и поток. В случае если передана строка - открываем поток на запись.
+  </div>
+
+  <div class="task__statement">
+    2. Метод log(message, level)<br>
+    - выводит в файл отформатированное сообщение (методом format)<br>
+    - вовзращает промис, который выполнится после завершения записи<br>
+    - в случае отстутствия level используем defaultLevel<br>
+  </div>
+
+  <div class="task__statement">
+    3. Метод close() закрывающий поток записи
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">deferred-file-logger.js</span>
+  </div>
+
+  <div class="task__statement">
+    Опишем класс <span class="task__inline-code">DeferredFileLogger</span> наследующий <span class="task__inline-code">FileLogger</span>
+  </div>
+
+  <div class="task__statement">
+    1. Конструктор с параметрами file, queueLength, prefix, defaultLevel, dateFormat с вызовом родительского конструктора.
+  </div>
+
+  <div class="task__statement">
+    2. Переопределим метод log(message, level)<br>
+    - добавляет отформатированное сообщение (методом format) в очередь<br>
+    - если размер очереди достигает queueLength - записываем все сообщения в файл и очищаем очередь<br>
+    - вовзращает промис, который выполнится после завершения записи или добавления в очередь<br>
+    - в случае отстутствия level используем defaultLevel<br>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу <span class="task__inline-code">ConsoleLogger</span>
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу <span class="task__inline-code">FileLogger</span>
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу <span class="task__inline-code">DeferredFileLogger</span>
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://momentjs.com/docs/">Документация по moment</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
