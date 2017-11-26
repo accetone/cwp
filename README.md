@@ -31,6 +31,8 @@
 [CWP/TASK/16 - async/await](https://accetone.github.io/cwp/tasks/16.html)  
 [CWP/TASK/17 - Загрузка файлов](https://accetone.github.io/cwp/tasks/17.html)  
 [CWP/TASK/18 - Классы](https://accetone.github.io/cwp/tasks/18.html)  
+[CWP/TASK/19 - Валидация](https://accetone.github.io/cwp/tasks/19.html)  
+[CWP/TASK/20 - Шаблоны](https://accetone.github.io/cwp/tasks/20.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
