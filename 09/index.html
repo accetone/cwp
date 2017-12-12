@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <title>CWP06</title>
+  <title>CWP09</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="../css/reveal.css">
   <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
@@ -923,7 +923,112 @@ res.status(404).end();
     </code></pre>
   </section>
 
-  
+  <section>
+    <h3><span class="red">c</span>ookie-parser</h3>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+cookieParser(secret, options)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+app.use(cookieParser('my private key'));
+
+res.cookie('user', 'tobi', { signed: true });
+
+Cookie: user=tobi.CP7AWaXDfAKIRfH49dQzKJx7sKzzSoPq7/AcBBRVwlI3
+
+req.cookies.user
+> user=tobi.CP7AWaXDfAKIRfH49dQzKJx7sKzzSoPq7/AcBBRVwlI3
+
+req.signedCookies.user
+> "tobi"
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">b</span>ody-parser</h3>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.json(options)
+
+inflate // прием сжатых данных, true
+limit // макс. размер тела, '100kb'
+reviver // ф-я трансформации выходного объекта
+strict // только объекты и массивы, true
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.raw(options)
+
+inflate
+limit
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.text(options)
+
+defaultCharset // кодировка, 'utf-8'
+inflate
+limit
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.urlencoded(options)
+
+extended // querystring vs qs
+inflate
+limit
+parameterLimit // макс. число параметров, 1000
+    </code></pre>
+  </section>
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
