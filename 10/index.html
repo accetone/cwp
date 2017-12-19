@@ -700,6 +700,10 @@ return super.update(data.id, post);
   <pre class="javascript"><code>
 const post = await this.repository.findById(id);
 
+if (!post) {
+  throw this.errors.notFound;
+}
+
 return post.increment({ rating: 1 });
   </code></pre>
   </section>
@@ -709,6 +713,10 @@ return post.increment({ rating: 1 });
 
   <pre class="javascript"><code>
 const post = await this.repository.findById(id);
+
+if (!post) {
+  throw this.errors.notFound;
+}
 
 return post.increment({ rating: -1 });
   </code></pre>
@@ -726,28 +734,12 @@ class UsersService extends CrudService {
   constructor(usersRepository, rolesRepository,
   errors) { ... }
 
-  async create(data) { ... }
   async update(data) { ... }
   async grant(userId, roleId) { ... }
   async revoke(userId, roleId) { ... }
-  async get(userId) { ... }
 }
 
 module.exports = UsersService;
-  </code></pre>
-  </section>
-
-  <section>
-  <h4>./services/users.js => create(data)</h4>
-
-  <pre class="javascript"><code>
-let user = {
-  password: hash.get(data.password),
-  firstname: data.firstname,
-  lastname: data.lastname
-};
-
-return super.create(user);
   </code></pre>
   </section>
 
@@ -775,6 +767,10 @@ const [ user, role ] = await Promise.all([
   this.rolesRepository.findById(roleId),
 ]);
 
+if (!user || !role) {
+  throw this.errors.invalidId;
+}
+
 await user.addRole(role);
   </code></pre>
   </section>
@@ -788,15 +784,11 @@ const [ user, role ] = await Promise.all([
   this.rolesRepository.findById(roleId),
 ]);
 
+if (!user || !role) {
+  throw this.errors.invalidId;
+}
+
 await user.removeRole(role);
-  </code></pre>
-  </section>
-
-  <section>
-  <h4>./services/users.js => get(userId)</h4>
-
-  <pre class="javascript"><code>
-return this.repository.findById(userId);
   </code></pre>
   </section>
 
@@ -879,7 +871,7 @@ return user;
   <pre class="javascript"><code>
 const user = this.usersRepository.build({
   email: data.email,
-  password: data.password,
+  password: hash.get(data.password),
   firstname: data.firstname,
   lastname: data.lastname
 });
@@ -972,6 +964,7 @@ if (!hasRole) {
 class CacheService {
   async set(req, data) {}
   async get(req) {}
+  async invalidate(req) {}
 }
 
 module.exports = CacheService;

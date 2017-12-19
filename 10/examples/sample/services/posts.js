@@ -28,11 +28,19 @@ class PostsService extends CrudService {
     async upvote(id) {
         const post = await this.repository.findById(id);
 
+        if (!post) {
+            throw this.errors.notFound;
+        }
+
         return post.increment({ rating: 1 });
     }
 
     async downvote(id) {
         const post = await this.repository.findById(id);
+
+        if (!post) {
+            throw this.errors.notFound;
+        }
 
         return post.increment({ rating: -1 });
     }

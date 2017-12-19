@@ -11,16 +11,6 @@ class UsersService extends CrudService {
         this.rolesRepository = rolesRepository;
     }
 
-    async create(data) {
-        let user = {
-            password: hash.get(data.password),
-            firstname: data.firstname,
-            lastname: data.lastname
-        };
-
-        return super.create(user);
-    }
-
     async update(data) {
         let user = {
             password: data.password && hash.get(data.password),
@@ -37,6 +27,10 @@ class UsersService extends CrudService {
             this.rolesRepository.findById(roleId),
         ]);
 
+        if (!user || !role) {
+            throw this.errors.invalidId;
+        }
+
         await user.addRole(role);
     }
 
@@ -46,11 +40,11 @@ class UsersService extends CrudService {
             this.rolesRepository.findById(roleId),
         ]);
 
-        await user.removeRole(role);
-    }
+        if (!user || !role) {
+            throw this.errors.invalidId;
+        }
 
-    async get(userId) {
-        return this.repository.findById(userId);
+        await user.removeRole(role);
     }
 }
 

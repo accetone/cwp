@@ -25,7 +25,7 @@ class AuthenticationService {
     async register(data) {
         const user = this.usersRepository.build({
             email: data.email,
-            password: data.password,
+            password: hash.get(data.password),
             firstname: data.firstname,
             lastname: data.lastname
         });
