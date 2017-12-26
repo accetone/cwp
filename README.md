@@ -38,3 +38,4 @@
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
+[Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exams/Q1.pdf)  
