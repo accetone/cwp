@@ -11,6 +11,7 @@
 [CWP/LECTION/08 - Sequelize](https://accetone.github.io/cwp/08)  
 [CWP/LECTION/09 - Express, 2](https://accetone.github.io/cwp/09)  
 [CWP/LECTION/10 - N-layer архитектура](https://accetone.github.io/cwp/10)  
+[CWP/LECTION/11 - Модульная система](https://accetone.github.io/cwp/11)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
