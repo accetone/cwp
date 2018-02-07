@@ -35,6 +35,7 @@
 [CWP/TASK/18 - Классы](https://accetone.github.io/cwp/tasks/18.html)  
 [CWP/TASK/19 - Валидация](https://accetone.github.io/cwp/tasks/19.html)  
 [CWP/TASK/20 - Шаблоны](https://accetone.github.io/cwp/tasks/20.html)  
+[CWP/TASK/21 - N-layer архитектура](https://accetone.github.io/cwp/tasks/21.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
