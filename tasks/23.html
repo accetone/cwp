@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР23</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Yarn Workspaces</div>
+    <div class="header__id">ЛР23</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Установим <a class="task__link" href="https://yarnpkg.com/en/docs/install" target="_blank">Yarn</a>
+  </div>
+
+  <div class="task__statement">
+    Проверим что он установился выполнив в терминале команду <span class="task__inline-code">yarn --version</span>
+  </div>
+
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-23</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    С помощью workspaces создадим 3 зависимых пакета в моно-репозитории
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Первый пакет <span class="task__inline-code">mendeleev</span>
+  </div>
+
+  <div class="task__statement">
+    Экспортируем функцию с входным аргументом в виде строки
+  </div>
+
+  <div class="task__statement">
+    Вход - аббревиатура химического элемента
+  </div>
+
+  <div class="task__statement">
+    Выход - объект вида:
+    <pre><code class="task__code javascript">{
+  name: название элемента,
+  number: номер,
+  weight: масса,
+}</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Второй пакет <span class="task__inline-code">mendeleev-stringify</span>
+  </div>
+
+  <div class="task__statement">
+    Импортируем первый пакет
+  </div>
+
+  <div class="task__statement">
+    Экспортируем функцию с входным аргументом в виде строки
+  </div>
+
+  <div class="task__statement">
+    Вход - аббревиатура химического элемента
+  </div>
+
+  <div class="task__statement">
+    Выход - строка вида - <span class="task__inline-code">номер. название / масса</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Третий пакет <span class="task__inline-code">mendeleev-master</span>
+  </div>
+
+  <div class="task__statement">
+    Импортируем второй пакет
+  </div>
+
+  <div class="task__statement">
+    Читаем построчно текстовый файл с аббревиатурами элементов, вызываем функцию из <span class="task__inline-code">mendeleev-stringify</span>, выводим результат на консоль
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Объясните назначение workspaces
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстируйте работу пакета <span class="task__inline-code">mendeleev-master</span>
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстируйте импорты ваших пакетов
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://yarnpkg.com/en/docs/workspaces">Yarn Workspaces</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
