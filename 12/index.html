@@ -644,6 +644,147 @@ npm-shrinkwrap.json
     </code></pre>
   </section>
 
+  <section>
+    <h4>npm - package-lock.json</h4>
+
+    <pre class="javascript "><code>
+# генерируется автоматически
+# тот же формат что и у npm-shrinkwrap.json
+# приватный, хранится в VCS
+# единное дерево зависимостей
+# история дерева зависимостей
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm - unpublish</h4>
+
+    <pre class="javascript "><code>
+npm unpublish [<@scope>/]pkg[@version]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>npm</h4>
+
+    <pre class="javascript "><code>
+.npmingore
+.npmrc
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h3><span class="red">Y</span>arn</h3>
+  </section>
+
+  <section>
+    <img src="images/14.png" />
+  </section>
+
+  <section>
+    <h4>Yarn</h4>
+
+    <ul>
+      <li class="left fragment">Ultra Fast / кэш + паралельность + offline-mod</li>
+      <li class="left fragment">Mega Secure / контрольные суммы пакетов</li>
+      <li class="left fragment">Super Reliable / lock-файлы для версий</li>
+      <li class="left fragment"><a href="https://yarnpkg.com/">yarnpkg.com</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Yarn</h4>
+
+    <img src="images/npm-vs-yarn-perf.png">
+  </section>
+
+  <section>
+    <h4>Yarn</h4>
+
+    <pre class="javascript fragment"><code>
+> yarn init
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn add [package]
+> yarn add [package]@[version]
+> yarn add [package]@[tag]
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn remove [package]
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+> yarn install
+> yarn install --force
+> yarn install --production
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Yarn - Workspaces</h4>
+
+    <pre class="javascript"><code>
+package.json (workspace root):
+{
+  "private": true,
+  "workspaces": ["workspace-a", "workspace-b"]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Yarn - Workspaces</h4>
+
+    <pre class="javascript"><code>
+workspace-a/package.json:
+{
+  "name": "workspace-a",
+  "version": "1.0.0",
+
+  "dependencies": {
+    "cross-env": "5.0.5"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Yarn - Workspaces</h4>
+
+    <pre class="javascript"><code>
+workspace-a/package.json:
+{
+  "name": "workspace-b",
+  "version": "1.0.0",
+
+  "dependencies": {
+    "cross-env": "5.0.5",
+    "workspace-a": "1.0.0"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Yarn - Workspaces</h4>
+
+    <pre class="javascript"><code>
+> yarn install
+
+/package.json
+/yarn.lock
+
+/node_modules
+/node_modules/cross-env
+/node_modules/workspace-a -> /workspace-a
+
+/workspace-a/package.json
+/workspace-b/package.json
+    </code></pre>
+  </section>
 
 
 </div></div>
