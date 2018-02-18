@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР24</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Веб-сокеты</div>
+    <div class="header__id">ЛР24</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-24</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/socket.io" target="_blank">socket.io</a> и <a class="task__link" href="https://www.npmjs.com/package/axios" target="_blank">axios</a>
+  </div>
+
+  <div class="task__statement">
+    Реализуем базовый express-сервер раздающий статику из директории <span class="task__inline-code">public</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Научим наш сервер отправлять простые сообщения на клиент с помощью веб-сокетов
+  </div>
+
+  <div class="task__statement">
+    <pre><code class="task__code javascript">...
+
+const app = express();
+
+const server = http.createServer(app);
+const io = socketio(server);
+
+io.on('connection', socket => {
+  let i = 1;
+
+  setInterval(() => socket.emit('tick', i++), 1000);
+});
+
+...</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Подключимся к нашему серверу из <span class="task__inline-code">public/index.html</span>
+  </div>
+
+  <div class="task__statement">
+    <pre><code class="task__code html">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"&gt;
+&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+  const socket = io.connect('/');
+
+  socket.on('tick', count => console.log(count));
+&lt;/script&gt;</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью <span class="task__inline-code">axios</span> напишем воркер, который будет раз в секунду получать данные от <span class="task__inline-code">https://blockchain.info/en/ticker</span>. Будем осторожны - ставим новый таймаут только после получения данных.
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Допишем наше приложение:<br>
+    1. После подключения сервер ожидает от клиента код валюты и периодичность получения курсов<br>
+    2. После получения сервером этой информации, он должен отправлять клиенту данные по этой валюте событием <span class="task__inline-code">btc</span> с заданной переодичностью<br>
+    3. Клиент должен иметь возможность с HTML-страницы просматривать обновляющиеся курсы<br>
+    4. Клиент должен иметь возможность с HTML-страницы изменять значения кода валюты и периодичности без перезагрузки страницы<br>
+    5. После подключения клиент присоединяется к комнатам - <span class="task__inline-code">buy</span>, <span class="task__inline-code">sell</span><br>
+    6. Клиент должен иметь возможность с HTML-страницы посылать сообщения в комнаты<br>
+    7. Клиент должен получать информацию о новых сообщениях в комнатах<br>
+    8. Все функции должны корректно работать на 2 и более одновременно открытых вкладках
+  </div>
+</section>
+
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Расскажите про механизм веб-воркеров
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу приложения
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://learn.javascript.ru/websockets">Веб-сокеты</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://socket.io/docs">Документация по socket.io</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

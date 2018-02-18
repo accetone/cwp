@@ -40,6 +40,7 @@
 [CWP/TASK/21 - N-layer архитектура](https://accetone.github.io/cwp/tasks/21.html)  
 [CWP/TASK/22 - npm-пакеты](https://accetone.github.io/cwp/tasks/22.html)  
 [CWP/TASK/23 - Yarn Workspaces](https://accetone.github.io/cwp/tasks/23.html)  
+[CWP/TASK/24 - Веб-сокеты](https://accetone.github.io/cwp/tasks/24.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
