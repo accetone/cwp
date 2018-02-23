@@ -14,6 +14,7 @@
 [CWP/LECTION/11 - Модульная система](https://accetone.github.io/cwp/11)  
 [CWP/LECTION/12 - npm / yarn](https://accetone.github.io/cwp/12)  
 [CWP/LECTION/13 - JSON / YAML](https://accetone.github.io/cwp/13)  
+[CWP/LECTION/14 - HTTP](https://accetone.github.io/cwp/14)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
