@@ -1,0 +1,185 @@
+swagger: "2.0"
+
+info:
+  title: News API
+  version: "1.0.0"
+
+host: news.xyz
+schemes:
+  - http
+basePath: /api/v1
+
+produces:
+  - application/json
+
+paths:
+  /news:
+    get:
+      summary: Return news with paggination
+      tags:
+        - News
+      parameters:
+        - name: limit
+          in: query
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          type: number
+          format: integer
+      responses:
+        200:
+          description: News portion
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: '#/definitions/Pagging'
+              news:
+                type: array
+                items:
+                  $ref: '#/definitions/News'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/Error'
+
+    post:
+      summary: Create news
+      tags:
+        - News
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/News'
+      responses:
+        201:
+          description: News created
+          schema:
+            $ref: '#/definitions/News'
+        409:
+          description: Already exist
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /news/{id}:
+    get:
+      summary: Return one news item by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: News item
+          schema:
+            $ref: '#/definitions/News'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/Error'
+
+    put:
+      summary: Update news
+      tags:
+        - News
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/News'
+      responses:
+        200:
+          description: News updated
+          schema:
+            $ref: '#/definitions/News'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: Delete news
+      tags:
+        - News
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: News deleted
+          schema:
+            $ref: '#/definitions/News'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Error:
+    type: object
+    properties:
+      error:
+        type: object
+        properties:
+          message:
+            type: string
+          code:
+            type: number
+
+  Pagging:
+    type: object
+    properties:
+      count:
+        type: number
+        format: integer
+      offset:
+        type: number
+        format: integer
+      limit:
+        type: number
+        format: integer
+
+  News:
+    type: object
+    properties:
+      id:
+        type: number
+        format: integer
+      title:
+        type: string
+      content:
+        type: string
+      date:
+        type: string
+        format: date
