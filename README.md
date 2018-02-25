@@ -17,6 +17,28 @@
 [CWP/LECTION/14 - HTTP](https://accetone.github.io/cwp/14)  
 [CWP/LECTION/15 - REST](https://accetone.github.io/cwp/15)  
 [CWP/LECTION/16 - Swagger](https://accetone.github.io/cwp/16)  
+[CWP/LECTION/17 - GraphQL](https://accetone.github.io/cwp/17)  
+[CWP/LECTION/18 - Аутентификация](https://accetone.github.io/cwp/18)  
+[CWP/LECTION/19 - Авторизация](https://accetone.github.io/cwp/19)  
+
+https://www.smashingmagazine.com/2018/01/graphql-primer-new-api-part-2/
+Деплой
+Serverless ?
+Тестирование
+Virtual DOM
+React
+Инструменты сборки / gulp webpack npm scripts
+Immutable.js
+Flux / Redux (+ devtools)
+Redux Saga
+Redux Actions
+React Router
+Reselect
+Recompose
+Flow
+CSS in JS
+React Move
+c++ аддоны?
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  

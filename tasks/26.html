@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР26</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">REST</div>
+    <div class="header__id">ЛР26</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-26</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/moment" target="_blank">moment</a>, <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a> и <a class="task__link" href="https://www.npmjs.com/package/yamljs" target="_blank">yamljs</a>
+  </div>
+
+  <div class="task__statement">
+    Будем разрабатывать REST API для веб-приложения вычисляющего совместные рабочие часы для распределенных команд
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Опишем модели данных
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">User</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"email": string
+"timezone": string
+"validated": bool
+"validationToken": string</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Team</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"logo": string</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">WorkPeriod</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"from": string
+"to": string
+"weekDays": string
+"userId": int / reference to Users
+"teamId": int / reference to Users</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Учтём, что каждый пользователь может состоять в одной и более командах
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим набор REST API endpoint-ов для предоставления фукционала клиентской части
+  </div>
+
+  <div class="task__statement">
+    1. Пять endpoint-ов для CRUD операций с пользователями<br>
+    2. Пять endpoint-ов для CRUD операций с командами<br>
+    3. Два endpoint-а для добавления пользователя в команду и удаления из неё (будут вложены в путь команд)<br>
+    4. Пять endpoint-ов для CRUD операций с рабочими интервалами (будут вложены в путь пользователей конкретных команд)<br>
+    5. Endpoint для валидации пользователя с помощью <span class="task__inline-code">validationToken</span> (будет вложены в путь пользователей, придётся пойти на компромис и использовать <span class="task__inline-code">GET</span>)<br>
+    6. Endpoint для вычисления совместных рабочих часов двух пользователей конкретной команды (самостоятельно решим где его разместить и под каким методом)
+  </div>
+
+  <div class="task__statement">
+    Метод чтения конкретной команды будет также всех пользователей входящих в неё, плюс, на основании рабочих интервалов, они должны содержать свой текущий статус - активен/неактивен.
+  </div>
+
+  <div class="task__statement">
+    Добавить в команду можно только провалидированного пользователя
+  </div>
+
+  <div class="task__statement">
+    Совместные рабочие часы для пользователей A и B вычисляются с учетом часового пояса A
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    В зависимости от заголовка <span class="task__inline-code">Accept</span> будем возвращать данные клиенту в формате <span class="task__inline-code">json</span> (по-умолчанию) или <span class="task__inline-code">yaml</span>.
+  </div>
+
+  <div class="task__statement">
+    <b>Важно!</b> Так как мы отдаём ответы в двух форматах то и принимать данные, например, для создания пользователя тоже должны в двух форматах
+  </div>
+
+  <div class="task__statement">
+    * Добавим поддержку ответов/запросов в формате <span class="task__inline-code">xml</span>
+  </div>
+
+  <div class="task__statement task__statement_note">
+    Задания со звездочкой предназначены для персонального роста и необязательны к показу при защите лабораторной работы
+  </div>
+</section>
+
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу всех узлов REST API через Postman
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Показать работу API в формате YAML
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://www.restapitutorial.com/media/RESTful_Best_Practices-v1_1.pdf">RESTful Best Practices</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
