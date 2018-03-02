@@ -17,6 +17,7 @@
 [CWP/LECTION/14 - HTTP](https://accetone.github.io/cwp/14)  
 [CWP/LECTION/15 - REST](https://accetone.github.io/cwp/15)  
 [CWP/LECTION/16 - Swagger](https://accetone.github.io/cwp/16)  
+[CWP/LECTION/17 - GraphQL](https://accetone.github.io/cwp/17)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
