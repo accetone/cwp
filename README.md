@@ -48,6 +48,7 @@
 [CWP/TASK/24 - Веб-сокеты](https://accetone.github.io/cwp/tasks/24.html)  
 [CWP/TASK/25 - HTTP2 / Encoding](https://accetone.github.io/cwp/tasks/25.html)  
 [CWP/TASK/26 - REST, часть 1](https://accetone.github.io/cwp/tasks/26.html)  
+[CWP/TASK/27 - REST, часть 2](https://accetone.github.io/cwp/tasks/27.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
