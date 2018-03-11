@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР28</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Swagger</div>
+    <div class="header__id">ЛР28</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-28</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/yo" target="_blank">yo</a> и <a class="task__link" href="https://www.npmjs.com/package/yo" target="_blank">generator-swaggerize</a> в качестве зависимостей разработки
+  </div>
+
+  <div class="task__statement">
+    Будем разрабатывать REST API для веб-приложения слежки за потреблением еды от ФБР
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Модели данных выглядят следующим образом
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Person</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"address": string
+"isAlive": bool</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Food</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"calories": number</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Agent</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"callsign": string</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Ingestion</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"when": datetime
+"foodId": int / reference to Foods
+"personId": int / reference to Persons
+"reportedById": int / reference to Agents</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью <a class="task__link" href="https://editor.swagger.io/" target="_blank">редактора</a> опишем спецификацию нашего REST API на языке <span class="task__inline-code">yaml</span>
+  </div>
+
+  <div class="task__statement">
+    1. Пять endpoint-ов для CRUD операций с людьми<br>
+    2. Пять endpoint-ов для CRUD операций с едой<br>
+    3. Пять endpoint-ов для CRUD операций с агентами<br>
+    4. Пять endpoint-а для CRUD с приемами пищи (будут вложены в путь людей)
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью пакета <a class="task__link" href="https://github.com/krakenjs/swaggerize-express" target="_blank">swaggerize-express</a> сгенерируем код из <span class="task__inline-code">yaml</span>-файла
+  </div>
+
+  <div class="task__statement">
+    Свяжем полученный код с реальной базой данных с помощью <span class="task__inline-code">sequelize</span>
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу всех узлов REST API через Postman
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://swagger.io/specification/">Спецификация Swagger</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
