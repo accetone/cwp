@@ -19,6 +19,7 @@
 [CWP/LECTION/16 - Swagger](https://accetone.github.io/cwp/16)  
 [CWP/LECTION/17 - GraphQL](https://accetone.github.io/cwp/17)  
 [CWP/LECTION/18 - Аутентификация](https://accetone.github.io/cwp/18)  
+[CWP/LECTION/19 - Авторизация](https://accetone.github.io/cwp/19)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
