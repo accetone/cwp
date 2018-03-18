@@ -52,6 +52,7 @@
 [CWP/TASK/27 - REST, часть 2](https://accetone.github.io/cwp/tasks/27.html)  
 [CWP/TASK/28 - Swagger](https://accetone.github.io/cwp/tasks/28.html)  
 [CWP/TASK/29 - GraphQL](https://accetone.github.io/cwp/tasks/29.html)  
+[CWP/TASK/30 - SSO и двухфакторная аутентификация](https://accetone.github.io/cwp/tasks/30.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
