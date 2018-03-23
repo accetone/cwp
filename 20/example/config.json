@@ -1,0 +1,9 @@
+{
+  "db": {
+    "host": "ec2-54-243-185-99.compute-1.amazonaws.com",
+    "name": "da2f9fja1hin72",
+    "user": "hbbnkhapmikhuw",
+    "password": "95b2baec4326e5f3f25866addd55bad874570746a9f0f63040d87cdb02a40ad7",
+    "dialect": "postgres"
+  }
+}
