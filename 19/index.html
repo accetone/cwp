@@ -476,6 +476,226 @@ permissions       {String|Array}
     </code></pre>
   </section>
 
+  <section>
+    <h3><span class="red">C</span>ASL</h3>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <ul>
+      <li class="left fragment">изоморфная библиотека</li>
+      <li class="left fragment">возможность задавать условия доступа</li>
+      <li class="left fragment">есть интеграция с mongo</li>
+      <li class="left fragment"><a href="https://stalniy.github.io/casl/" target="_blank">документация</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+npm install casl
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+const { AbilityBuilder } = require('casl');
+
+...
+
+const ability = AbilityBuilder.define((can, cannot) => {
+  can('read', 'all');
+
+  can('manage', 'Post', { author: req.user.id });
+
+  cannot('delete', 'Post',
+    { 'comments.0': { $exists: true } }
+  );
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+ability.can('read', 'Post') // true
+ability.can('create', 'Post') // true
+ability.can('comment', 'Post') // false
+
+const post = new Post({ title: 'What is CASL?' })
+ability.can('read', post) // true
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+function defineAbilitiesFor(user) {
+  return new Promise(resolve => {
+    resolve(AbilityBuilder.define((can, cannot) => {
+      can('read', 'Post');
+
+      if (user && user.hasRole('regular')) {
+        can('comment', 'Post'});
+      }
+
+      if (user && user.hasRole('premium')) {
+        can('comment', 'Post'});
+        can('manage', 'Post'}, { author: user.id });
+      }
+
+      if (user && user.hasRole('admin')) {
+        can('comment', 'Post'});
+        can('manage', 'Post'});
+      }
+    }));
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+const { AbilityBuilder, Ability } = require('casl')
+
+function defineAbilitiesFor(user) {
+  return new Promise(resolve => {
+    const { rules, can, cannot }
+        = AbilityBuilder.extract()
+
+    ...
+
+    resolve(new Ability(rules));
+  });
+
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+can('manage', 'Post') // CRUD
+can('read', 'all')
+can(['update', 'delete'], ['Post', 'Comment'])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+Ability.addAlias('modify', ['update', 'delete'])
+
+AbilityBuilder.define(can => {
+ can('modify', 'Post')
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+can(
+  'read',
+  'Project',
+  { active: true, ownerId: user.id }
+)
+
+can(
+  'delete',
+  'Post',
+  { 'comments.0': { $exists: false } }
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+// OR
+can('read', 'Post', { published: true })
+can('read', 'Post', { preview: true })
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+// Override
+can('manage', 'Post')
+cannot('delete', 'Post')
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+ability.update([]) // removes all rules
+ability.update([{ subject: 'all', actions: 'read' }])
+
+ability.on('update', ({ rules, ability }) => {
+  ...
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+try {
+  const post = new Post({ private: true })
+
+  ability.throwUnlessCan('delete', post)
+
+  post.destroy()
+} catch (error) {
+  if (error instanceof ForbiddenError) {
+    console.log('Access denied!')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+res.json({
+  ...,
+  rules: req.ability.rules
+});
+
+... on client side ...
+
+const ability = new Ability(rules);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <ul>
+      <li class="left fragment">в глобальном контроллере аутентификации собираем ability, сохраняем его в req/res</li>
+      <li class="left fragment">пишем middleware авторизации (если не нужно проверять данные)</li>
+      <li class="left fragment">либо делаем проверки в сервисах, передавая туда ability</li>
+    </ul>
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
