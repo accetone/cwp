@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP21</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Тестирование</h2>
+    <p class="author">
+        <small>Лекция 21</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>Тестирование - Зачем</h4>
+
+    <ul>
+      <li class="fragment">текущий функционал соответствует заявленному</li>
+      <li class="fragment">ранее обнаружение проблем</li>
+      <li class="fragment">сокращение временных затрат</li>
+      <li class="fragment">как документация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Недостатки</h4>
+
+    <ul>
+      <li class="fragment">надо писать</li>
+      <li class="fragment">надо уметь писать</li>
+      <li class="fragment">надо поддерживать</li>
+      <li class="fragment">нет гарантий</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Режимы</h4>
+
+    <ul>
+      <li class="fragment">ручное</li>
+      <li class="fragment">автоматическое</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Виды</h4>
+
+    <ul>
+      <li class="fragment">модульные</li>
+      <li class="fragment">интеграционные (взаимодействие модулей)</li>
+      <li class="fragment">приемочные (система в целом)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Тестирование - Типы</h4>
+
+    <ul>
+      <li class="fragment">функциональное</li>
+      <li class="fragment">конфигурационное</li>
+      <li class="fragment">нагрузочное</li>
+      <li class="fragment">производительности</li>
+      <li class="fragment">безопасности</li>
+      <li class="fragment">юзабилити</li>
+      <li class="fragment">...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>DD</h3>
+    <h4>Test-driven development</h4>
+  </section>
+
+  <section>
+    <h4>TDD</h4>
+
+    <img src="images/tdd.png">
+  </section>
+
+  <section>
+    <h4>TDD</h4>
+
+    <img src="images/tdd-red-green-refactor.jpg">
+  </section>
+
+  <section>
+    <h4>TDD - Преимущества</h4>
+
+    <ul>
+      <li class="fragment">фокус на функционале</li>
+      <li class="fragment">предварительное обдумывание архитектуры</li>
+      <li class="fragment">стимулирует к меньшей связанности</li>
+      <li class="fragment">более безопасное написание нового кода</li>
+      <li class="fragment">легкий рефакторинг</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>TDD - Недостатки</h4>
+
+    <ul>
+      <li class="fragment">не все можно протестировать</li>
+      <li class="fragment">не все удобно тестировать</li>
+      <li class="fragment">временные затраты</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">U</span>nit-tests</h3>
+    <h4>Модульные тесты</h4>
+  </section>
+
+  <section>
+   <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+class Rectangle {
+  constructor(x1, y1, x2, y2) {
+    this.x1 = x1;
+    this.x2 = x2;
+    this.y1 = y1;
+    this.y2 = y2;
+  }
+
+  width() { return Math.abs(this.x1 - this.x2); }
+  height() { return Math.abs(this.y1 - this.y2); }
+  isSquare() {return this.width() === this.height(); }
+}
+
+module.exports = Rectangle;
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <a href="https://facebook.github.io/jest/">Jest - Docs</a>
+      <pre class="javascript"><code>
+npm install --save-dev jest
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      package.json
+      <pre class="javascript"><code>
+{
+  "name": "tests-example",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^18.1.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node"
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe("A suite", () => {
+  it("contains spec with an expectation", () => {
+    expect(true).toBe(true);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      <pre class="javascript"><code>
+npm test
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/jest-simple-test.png">
+  </section>
+
+  <section>
+    <img src="images/jest-rectangle-results-1.png">
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+const Rectangle = require('../rectangle');
+
+describe('Тестовый набор для Rectangle', () => {
+  let x1, x2, y1, y2;
+
+  beforeEach(() => { ... });
+
+  describe('>> модуль', () => { ... });
+
+  describe('>> конструктор', () => { ... });
+
+  describe('>> методы width и height', () => { ... });
+
+  describe('>> метод isSquare', () => { ... });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+beforeEach(() => {
+  x1 = 0;
+  y1 = 0;
+  x2 = 3;
+  y2 = 2;
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> модуль', () => {
+  it('должен импортировать функцию', () => {
+      expect(typeof Rectangle).toBe('function');
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  it('должен принимать числа', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.x1).toEqual(x1);
+    expect(rect.x2).toEqual(x2);
+    expect(rect.y1).toEqual(y1);
+    expect(rect.y2).toEqual(y2);
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен приводить параметры к числовому типу', () => {
+    x1 = x1.toString();
+    y1 = y1.toString();
+    x2 = x2.toString();
+    y2 = y2.toString();
+
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.x1).toEqual(parseInt(x1));
+    expect(rect.x2).toEqual(parseInt(x2));
+    expect(rect.y1).toEqual(parseInt(y1));
+    expect(rect.y2).toEqual(parseInt(y2));
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен бросать исключение,
+        если точки одинаковые', () => {
+
+    expect(() => {
+      new Rectangle(x1, y1, x1, y1);
+    }).toThrowError(/Точки совпадают/);
+
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> конструктор', () => {
+  ...
+
+  it('должен бросать исключение, если любой из
+        параметров не может быть
+        приведен к числу', () => {
+
+    expect(() => {
+      new Rectangle('asd', y1, x2, y2);
+    }).toThrowError(/Разрешены только числа/);
+
+  });
+
+  ...
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> методы width и height', () => {
+  it('должны вычислять соответствующие величины', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    let width = Math.abs(x1 - x2),
+      height = Math.abs(y1 - y2);
+
+    expect(rect.width()).toEqual(width);
+    expect(rect.height()).toEqual(height);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> методы width и height', () => {
+  it('должны вычислять соответствующие величины вне зависимости от порядка точек', () => {
+    let rect1 = new Rectangle(x1, y1, x2, y2),
+      rect2 = new Rectangle(x2, y2, x1, y1);
+
+    let width = Math.abs(x1 - x2),
+      height = Math.abs(y1 - y2);
+
+    expect(rect1.width()).toEqual(width);
+    expect(rect2.width()).toEqual(width);
+    expect(rect1.height()).toEqual(height);
+    expect(rect2.height()).toEqual(height);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> метод isSquare', () => {
+  it('должен возвращять true, если стороны равны', () => {
+    y2 = 3;
+
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.isSquare()).toBe(true);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      tests/rectangle.spec.js
+      <pre class="javascript"><code>
+describe('>> метод isSquare', () => {
+  it('должен возвращять false, если стороны неравны', () => {
+    let rect = new Rectangle(x1, y1, x2, y2);
+
+    expect(rect.isSquare()).toBe(false);
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен приводить параметры к числовому типу
+constructor(x1, y1, x2, y2) {
+  this.x1 = parseFloat(x1);
+  this.x2 = parseFloat(x2);
+  this.y1 = parseFloat(y1);
+  this.y2 = parseFloat(y2);
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен бросать исключение, если любой
+// из параметров не может быть приведен к числу
+constructor(x1, y1, x2, y2) {
+  ...
+
+  if (isNaN(this.x1)
+    || isNaN(this.x2)
+    || isNaN(this.y1)
+    || isNaN(this.y2)) {
+    throw new Error('[Rectangle]: Разрешены только числа');
+  }
+
+  ...
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      rectangle.js
+      <pre class="javascript"><code>
+// должен бросать исключение, если любой
+// из параметров не может быть приведен к числу
+constructor(x1, y1, x2, y2) {
+  ...
+
+  if (this.x1 === this.x2 && this.y1 === this.y2) {
+    throw new Error('[Rectangle]: Точки совпадают');
+  }
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <img src="images/jest-rectangle-results-2.png">
+  </section>
+
+  <section>
+    <img src="images/jest-highlight-1.png">
+  </section>
+
+  <section>
+    <img src="images/jest-highlight-2.png">
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+
+  const body = document.getElementsByClassName('yandex')[0];
+  let invert = false;
+
+  body.onkeypress = function (event) {
+    if (event.key.toLowerCase() !== 'i') return;
+
+    if (invert) body.style = '';
+    else body.style = 'filter: invert(100%)';
+
+    invert = !invert;
+  }
+</script>
+</body>
+</html>
