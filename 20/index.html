@@ -608,7 +608,169 @@ global.isProduction
   </section>
   </section>
 
-  
+  <section>
+    <h3><span class="red">C</span>I / CD</h3>
+    <h4>Непрерывная интеграция / Непрерывная доставка</h4>
+  </section>
+
+  <section>
+    <h4>CI/CD</h4>
+
+    <ul>
+      <li class="left fragment">практика программирования</li>
+      <li class="left fragment">частое слияние feature-веток с master</li>
+      <li class="left fragment">автоматизированные сборки</li>
+      <li class="left fragment">автоматизированное выполнение тестов</li>
+      <li class="left fragment">автоматизированный деплой</li>
+      <li class="left fragment">отправка отчетов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CI/CD - Запуск</h4>
+
+    <ul>
+      <li class="left fragment">вручную</li>
+      <li class="left fragment">по расписанию</li>
+      <li class="left fragment">по изменениям в репозитории</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/22.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/23.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/24.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/25.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/26.png">
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>M2</h3>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <ul>
+      <li class="left fragment">менеджер процессов для node.js</li>
+      <li class="left fragment">несколько потоков</li>
+      <li class="left fragment">запуск при перезагрузке сервера</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>PM2 - Quick Start</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end('Hello World\n');
+});
+
+server.listen(3000, '127.0.0.1', () => {
+  console.log('Running');
+});
+
+setTimeout(() => {
+  throw new Error('Surprise');
+}, 5000);
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <img src="images/27.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> npm install pm2@latest -g
+
+> pm2 start index.js
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <img src="images/28.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> pm2 stop index
+
+> pm2 startup
+
+> pm2 start index.js -i max
+> pm2 reload index
+
+> pm2 logs
+> pm2 flush
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Для виртуальных машин</h4>
+
+    <ul>
+      <li class="left fragment">получаем ключи для подключения по SSH</li>
+      <li class="left fragment">устанавливаем node.js, nginx и другие пакеты</li>
+      <li class="left fragment">заливаем проект (git, sftp, scp, ...)</li>
+      <li class="left fragment">npm i --production</li>
+      <li class="left fragment">запускаем через pm2</li>
+      <li class="left fragment">настраиваем nginx для маршрутизации сетевого трафика на приложение</li>
+    </ul>
+  </section>
 
 </div></div>
 
