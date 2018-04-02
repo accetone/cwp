@@ -112,6 +112,10 @@ server.listen(8443);</code></pre>
   <div class="task__statement">
     Увидеть результат можно, например, в хроме во вкладке <span class="task__inline-code">Network</span> колонке <span class="task__inline-code">Initiator</span>
   </div>
+
+  <div class="task__statement task__statement_note">
+    В версии Chrome 65 баг/фича запрещающая push с использованием недоверенного сертификата, поэтому работу фичи можно проверить с помощью <span class="task__inline-code">chrome://net-internals/#http2</span>. Подробнее в <a class="task__link" href="https://bugs.chromium.org/p/chromium/issues/detail?id=824988" target="_blank">баг-трекере Chromium</a>
+  </div>
 </section>
 
 <section class="task">
