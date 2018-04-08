@@ -59,7 +59,9 @@
 [CWP/TASK/31 - Passport.js](https://accetone.github.io/cwp/tasks/31.html)  
 [CWP/TASK/32 - Авторизация](https://accetone.github.io/cwp/tasks/32.html)  
 [CWP/TASK/33 - Деплой](https://accetone.github.io/cwp/tasks/33.html)  
-  
+[CWP/TASK/34 - Тестирование](https://accetone.github.io/cwp/tasks/34.html)  
+[CWP/TASK/35 - React](https://accetone.github.io/cwp/tasks/35.html)  
+
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
 [Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exams/Q1.pdf)  
