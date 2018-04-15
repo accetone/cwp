@@ -142,7 +142,13 @@ ReactDOM.render(&lt;App title='Next Facebook!'/&gt;,
 
     <div class="left">
       <pre class="javascript"><code>
-const App = React.createClass({
+class App extends React.Component {
+  constuctor(props) {
+    super(props);
+
+    this.click = this.click.bind(this);
+  }
+
   render() {
     return &lt;div onClick={this.click}&gt;Hi&lt;/div&gt;
   },
@@ -1495,9 +1501,9 @@ const BlogPostWithSubscription =
 function withSubscription(WrappedComponent,
       selectData) {
 
-  return React.createClass({
+  return class {
     ...
-  });
+  };
 
 }
       </code></pre>
@@ -1507,21 +1513,25 @@ function withSubscription(WrappedComponent,
     <h4>Higher-Order Components</h4>
 
     <pre class="javascript "><code>
-getInitialState() {
-  return {
+constructor(props) {
+  super(props);
+
+  this.handleChange = this.handleChange.bind(this);
+
+  this.state = {
     data: selectData(DataSource, props)
   };
-},
+}
 
 componentDidMount() {
   DataSource
     .addChangeListener(this.handleChange);
-},
+}
 
 componentWillUnmount() {
   DataSource
     .removeChangeListener(this.handleChange);
-},
+}
       </code></pre>
   </section>
 
@@ -1533,7 +1543,7 @@ handleChange() {
   this.setState({
     data: selectData(DataSource, this.props)
   });
-},
+}
 
 render() {
   return &lt;WrappedComponent
@@ -1817,6 +1827,148 @@ class C extends React.PureComponent {
       &lt;div&gt;
         {this.props.values.join(&#39;,&#39;)}
       &lt;/div&gt;
+    );
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Fragments</h4>
+
+    <pre class="javascript "><code>
+class Columns extends React.Component {
+  render() {
+    return (
+      &lt;React.Fragment&gt;
+        &lt;td&gt;Hello&lt;/td&gt;
+        &lt;td&gt;World&lt;/td&gt;
+      &lt;/React.Fragment&gt;
+    );
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Portals</h4>
+
+    <pre class="javascript "><code>
+render() {
+  // React does *not* create a new div.
+  // It renders the children into `domNode`.
+  // `domNode` is any valid DOM node,
+  // regardless of its location in the DOM.
+  return ReactDOM.createPortal(
+    this.props.children,
+    domNode,
+  );
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Error Boundaries</h4>
+
+    <pre class="javascript "><code>
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Error Boundaries</h4>
+
+    <pre class="javascript "><code>
+class ErrorBoundary extends React.Component {
+  ...
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    this.setState({ hasError: true });
+
+    // You can also log the error
+    // to an error reporting service
+    logErrorToMyService(error, info);
+  }
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Error Boundaries</h4>
+
+    <pre class="javascript "><code>
+class ErrorBoundary extends React.Component {
+  ...
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return &lt;h1&gt;Something went wrong.&lt;/h1&gt;;
+    }
+    return this.props.children;
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Async Set State</h4>
+
+    <pre class="javascript "><code>
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.__onClick = this.__onClick.bind(this);
+
+    this.state = { value: 0 };
+  }
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Async Set State</h4>
+
+    <pre class="javascript "><code>
+class App extends React.Component {
+  ...
+  render() {
+    return (
+      &lt;div onClick={this.__onClick}&gt;
+        {this.state.value}
+      &lt;/div&gt;
+    );
+  }
+
+  __onClick() {
+    this.setState({ value: this.state.value + 1 });
+    this.setState({ value: this.state.value + 1 });
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Async Set State</h4>
+
+    <pre class="javascript "><code>
+class App extends React.Component {
+  ...
+  __onClick() {
+    this.setState(state =>
+      ({ value: state.value + 1 })
+    );
+
+    this.setState(state =>
+      ({ value: state.value + 1 })
     );
   }
 }
