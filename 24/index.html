@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP24</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Иммутабельность</h2>
+      <p class="author">
+          <small>Лекция 24</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Immutability - Pros</h4>
+
+    <ul class="left">
+      <li class="fragment">код предсказуемей</li>
+      <li class="fragment">быстрое сравнение</li>
+      <li class="fragment">безопасность многопоточности</li>
+      <li class="fragment">облегчает работу GC засчёт отмены defensive copy</li>
+      <li class="fragment">путешествия во времени</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Immutability - Cons</h4>
+
+    <ul class="left">
+      <li class="fragment">может упасть производительность</li>
+      <li class="fragment">может вырасти потребление памяти</li>
+      <li class="fragment">написание требует больше времени</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Immutable.js</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// https://facebook.github.io/immutable-js
+npm install immutable
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Example</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import { Map } from 'immutable';
+
+const a = Map({
+  name: 'Carl Grimes',
+  status: 'alive'
+});
+
+const b = a.set('status', 'dead');
+
+console.log(a.get('name'), a.get('status'));
+console.log(b.get('name'), b.get('status'));
+console.log(a !== b);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const emptyList = List()
+
+const listFromPlainArray = List([ 1, 2, 3, 4 ])
+
+const plainSet = Set([ 1, 2, 3, 4 ])
+const listFromPlainSet = List(plainSet)
+
+const arrayIterator = plainArray[Symbol.iterator]()
+const listFromCollectionArray = List(arrayIterator)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List.isList([]); // false
+List.isList(List()); // true
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List.of(1, 2, 3, 4)
+List.of({x:1}, 2, [3], 4)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const originalList = List([ 0 ]);
+// List [ 0 ]
+
+originalList.set(1, 1);
+// List [ 0, 1 ]
+
+originalList.set(0, 'overwritten');
+// List [ "overwritten" ]
+
+originalList.set(2, 2);
+// List [ 0, undefined, 2 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 0, 1, 2, 3, 4 ]).delete(0);
+// List [ 1, 2, 3, 4 ]
+
+List([ 0, 1, 2, 3, 4 ]).delete(-1);
+// List [ 0, 1, 2, 3 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).clear()
+// List []
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).push(5)
+// List [ 1, 2, 3, 4, 5 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).pop()
+// List[ 1, 2, 3 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 2, 3, 4]).unshift(1);
+// List [ 1, 2, 3, 4 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 'a', 'b', 'c' ])
+const result = list.update(2, val => val + val)
+// List [ "a", "b", "cc" ]
+      </code></pre>
+    </div>
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+
+  const body = document.getElementsByClassName('yandex')[0];
+  let invert = false;
+
+  body.onkeypress = function (event) {
+    if (event.key.toLowerCase() !== 'i') return;
+
+    if (invert) body.style = '';
+    else body.style = 'filter: invert(100%)';
+
+    invert = !invert;
+  }
+</script>
+</body>
+</html>

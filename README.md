@@ -24,6 +24,7 @@
 [CWP/LECTION/21 - Тестирование](https://accetone.github.io/cwp/21)  
 [CWP/LECTION/22 - React](https://accetone.github.io/cwp/22)  
 [CWP/LECTION/23 - Инструменты сборки](https://accetone.github.io/cwp/23)  
+[CWP/LECTION/24 - Иммутабельность](https://accetone.github.io/cwp/24)  
   
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
