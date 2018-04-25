@@ -65,6 +65,8 @@
 [CWP/TASK/34 - Тестирование](https://accetone.github.io/cwp/tasks/34.html)  
 [CWP/TASK/35 - React](https://accetone.github.io/cwp/tasks/35.html)  
 [CWP/TASK/36 - Сборка](https://accetone.github.io/cwp/tasks/36.html)  
+[CWP/TASK/37 - Immutable.js](https://accetone.github.io/cwp/tasks/37.html)  
+[CWP/TASK/38 - Redux](https://accetone.github.io/cwp/tasks/38.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
