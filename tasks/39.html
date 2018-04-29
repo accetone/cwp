@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР39</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Redux Saga</div>
+    <div class="header__id">ЛР39</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-39</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-38</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/redux-saga" target="_blank">redux saga</a> и <a class="task__link" href="https://www.npmjs.com/package/redux-actions" target="_blank">redux actions</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Реализуем REST или GraphQL API позволяющее получать и манипулировать точками маршрута в БД
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Перепишем <span class="task__inline-code">action constants</span>, <span class="task__inline-code">action creators</span> и <span class="task__inline-code">reducers</span> с использованием Redux Actions
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Напишем саги для общения с сервером:<br>
+    1) Получение точек маршрута при старте приложения из БД<br>
+    2) Добавление точки маршрута в БД<br>
+    3) Измение точки маршрута в БД<br>
+    4) Удаление точки маршрута из БД (оптимистичный сценарий)
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Уберём текущую реализацию time travel. Вместо неё сделаем синхронизацию с сервером в оптимистичном стиле (добавление/изменение/удаление):<br>
+    1) Если запрос завершился удачно - в течении 5 секунд в углу показываем уведомление об успешной операции с указанием её типа, а также кнопкой на отмену этой операции<br>
+    2) Если запрос завершился неудачно - отменяем неудачную операцию, в течении 5 секунд в углу показываем уведомление о провалившейся операции с указанием её типа, а также кнопкой на повтор этой операции<br>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    * С помощью веб-сокетов реализуем оповещение всех подключенных клиентов об изменениях в маршруте. То есть, открываем приложение в двух браузерах (или двух вкладках) и добавляем новую точку в одном из них. Хотим увидеть новую точку и в другом браузере без перегазгрузки страницы.
+  </div>
+
+  <div class="task__statement">
+    * Реализуем сохранение текущего состояния в локальное хранилище браузера с подгрузкой его при старте приложения. Это не отменяет начальный запрос на сервер.
+  </div>
+
+  <div class="task__statement task__statement_note">
+    Задания со звездочкой предназначены для персонального роста и необязательны к показу при защите лабораторной работы
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу приложения
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://redux-actions.js.org/">Документация по Redux Actions</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://redux-saga.js.org/">Документация по Redux Saga</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
