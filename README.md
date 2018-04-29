@@ -26,7 +26,8 @@
 [CWP/LECTION/23 - Инструменты сборки](https://accetone.github.io/cwp/23)  
 [CWP/LECTION/24 - Иммутабельность](https://accetone.github.io/cwp/24)  
 [CWP/LECTION/25 - Flux / Redux](https://accetone.github.io/cwp/25)  
-  
+[CWP/LECTION/26 - Redux Actions](https://accetone.github.io/cwp/26)  
+
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
 [CWP/TASK/01 - Знакомство с Node.js](https://accetone.github.io/cwp/tasks/01.html)  
