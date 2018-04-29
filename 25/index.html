@@ -1781,6 +1781,747 @@ _navigate(link) {
       </code></pre>
   </section>
 
+  <section>
+    <h3><span class="red">R</span>eact Redux</h3>
+  </section>
+
+  <section>
+    <h4>React Redux - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save react-redux
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.7/react-redux.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getVisibleTasks(tasks, link) {
+  if (link.title === 'All') {
+
+    return tasks;
+
+  } else if (link.title === 'Completed') {
+
+    return tasks.filter(x => x.completed);
+
+  } else {
+
+    return tasks.filter(x => !x.completed);
+
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getCompletedCount(tasks) {
+  return tasks.filter(x => x.completed).length;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getRemainsCount(tasks) {
+  return tasks.filter(x => !x.completed).length;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function areAllCompleted(tasks) {
+  return getRemainsCount(tasks) === 0;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    tasks: getVisibleTasks(
+      state.tasks,
+      state.activeLink
+    ),
+
+    completed: getCompletedCount(state.tasks),
+
+    remains: getRemainsCount(state.tasks),
+
+    areAllCompleted: areAllCompleted(state.tasks),
+
+    activeLink: state.activeLink,
+
+    links: state.links
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleItem: (id) => {
+      dispatch(
+        TodoActions.toggle(id)
+      );
+    },
+
+    toggleAll: (status) => {
+      dispatch(
+        TodoActions.toggleAll(status)
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    removeItem: (id) => {
+      dispatch(
+        TodoActions.remove(id)
+      );
+    },
+
+    addItem: (text) => {
+      dispatch(
+        TodoActions.add(text)
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    updateItem: (id, text) => {
+      dispatch(
+        TodoActions.update(id, text)
+      );
+    },
+
+    removeCompleted: () => {
+      dispatch(
+        TodoActions.clear()
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    navigate: (link) => {
+      dispatch(
+        NavActions.activate(link)
+      );
+    }
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+class ToDo extends React.Component {
+  render() {
+    return (...);
+  },
+
+  _toggleAll = () => {
+    this.props.toggleAll(
+      !this.props.areAllCompleted
+    );
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+  <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  &lt;div className=&quot;todo__title&quot;&gt;
+    React Redux ToDo
+  &lt;/div&gt;
+
+  &lt;Nav
+    links={this.props.links}
+    activeLink={this.props.activeLink}
+    navigate={this.props.navigate}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoSummary
+    remains={this.props.remains}
+    completed={this.props.completed}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoList
+    tasks={this.props.tasks}
+    areAllComplete={this.props.areAllCompleted}
+    toggleItem={this.props.toggleItem}
+    toggleAll={this._toggleAll}
+    removeItem={this.props.removeItem}
+    updateItem={this.props.updateItem}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoForm
+    addItem={this.props.addItem}
+  /&gt;
+
+  &lt;ToDoClear
+    removeCompleted={this.props.removeCompleted}
+  /&gt;
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const ToDoContainer = ReactRedux.connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ToDo);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+ReactDOM.render(
+  &lt;ReactRedux.Provider store={store}&gt;
+    &lt;ToDoContainer/&gt;
+  &lt;/ReactRedux.Provider&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Async Action Creator</h4>
+
+    <pre class="javascript"><code>
+export function fetchPosts(subreddit) {
+  return function (dispatch) {
+    dispatch(requestPosts(subreddit));
+
+    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
+      .then(
+        response => response.json(),
+        error => console.log('An error occurred.', error)
+      )
+      .then(json =>
+        dispatch(receivePosts(subreddit, json))
+      )
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+// logging, reports, side-effects, ...
+const logger = store => next => action => {
+  console.log('dispatching', action)
+
+  let result = next(action)
+
+  console.log('next state', store.getState())
+
+  return result
+}
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+const crashReporter = store => next => action => {
+  try {
+    return next(action)
+  } catch (err) {
+    console.error('Caught an exception!', err)
+
+    // TODO: report error
+
+    throw err
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware
+} from 'redux'
+
+const todoApp = combineReducers(reducers)
+
+const store = createStore(
+  todoApp,
+  applyMiddleware(logger, crashReporter)
+)
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>ime Travel</h3>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// simple state
+{
+  counter: 10
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// state for undo/redo feature
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ],
+    present: 10,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 1
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
+    present: 9,
+    future: [ 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 2
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+    present: 8,
+    future: [ 9, 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+{
+  past: Array&lt;T&gt;,
+  present: T,
+  future: Array&lt;T&gt;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Global Undo/Redo
+{
+  past: [
+    { counterA: 1, counterB: 1 },
+    { counterA: 1, counterB: 0 },
+    { counterA: 0, counterB: 0 }
+  ],
+  present: { counterA: 2, counterB: 1 },
+  future: []
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Separate Undo/Redo
+{
+  counterA: {
+    past: [ 1, 0 ],
+    present: 2,
+    future: []
+  },
+  counterB: {
+    past: [ 0 ],
+    present: 1,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Undo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь последний элемент из past</li>
+      <li class="fragment">добавить present в начало future</li>
+      <li class="fragment">заменить present на извлеченный из past элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Redo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь первый элемент из future</li>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">заменить present на извлеченный из future элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Other Action Rules</h4>
+
+    <ul>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">установить present в обновленный state</li>
+      <li class="fragment">очистить future</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save redux-undo
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://unpkg.com/redux-undo@1.0.0-beta7/dist/redux-undo.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import undoable from 'redux-undo';
+
+undoable(reducer)
+undoable(reducer, config)
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import { ActionCreators } from 'redux-undo';
+
+store.dispatch(ActionCreators.undo());
+
+ActionCreators.undo()
+ActionCreators.redo()
+
+ActionCreators.jump(-2) // undo 2 steps
+ActionCreators.jump(5)  // redo 5 steps
+
+ActionCreators.jumpToPast(index)
+ActionCreators.jumpToFuture(index)
+
+ActionCreators.clearHistory()
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+undoable(reducer, {
+  limit: false,
+  filter: () => true,
+  debug: false,
+  neverSkipReducer: false,
+
+  undoType: ActionTypes.UNDO,
+  redoType: ActionTypes.REDO,
+
+  jumpType: ActionTypes.JUMP,
+
+  jumpToPastType: ActionTypes.JUMP_TO_PAST,
+  jumpToFutureType: ActionTypes.JUMP_TO_FUTURE,
+
+  clearHistoryType: ActionTypes.CLEAR_HISTORY
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const reducer = Redux.combineReducers({
+  tasks: ReduxUndo.default(tasks),
+  activeLink,
+  links
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const store = Redux.createStore(reducer, {
+  tasks: {
+    past: [],
+    present: [...],
+    future: []
+  },
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+class TimeTravelPanel extends React.Component {
+  render() {
+    return (&lt;div className=&quot;time-panel&quot;&gt;
+        &lt;div className={'time-panel__button '
+            + (this.props.canUndo ? ''
+              : 'time-panel__button_disabled')}
+          onClick={this.props.undo}&gt;Undo&lt;/div&gt;
+
+        &lt;div className={'time-panel__button '
+          + (this.props.canRedo ? ''
+            : 'time-panel__button_disabled')}
+          onClick={this.props.redo}&gt;Redo&lt;/div&gt;
+    &lt;/div&gt;);
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+class ToDo extends React.Component {
+  render() {
+    return (
+      &lt;div className=&quot;todo&quot;&gt;
+        ...
+        &lt;TimeTravelPanel
+          undo={this.props.undo}
+          redo={this.props.redo}
+          canUndo={this.props.canUndo}
+          canRedo={this.props.canRedo}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+function canUndo(model) {
+  return model.past
+    && model.past.length !== 0;
+}
+
+function canRedo(model) {
+  return model.future
+    && model.future.length !== 0;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    tasks: getVisibleTasks(
+      state.tasks.present,
+      state.activeLink
+    ),
+
+    completed: getCompletedCount(
+      state.tasks.present
+    ),
+
+    remains: getRemainsCount(
+      state.tasks.present
+    ),
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    ...
+    areAllCompleted: areAllCompleted(
+      state.tasks.present
+    ),
+
+    activeLink: state.activeLink,
+    links: state.links,
+
+    canUndo: canUndo(state.tasks),
+    canRedo: canRedo(state.tasks)
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    undo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.undo()
+      );
+    },
+
+    redo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.redo()
+      );
+    }
+  };
+};
+      </code></pre>
+  </section>
 
 </div></div>
 
