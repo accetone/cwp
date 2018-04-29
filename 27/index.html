@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP27</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Redux Saga</h2>
+      <p class="author">
+          <small>Лекция 27</small>
+      </p>
+  </section>
+
+  <section>
+    <img src="images/redux-saga-logo.png">
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <ul>
+      <li class="fragment">удобная работа с сайд-эффектами</li>
+      <li class="fragment">на генераторах</li>
+      <li class="fragment">декларативная</li>
+      <li class="fragment">легкое тестирование</li>
+      <li class="fragment"><a href="https://redux-saga.js.org/">redux-saga.js.org</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+npm install redux-saga
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script
+  src=&quot;https://unpkg.com/redux-saga/dist/redux-saga.js&quot;
+&gt;&lt;/script&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { call, put } from 'redux-saga/effects'
+
+export function * fetchData(action) {
+ try {
+  const data = yield call(
+    Api.fetchUser,
+    action.payload.url
+  )
+
+  yield put({type: "FETCH_SUCCEEDED", data})
+ } catch (error) {
+  yield put({type: "FETCH_FAILED", error})
+ }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga/effects'
+
+function * watchFetchData() {
+  yield takeEvery('FETCH_REQUESTED', fetchData)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import {
+  createStore,
+  applyMiddleware
+} from 'redux';
+
+import createSagaMiddleware from 'redux-saga'
+
+import reducer from './reducers';
+
+import sagas from './sagas/watchFetchData';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+    reducer,
+    /* initial state */,
+    applyMiddleware(sagaMiddleware)
+);
+
+sagaMiddleware.run(sagas);
+
+export default store;
+    </code></pre>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        controls: false,
+        progress: true,
+        slideNumber: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        transition: 'slide',
+        dependencies: [
+            {
+                src: '../plugin/highlight/highlight.js',
+                async: true,
+                condition: function () {
+                    return Boolean(document.querySelector('pre code'));
+                },
+                callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
+</html>

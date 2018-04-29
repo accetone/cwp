@@ -27,6 +27,7 @@
 [CWP/LECTION/24 - Иммутабельность](https://accetone.github.io/cwp/24)  
 [CWP/LECTION/25 - Flux / Redux](https://accetone.github.io/cwp/25)  
 [CWP/LECTION/26 - Redux Actions](https://accetone.github.io/cwp/26)  
+[CWP/LECTION/27 - Redux Saga](https://accetone.github.io/cwp/27)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
