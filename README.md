@@ -70,6 +70,7 @@
 [CWP/TASK/37 - Immutable.js](https://accetone.github.io/cwp/tasks/37.html)  
 [CWP/TASK/38 - Redux](https://accetone.github.io/cwp/tasks/38.html)  
 [CWP/TASK/39 - Redux Saga](https://accetone.github.io/cwp/tasks/39.html)  
+[CWP/TASK/40 - React Router](https://accetone.github.io/cwp/tasks/40.html)  
 
 #### Дополнительно
 [Доклады](https://github.com/accetone/cwp/tree/gh-pages/speakers)  
