@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Router</title>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@15/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+<script src="https://unpkg.com/redux@3.6.0/dist/redux.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.3/react-redux.js"></script>
+<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+<script src="https://unpkg.com/babel-polyfill@6.16.0//dist/polyfill.min.js"></script>
+
+<script type="text/babel">
+const Home = () => (
+  <div>
+    <h2>Home</h2>
+  </div>
+);
+
+const About = () => (
+  <div>
+    <h2>About</h2>
+  </div>
+);
+
+const frameworks = [
+  {name:'angular', desc: 'Superheroic JavaScript MVW Framework'},
+  {name:'ember', desc: 'A framework for creating ambitious web applications'},
+  {name:'react', desc: 'A JavaScript library for building user interfaces'},
+];
+
+const Framework = (props) => {
+  const framework = frameworks.find(x => x.name === props.match.params.name);
+
+  return (
+    <div>
+      <h3>{framework.name}</h3>
+      <p>{framework.desc}</p>
+    </div>);
+};
+
+const Frameworks = (props) => (
+  <div>
+    <h2>Frameworks</h2>
+
+    {frameworks.map(x =>
+      <div key={x.name}>
+        <ReactRouterDOM.Link to={`${props.match.url}/${x.name}`}>
+          {x.name}
+        </ReactRouterDOM.Link>
+      </div>
+    )}
+
+    <hr/>
+
+    <ReactRouterDOM.Route path={`${props.match.url}/:name`} component={Framework}/>
+    <ReactRouterDOM.Route exact path={props.match.url} render={() => (
+      <h3>Please select a framework.</h3>
+    )}/>
+  </div>
+);
+
+const App = () => (
+  <ReactRouterDOM.HashRouter>
+    <div>
+      <ul>
+        <li><ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link></li>
+        <li><ReactRouterDOM.Link to="/about">About</ReactRouterDOM.Link></li>
+        <li><ReactRouterDOM.Link to="/frameworks">Frameworks</ReactRouterDOM.Link></li>
+      </ul>
+
+      <hr/>
+
+      <ReactRouterDOM.Route exact path="/" component={Home}/>
+      <ReactRouterDOM.Route path="/about" component={About}/>
+      <ReactRouterDOM.Route path="/frameworks" component={Frameworks} />
+    </div>
+  </ReactRouterDOM.HashRouter>
+);
+
+ReactDOM.render(
+  <App/>,
+  document.getElementById('app')
+);
+</script>
+</body>
+</html>

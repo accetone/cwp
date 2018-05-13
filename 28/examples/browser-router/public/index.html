@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Browser Router</title>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@15/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+<script src="https://unpkg.com/redux@3.6.0/dist/redux.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.3/react-redux.js"></script>
+<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+<script src="https://unpkg.com/babel-polyfill@6.16.0//dist/polyfill.min.js"></script>
+
+<script type="text/babel">
+function humans(state = [], action) {
+  switch (action.type) {
+    case 'HUMANS_ADD':
+      return [
+        ...state,
+        { name: action.name }
+      ];
+  }
+
+  return state;
+}
+
+function robots(state = [], action) {
+  switch (action.type) {
+    case 'ROBOTS_ADD':
+      return [
+        ...state,
+        {
+          name: action.name,
+          manufacturer: action.manufacturer
+        }
+      ];
+  }
+
+  return state;
+}
+
+const reducer = Redux.combineReducers({
+  humans,
+  robots
+});
+
+const store = Redux.createStore(reducer, {
+  humans: [{ name: 'Leela' }, { name: 'Fry' }],
+  robots: [{ name: 'Bender', manufacturer: 'MomCorp'}]
+});
+
+class AddItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+
+    props.fields.forEach(x => this.state[x] = '');
+
+    this.__change = this.__change.bind(this);
+    this.__add = this.__add.bind(this);
+  }
+
+  render() {
+    const inputs = this.props.fields.map(x => {
+    	const handler = (event) => {
+    		this.__change(x, event);
+    	};
+
+    	return <input key={x} value={this.state[x]} placeholder={x} onChange={handler} />;
+    });
+
+    return (
+      <div>
+      	{inputs}
+      	<button onClick={this.__add}>Add</button>
+      </div>
+    );
+  }
+
+  __change(field, event) {
+  	const state = {};
+
+  	state[field] = event.target.value;
+
+  	this.setState(state);
+  }
+
+  __add() {  	
+  	this.props.add(this.state);
+
+  	const state = {};
+
+	this.props.fields.forEach(x => state[x] = '');
+
+  	this.setState(state);
+  }
+}
+
+const Home = () => (
+    <h2>Welcome to Futurama!</h2>
+);
+
+const Humans = (props) => {
+  const items = props.list.map(item => (
+  	<div key={item.name}>{item.name}</div>
+  ));
+
+  return (
+  	<div>
+      <h2>Humans</h2>
+  		{items}
+  		<br/>
+  		<AddItem fields={['name']} add={props.add} />
+  	</div>
+  );
+};
+
+const humansMapStateToProps = (state) => {
+  return {
+    list: state.humans,
+  };
+};
+
+const humansMapDispatchToProps = (dispatch) => {
+  return {
+    add: (human) => {
+      dispatch({
+        type: 'HUMANS_ADD',
+        name: human.name
+      });
+    }
+  };
+};
+
+const HumansContainer = ReactRedux.connect(
+  humansMapStateToProps,
+  humansMapDispatchToProps
+)(Humans);
+
+const Robots = (props) => {
+  const items = props.list.map(item => (
+  	<div key={item.name}>{item.name} [{item.manufacturer}]</div>
+  ));
+
+  return (
+  	<div>
+      <h2>Robots</h2>
+  		{items}
+  		<br/>
+  		<AddItem fields={['name', 'manufacturer']} add={props.add} />
+  	</div>
+  );
+};
+
+const robotsMapStateToProps = (state) => {
+  return {
+    list: state.robots,
+  };
+};
+
+const robotsMapDispatchToProps = (dispatch) => {
+  return {
+    add: (robot) => {
+      dispatch({
+        type: 'ROBOTS_ADD',
+        name: robot.name,
+        manufacturer: robot.manufacturer
+      });
+    }
+  };
+};
+
+const RobotsContainer = ReactRedux.connect(
+  robotsMapStateToProps,
+  robotsMapDispatchToProps
+)(Robots);
+
+const Stats = (props) => (<div>Humans to kill: <b>{props.toKill}</b></div>);
+
+const statsMapStateToProps = (state) => {
+  return {
+    toKill: state.humans.length,
+  };
+};
+
+const StatsContainer = ReactRedux.connect(
+  statsMapStateToProps
+)(Stats);
+
+const App = (props) => (
+  <ReactRouterDOM.BrowserRouter>
+    <div>
+      <ReactRouterDOM.Link to="/">Home</ReactRouterDOM.Link>
+      {' '}
+      <ReactRouterDOM.Link to="/humans">Humans</ReactRouterDOM.Link>
+      {' '}
+      <ReactRouterDOM.Link to="/robots">Robots</ReactRouterDOM.Link>
+
+      <ReactRouterDOM.Route exact path="/" component={Home}/>
+      <ReactRouterDOM.Route path="/humans" component={HumansContainer}/>
+      <ReactRouterDOM.Route path="/robots" component={RobotsContainer}/>
+
+      <br/>
+
+      <StatsContainer />
+    </div>
+  </ReactRouterDOM.BrowserRouter>
+);
+
+ReactDOM.render(
+  <ReactRedux.Provider store={store}>
+    <App/>
+  </ReactRedux.Provider>,
+  document.getElementById('app')
+);
+</script>
+</body>
+</html>
