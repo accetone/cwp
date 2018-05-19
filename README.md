@@ -29,6 +29,7 @@
 [CWP/LECTION/26 - Redux Actions](https://accetone.github.io/cwp/26)  
 [CWP/LECTION/27 - Redux Saga](https://accetone.github.io/cwp/27)  
 [CWP/LECTION/28 - React Router](https://accetone.github.io/cwp/28)  
+[CWP/LECTION/29 - Reselect](https://accetone.github.io/cwp/29)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  
