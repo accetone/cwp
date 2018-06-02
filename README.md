@@ -31,6 +31,7 @@
 [CWP/LECTION/28 - React Router](https://accetone.github.io/cwp/28)  
 [CWP/LECTION/29 - Reselect](https://accetone.github.io/cwp/29)  
 [CWP/LECTION/30 - Recompose](https://accetone.github.io/cwp/30)  
+[CWP/LECTION/32 - Serverless](https://accetone.github.io/cwp/32)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)  

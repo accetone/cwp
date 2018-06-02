@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP32</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Serverless</h2>
+      <p class="author">
+          <small>Лекция 32</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Serverless</h4>
+
+    <ul>
+      <li class="fragment">не статические сайты</li>
+      <li class="fragment">сервера есть</li>
+      <li class="fragment">нет необходимости администрировать</li>
+      <li class="fragment">легко масштабироваться</li>
+      <li class="fragment">высокая доступность</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Platform as a Service</h4>
+
+    <ul>
+      <li class="fragment">полный контроль над кодом</li>
+      <li class="fragment">минимальный контроль над окружением</li>
+      <li class="fragment">AWS Elastic Beanstalk, Heroku Apps</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Backend as a Service</h4>
+
+    <ul>
+      <li class="fragment">минимальный контроль над серверным кодом</li>
+      <li class="fragment">нет контроля над окружением</li>
+      <li class="fragment">логика описывается на стороне клиента</li>
+      <li class="fragment">Parse, Firebase - данные</li>
+      <li class="fragment">Auth0, AWS Cognito - аутентификация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Function as a Service</h4>
+
+    <ul>
+      <li class="fragment">минимальный контроль над окружением</li>
+      <li class="fragment">event-driven контейнеры</li>
+      <li class="fragment">AWS Lambda, Azure Functions</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Traditional</h4>
+
+    <img src="images/ps.svg" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Serverless</h4>
+
+    <img src="images/sps.svg" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Pros</h4>
+
+    <ul>
+      <li class="fragment">можно снизить операционные затраты</li>
+      <li class="fragment">снижение затрат на разработку</li>
+      <li class="fragment">снижение затрат на масштабирование</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Cons</h4>
+
+    <ul>
+      <li class="fragment">зависимость от вендора</li>
+      <li class="fragment">мультиаренда</li>
+      <li class="fragment">безопасность</li>
+      <li class="fragment">нет возможности тонкой оптимизации</li>
+      <li class="fragment">ограничения реализаций</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-1.png">
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-2.png">
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-3.png"  style="background-color: #fff !important;">
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+
+  const body = document.getElementsByClassName('yandex')[0];
+  let invert = false;
+
+  body.onkeypress = function (event) {
+    if (event.key.toLowerCase() !== 'i') return;
+
+    if (invert) body.style = '';
+    else body.style = 'filter: invert(100%)';
+
+    invert = !invert;
+  }
+</script>
+</body>
+</html>
