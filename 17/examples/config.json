@@ -1,9 +1,0 @@
-{
-  "db": {
-    "host": "127.0.0.1",
-    "name": "xxx",
-    "user": "xxx",
-    "password": "xxx"
-  },
-  "port": 4040
-}
