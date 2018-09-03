@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР01</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Знакомство с Node.js</div>
+    <div class="header__id">ЛР01</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Устанавливаем Current версию <a class="task__link" target="_blank" href="https://nodejs.org/en/download/current/">Node.js</a>
+  </div>
+
+  <div class="task__statement">
+    В терминале выполняем команды <span class="task__inline-code">node --version</span> и <span class="task__inline-code">npm --version</span>. Должны получить номера версий node.js и npm, соответственно.
+  </div>
+</code></pre>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Устанавливаем любую IDE или редактор для работы с Node.js: WebStorm (предпочтительно), Atom, VS Code, SublimeText, ...
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-01</span>, клонируем его и открываем в выбранной IDE
+  </div>
+
+  <div class="task__statement">
+    В корне проекта создадим файл <span class="task__inline-code">index.js</span> и напишем там следующий код:
+  </div>
+
+  <pre><code class="task__code javascript">console.log('Hello World');</code></pre>
+
+  <div class="task__statement">
+    Откроем терминал и перейдем в папку с проектом. В WebStorm в левом нижнем углу есть вкладка <span class="task__inline-code">Terminal</span>, которой можно воспользоваться вместо открытия терминала и перехода в папку проекта
+  </div>
+
+  <div class="task__statement">
+    В терминале выполняем команду <span class="task__inline-code">node index.js</span>. Должны увидеть текст приветствия
+  </div>
+
+  <div class="task__statement">
+    Создадим коммит с сообщением <span class="task__inline-code">code greetings</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Внесем изменения в скрипт для того, чтобы сделать персонализированное приветствие:
+  </div>
+
+  <pre><code class="task__code javascript">const name = process.argv[2];
+
+console.log(`Hi ${name}!`);</code></pre>
+
+  <div class="task__statement">
+    Повторим вызов из терминала с добавлением какого-нибудь имени <span class="task__inline-code">node index.js MyNameIs</span>
+  </div>
+
+  <div class="task__statement">
+    Создадим коммит с сообщением <span class="task__inline-code">change to personal greetings</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Самостоятельно сделаем печать любого количества переданных в скрипт агрументов
+  </div>
+
+  <div class="task__statement">
+    Создадим коммит с сообщением <span class="task__inline-code">print all command line arguments</span>
+  </div>
+
+  <div class="task__statement task__statement_note">
+    При написании кода мы всегда стремимся делать коммиты как можно меньших размеров. Один коммит должен содержать только одно логическое изменение: project init, add X dependency, add Y module, insert Y module into navigation, add tracking to Y module, ...
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Пришло время для первого серьезного задания. Напишем свой крутой скрипт для работы с файловой системой
+  </div>
+
+  <div class="task__statement">
+    1. Скрипт должен принимать путь к директории в качестве входного аргумента
+  </div>
+
+  <div class="task__statement">
+    2. Скрипт должен cоздавать в этой директории файл <span class="task__inline-code">summary.js</span>, который при запуске выводит список всех файлов директории включая файлы в подпапках.
+    То есть, скрипт должен создать еще один скрипт. Его можно составить как набор операций <span class="task__inline-code">console.log</span> или массив строк, с циклом и <span class="task__inline-code">console.log</span>.
+    Пути которые выводит <span class="task__inline-code">summary.js</span> должны быть относительными. Допустим указана директория <span class="task__inline-code">/users</span> в которой лежат файлы <span class="task__inline-code">/users/code.txt</span>, <span class="task__inline-code">/users/secret-code.txt</span> и <span class="task__inline-code">/users/xyz/top-sectet-code.txt</span>. Тогда скрипт напечатает <span class="task__inline-code">code.txt, secret-code.txt, xyz/top-secret-code.txt</span>
+  </div>
+
+  <div class="task__statement">
+    3. Скрипт должен создавать внутри переданной директории вложенную директорию с таким же именем, в которую копировать все *.txt файлы с добавлением в начало и конец каждого строку копирайта
+  </div>
+
+  <div class="task__statement">
+    4. Для хранения строки копирайта создайте файл <span class="task__inline-code">config.json</span>, куда и поместите в JSON формате в поле copyright вашу строку
+  </div>
+
+  <div class="task__statement">
+    5. Скрипт должен обрабатывать различные внештатные ситуации и не падать. Например, если переданной директории не существует
+  </div>
+
+  <div class="task__statement">
+    6. В конце своего выполнения скрипт должен начать отслеживание изменений в директории со скопированными *.txt файлами и после каждого изменения выводить на консоль имя файла который отредактировали
+  </div>
+
+  <div class="task__statement">
+    7. Вам понадобятся методы из <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/fs.html">File System</a> и <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/path.html">Path</a>
+  </div>
+
+  <div class="task__statement">
+    8. Нельзя использовать синхронные версии методов (<span class="task__inline-code">XSync</span>)
+  </div>
+
+  <div class="task__statement">
+    9. Не забываем про маленькие коммиты
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Запустите версию скрипта печатающую любое количество передаваемых аргументов
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Запустите версию скрипта работающего с файловой системой
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://karmazzin.gitbooks.io/eloquentjavascript_ru/content/">Marijn Haverbeke - Выразительный Javascript</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/en/docs/">Node.js Docs</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
