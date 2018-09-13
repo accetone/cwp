@@ -107,7 +107,7 @@ client.on('close', function() {
   </div>
 
   <div class="task__statement">
-    8. Напишем скрипт <span class="task__inline-code">client-swarm.js</span>, который с помощью модуля <span class="task__inline-code">child_process</span> запускает <span class="task__inline-code">N</span> клиентов. Число клиентов передается в скрипт через аргументы командной строки
+    8. Напишем скрипт <span class="task__inline-code">client-swarm.js</span>, который с помощью модуля <span class="task__inline-code">child_process</span> или <span class="task__inline-code">worker_threads</span> запускает <span class="task__inline-code">N</span> клиентов. Число клиентов передается в скрипт через аргументы командной строки
   </div>
 </section>
 
@@ -149,11 +149,15 @@ client.on('close', function() {
 
 <section class="task task_extras">
   <div class="task__statement">
-    <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/net.html">Документация модуля net</a>
+    <a class="task__link" target="_blank" href="https://nodejs.org/api/net.html">Документация модуля net</a>
   </div>
 
   <div class="task__statement">
-    <a class="task__link" target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html">Документация модуля child_process</a>
+    <a class="task__link" target="_blank" href="https://nodejs.org/api/child_process.html">Документация модуля child_process</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/api/worker_threads.html">Документация модуля worker_threads</a>
   </div>
 </section>
 
