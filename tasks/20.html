@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР20</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Шаблоны</div>
+    <div class="header__id">ЛР20</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-20</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеки <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a> и <a class="task__link" href="https://www.npmjs.com/package/pug" target="_blank">pug</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Скачаем дамп тестовой <a class="task__link" href="http://downloads.mysql.com/docs/world.sql.zip" target="_blank">базы данных</a>
+  </div>
+
+  <div class="task__statement">
+    Выполним скачанный sql скрипт в своей любимой СУДБ для новой базы данных
+  </div>
+
+  <div class="task__statement">
+    Опишем модели для таблиц <span class="task__inline-code">country</span>, <span class="task__inline-code">city</span> и <span class="task__inline-code">countryLanguage</span> с помощью sequelize
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">views/index.pug</span>:
+
+    <pre><code class="task__code pug">h1 World Database
+
+a(href='/countries.html') Countries [#{countriesCount}]
+br
+a(href='/cities.html') Cities [#{citiesCount}]</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">index.js</span>:
+
+    <pre><code class="task__code pug">const express = require('express');
+
+const app = express();
+
+app.set('view engine', 'pug');
+
+app.get('/', (req, res) => {
+  res.render('index', { countriesCount: 10, citiesCount: 42 });
+});
+
+app.listen(3000, () => console.log('Example app listening on port 3000!'));</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Запустим сервер и в браузере проверим главную страницу
+  </div>
+
+  <div class="task__statement">
+    Заполним главную страницу реальными числами из БД
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим шаблон для отображения списка стран - <span class="task__inline-code">views/countries.pug</span>, который будем отдавать для адреса <span class="task__inline-code">/countries.html</span>
+  </div>
+
+  <div class="task__statement">
+    1. Показывать 25 ссылок на страны. Текст ссылки состоит из <span class="task__inline-code">Name</span> и <span class="task__inline-code">Continent</span>. Адрес в формате - <span class="task__inline-code">/countries/&lt;Поле Code&gt;.html</span>
+  </div>
+
+  <div class="task__statement">
+    2. Обеспечить постраничную навигацию. Т.е. перейдя по ссылке <span class="task__inline-code">/countries.html?page=2</span> получим следующие 25 стран
+  </div>
+
+  <div class="task__statement">
+    3. Вверху страницы показывать в заголовке первого уровня - <span class="task__inline-code">Countries / &lt;Номер первой элемента&gt;-&lt;Номер последнего элемента&gt;</span>. Т.е. для первой страницы - <span class="task__inline-code">Countries / 1-25</span>, для второй - <span class="task__inline-code">Countries / 26-50</span> и т.д.
+  </div>
+
+  <div class="task__statement">
+    4. Внизу показывать ссылки на все доступные страницы (1, 2, 3, ...). Среди них выделить красным цветом текущую страницу
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим шаблон для отображения страны - <span class="task__inline-code">views/country.pug</span>, который будем отдавать для адреса <span class="task__inline-code">/countries/&lt;Поле Code&gt;.html</span>
+  </div>
+
+  <div class="task__statement">
+    1. Выведем все поля для соответствующей страны в удобном для чтения виде
+  </div>
+
+  <div class="task__statement">
+    2. Выведем число городов соответствующей страны
+  </div>
+
+  <div class="task__statement">
+    3. Выведем ссылку на столицу соответствующей страны. Текст ссылки состоит из <span class="task__inline-code">Name</span>. Адрес в формате - <span class="task__inline-code">/cities/&lt;ID&gt;.html</span>
+  </div>
+
+  <div class="task__statement">
+    4. Выведем ссылки на 3 города соответствующей страны с самым большим количеством населения. Текст ссылки состоит из <span class="task__inline-code">Name</span> и <span class="task__inline-code">Population</span>. Адрес в формате - <span class="task__inline-code">/cities/&lt;ID&gt;.html</span>
+  </div>
+
+  <div class="task__statement">
+    5. Выведем 3 самых распространненых языка в соответствующей страны. Нас интересует название, количество носителей (вычисляется с помощью процента), процент носителей и является ли он официальным
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим шаблон для отображения страны - <span class="task__inline-code">views/city.pug</span>, который будем отдавать для адреса <span class="task__inline-code">/cities/&lt;ID&gt;.html</span>
+  </div>
+
+  <div class="task__statement">
+    1. Выведем все поля для соответствующего города в удобном для чтения виде
+  </div>
+
+  <div class="task__statement">
+    2. Выведем краткую информацию о стране - имя, континент, официальные языки, имя столицы, ссылка на страницу страны
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу приложения
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://pugjs.org/">Документация по Pug</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

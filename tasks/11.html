@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР11</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Express.js</div>
+    <div class="header__id">ЛР11</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-11</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-10</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Дополним наше API
+  </div>
+
+  <div class="task__statement">
+    1. Модель актера:
+    <pre><code class="task__code json">"id": int / string
+"name": string
+"birth": string // дата рождение
+"films": int // число фильмов
+"liked": int // число лайков
+"photo": string // ссылка на фото</code></pre>
+  </div>
+
+  <div class="task__statement">
+    2. Составим <span class="task__inline-code">actors.json</span> из 3 актеров из <a target="_blank" href="https://www.kinopoisk.ru/fame/" class="task__link">голливудской «Аллеи славы»</a>. Строка с вашими актерами это номер вашего варианта. Например, у вас 5 вариант, значит берете 5 строку с актерами - Брюс Уиллис, Марк Уолберг, Арнольд Шварценеггер
+  </div>
+
+  <div class="task__statement">
+    3. Реализуем логику для следующих URL:
+    <br><br>
+    <span class="task__inline-code">GET /api/actors/readall</span> - возвращает массив актеров отсортированных по полю <span class="task__inline-code">liked</span> по убыванию
+    <br><br>
+    <span class="task__inline-code">GET /api/actors/read</span> - возвращает актера по переданному в теле запроса <span class="task__inline-code">id</span>
+    <br><br>
+    <span class="task__inline-code">POST /api/actors/create</span> - создает актера с переданными в теле запроса параметрами / <span class="task__inline-code">id</span> генерируется на сервере / сервер возвращает созданного актера
+    <br><br>
+    <span class="task__inline-code">POST /api/actors/update</span> - обновляет актера с переданными параметрами по переданному <span class="task__inline-code">id</span> / возвращаем обновленного актера / клиент может присылать для обновления только часть полей
+    <br><br>
+    <span class="task__inline-code">POST /api/actors/delete</span> - удаляет актера по переданному <span class="task__inline-code">id</span>
+  </div>
+
+  <div class="task__statement">
+    4. Добавим валидацию входящих запросов
+  </div>
+
+  <div class="task__statement">
+    5. На нашем сервере будет 3 роутера - <span class="task__inline-code">api</span>, <span class="task__inline-code">films</span> и <span class="task__inline-code">actors</span>
+  </div>
+
+  <div class="task__statement">
+    6. Фотографии актеров будем раздавать с нашего сервера по адресу <span class="task__inline-code">/images/actors/*</span> с использованием <span class="task__inline-code">express.static</span>. В случае если запрошенной фотографии нет - возвращать фотографию заглушку (например, с надписью "NO PHOTO" или вашей фотографией)
+  </div>
+
+  <div class="task__statement">
+    7. Для пути  <span class="task__inline-code">/api/*</span> напишем логгер, который записывает в файл информацию о входящем запросе - дата и время, путь, параметры.
+  </div>
+
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу сервера через Postman
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте логи
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://expressjs.com/en/4x/api.html">Документация по Express</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

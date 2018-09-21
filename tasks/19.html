@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР19</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Валидация</div>
+    <div class="header__id">ЛР19</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-19</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеки <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/body-parser" target="_blank">body-parser</a> и <a class="task__link" href="https://www.npmjs.com/package/joi" target="_blank">joi</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">index.js</span> с простым express-сервером:
+
+    <pre><code class="task__code javascript">const express = require('express');
+const bodyParser = require('body-parser');
+
+const validator = require('./validator');
+
+const app = express();
+
+app.use(bodyParser.json());
+
+app.post('/signin', (req, res, next) => {
+  const validationResult = validator.check(req.route.path, req.body);
+
+  if (validationResult.error) {
+    res.status(400).json({
+      succeed: false,
+      message: validationResult.error.details
+    });
+  } else {
+    res.json({ succeed: true });
+  }
+});
+
+app.listen(3000, () => console.log('Example app listening on port 3000!'));</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Создадим файл <span class="task__inline-code">validator.js</span> реализующий проверку запроса:
+
+    <pre><code class="task__code javascript">const Joi = require('joi');
+
+const schemas = {
+  '/signin': Joi.object().keys({
+    login: Joi.string(),
+    password: Joi.string(),
+  }),
+};
+
+exports.check = function (schema, body) {
+  if (!schemas[schema])  return {};
+
+  return Joi.validate(body, schemas[schema], { presence: 'required' });
+};</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Запустим сервер и отправим валидный и не валидный запросы с помощью Postman
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим обработчик и валидацию для них
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">POST /signup</span>
+    <pre><code class="task__code javascript">login // строка
+password // строка, минимальная длина 10
+email // электронная почта, опциональный параметр
+invitedBy // строка, опциональный параметр
+birth // дата, минимум 21 год
+sex // строка, разрешено только 'male' и 'female'
+agreedWithTerms // булеан, равен true</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">POST /drinks</span>
+    <pre><code class="task__code javascript">name // строка, минимальная длина 3 максимальная 50
+strength // число, дробное, положительное
+code // строка, только числа и буквы
+alcoholic // булеан, должно быть true если strength больше 0
+</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">POST /recipes</span>
+    <pre><code class="task__code javascript">name // строка
+ingredients // массив объектов, минимум 2
+-- name // строка, уникальная в массиве
+-- weight // число, целое, положительное
+-- photos // массив строк, опциональный параметр
+photos // массив строк, опциональный параметр
+portions // строка или положительное не нулевое число
+</code></pre>
+  </div>
+  </div>
+
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте все маршруты
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://github.com/hapijs/joi/blob/master/API.md">Документация по Joi</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

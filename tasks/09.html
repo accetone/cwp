@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР09</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Promises</div>
+    <div class="header__id">ЛР09</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-09</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">package.json</span>:
+  </div>
+
+  <pre><code class="task__code json">{
+  "name": "cwp-09",
+  "author": "Your name"
+}</code></pre>
+
+  <div class="task__statement">
+    С помощью терминала устанавливаем Bluebird <span class="task__inline-code">npm i bluebird</span>
+  </div>
+
+  <div class="task__statement">
+    Проверим что зависимость записалась в наш <span class="task__inline-code">package.json</span>:
+  </div>
+
+  <pre><code class="task__code json">{
+  "name": "cwp-09",
+  "author": "Your name",
+  "dependencies": {
+    "bluebird": "^3.x.x"
+  }
+}</code></pre>
+
+  <div class="task__statement">
+    Теперь мы можем импортировать библиотеку в наш код - <span class="task__inline-code">const Promise = require('bluebird');</span>
+  </div>
+
+  <div class="task__statement">
+    Также нам понадобиться библиотека для отправки HTTP-запросов - <span class="task__inline-code">npm i axios</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим скрипт <span class="task__inline-code">pokeapi.js</span>, который будет использовать в своей работе <span class="task__inline-code">http://pokeapi.co/</span>. Далее реализуем операции которые будут выполняться последоватьельно
+  </div>
+
+  <div class="task__statement">
+    1. Загрузим из Pokeapi покемона с id <span class="task__inline-code">42</span>. Выведем на консоль его имя, вес и размер
+  </div>
+
+  <div class="task__statement">
+    2. С помощью метода <span class="task__inline-code">Promise.all</span> параллельно загрузим 30 покемонов порциями по 10. Выведем имена загруженных покемонов
+  </div>
+
+  <div class="task__statement">
+    3. С помощью метода <span class="task__inline-code">Promise.any</span> параллельно загрузим покемонов с id <span class="task__inline-code">1</span>, <span class="task__inline-code">4</span> и <span class="task__inline-code">7</span>. Выведем на консоль имя загруженного покемона
+  </div>
+
+  <div class="task__statement">
+    4. С помощью метода <span class="task__inline-code">Promise.props</span> параллельно загрузим по 10 покемонов, предметов (items) и локаций (location). Выведем на консоль их имена по группам
+  </div>
+
+  <div class="task__statement">
+    5. Получить 4 первых ягоды (berry), затем с помощью метода <span class="task__inline-code">Promise.map</span> параллельно загрузим информацию по каждой ягоде. Выведем на консоль их имена и размер
+  </div>
+
+  <div class="task__statement">
+    6. Если на каком-то этапе произошла ошибка, то мы выведем информацию о ней на консоль, а скрипт продолжит выполнение
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим скрипт <span class="task__inline-code">dirs.js</span>
+  </div>
+
+  <div class="task__statement">
+    1. Прочитаем про <span class="task__inline-code">Promise.promisify</span> и <span class="task__inline-code">Promise.promisifyAll</span>. Применим второй метод к модулю <span class="task__inline-code">fs</span>
+  </div>
+
+  <div class="task__statement">
+    2. Объявим массив <span class="task__inline-code">dirs</span> куда запишем 10 имен несуществующих директорий, которые нужно создать. Можно воспользоваться следующим массивом:
+    <pre><code class="task__code javascript">const dirs = [
+  'dir-1/dir-1-1',
+  'dir-1/dir-1-2',
+  'dir-1/dir-1-2/dir-1-2-1',
+  'dir-2/dir-2-1/dir-2-1-1',
+  'dir-2/dir-2-2/dir-2-2-1',
+  'dir-2/dir-2-1/dir-2-2-2/dir-2-2-2-1',
+  'dir-3/dir-3-1',
+  'dir-3',
+  'dir-3/dir-3-2/dir-3-2-1',
+  'dir-3/dir-3-3/dir-3-3-1'
+];</code></pre>
+  </div>
+
+  <div class="task__statement">
+    3. С помощью методов <span class="task__inline-code">Promise.mapSeries</span> и <span class="task__inline-code">fs.mkdirAsync</span> создадим структуру директорий в которой все пути в объявленном массиве существуют.
+  </div>
+
+  <div class="task__statement">
+    4*. Подумайте как можно ускорить процесс создания директорий
+  </div>
+
+  <div class="task__statement task__statement_note">
+    Задания со звездочкой предназначены для персонального роста и необязательны к показу при защите лабораторной работы
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу скрипта <span class="task__inline-code">pokeapi.js</span>
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу скрипта <span class="task__inline-code">dirs.js</span>
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://promisesaplus.com/">Спецификация Promises/A+</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://bluebirdjs.com/docs/api-reference.html">Документация по Bluebird</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://pokeapi.co/docsv2/">Документация по Pokeapi</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://github.com/mzabriskie/axios">Документация по axios</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

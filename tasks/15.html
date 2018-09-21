@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР15</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Аутентификация</div>
+    <div class="header__id">ЛР15</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-15</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-13</span>
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеки <a class="task__link" href="https://www.npmjs.com/package/jsonwebtoken" target="_blank">jsonwebtoken</a> и <a class="task__link" href="https://www.npmjs.com/package/bcryptjs" target="_blank">bcryptjs</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Добавим модель управляющего (<span class="task__inline-code">manager</span>) в наше приложение
+    <pre><code class="task__code json">"id": int / autoincrement
+"email": string
+"password": string
+"fleetId": id / reference to "fleets"
+"super": bool
+</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Добавим методы в API:<br><br>
+    <span class="task__inline-code">POST /api/auth/register</span> - принимает email и password и создает запись в таблице управляющих / пароль должен хранится в захэшированной форме (используем bcrypt)
+    <br><br>
+    <span class="task__inline-code">POST /api/auth/login</span> - принимает email и password и пытается аутентифицировать управляющего / в случае успеха возвращает токен созданный с помощью jwt.sign с зашитым id и email менеджера / время жизни токена 5 минут
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим middleware который будет для всех запросов к API кроме <span class="task__inline-code">/api/auth/*</span> проверять наличие в запросе заголовка <span class="task__inline-code">Authorization</span>.
+  </div>
+
+  <div class="task__statement">
+    При отсутствии этого заголовка возвращаем ошибку 401.
+  </div>
+
+  <div class="task__statement">
+    Если заголовок присутствует, проверяем его на валидность с помощью jwt.verify.
+  </div>
+  <div class="task__statement">
+    Если токен валидный загружаем менеджера по id из токена и помещаем в <span class="task__inline-code">request.manager</span>
+  </div>
+
+  <div class="task__statement">
+    Если токен не валидный или пользователь не найден возвращаем ошибку 403.
+  </div>
+
+  <div class="task__statement task__statement_note">
+    В заголовке перед токеном должно быть слово <span class="task__inline-code">Bearer</span>. Т.е. полностью заголовок вяглядит так <span class="task__inline-code">Authorization: Bearer Токен</span>
+  </div>
+
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Дополним существующие методы API следующим образом:
+    <br><br>
+    <span class="task__inline-code">GET /api/fleets/readall</span> - возвращает массив машинных парков если запрос от суперменеджера / для остальных ошибка 403
+    <br><br>
+    <span class="task__inline-code">GET /api/fleets/read</span> - возвращает машинный парк к которому привязан менеджер / для суперменеджера ищем id в query
+    <br><br>
+    <span class="task__inline-code">POST /api/fleets/create</span> - доступно только суперменеджеру / для остальных ошибка 403
+    <br><br>
+    <span class="task__inline-code">POST /api/fleets/update</span> - доступно только суперменеджеру / для остальных ошибка 403
+    <br><br>
+    <span class="task__inline-code">POST /api/fleets/delete</span> - доступно только суперменеджеру / для остальных ошибка 403
+    <br><br>
+    <span class="task__inline-code">GET /api/vehicles/readall</span> - возвращает массив машин для парка к которому привязан менеджер / для суперменеджера все машины независимо от парка
+    <br><br>
+    <span class="task__inline-code">GET /api/vehicles/read</span> - проверяем если запрашиваемая машина в парке к которому привязан менеджер / для суперменеджера не проверяем
+    <br><br>
+    <span class="task__inline-code">POST /api/vehicles/create</span> - парк для машины берется из менеджера / для суперменеджера из тела запроса
+    <br><br>
+    <span class="task__inline-code">POST /api/vehicles/update</span> - проверяем если обновляемая машина в парке к которому привязан менеджер / для суперменеджера не проверяем
+    <br><br>
+    <span class="task__inline-code">POST /api/vehicles/delete</span> - проверяем если обновляемая машина в парке к которому привязан менеджер / для суперменеджера не проверяем
+    <br><br>
+    <span class="task__inline-code">POST /api/motions/create</span> - проверяем если машина в парке к которому привязан менеджер / для суперменеджера не проверяем
+    <br><br>
+    <span class="task__inline-code">GET /api/vehicles/milage</span> - проверяем если машина в парке к которому привязан менеджер / для суперменеджера не проверяем
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу сервера через Postman
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://github.com/auth0/node-jsonwebtoken">Документация по JWT</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

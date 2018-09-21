@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР10</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Express.js</div>
+    <div class="header__id">ЛР10</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-10</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">package.json</span> и с помощью терминала устанавливаем express <span class="task__inline-code">npm i express</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">index.js</span>, в котором напишем простой сервер на express:
+  </div>
+
+  <pre><code class="task__code javascript">const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
+})</code></pre>
+
+  <div class="task__statement">
+    Запустим наш сервер и зайдем на адрес <span class="task__inline-code">http://127.0.0.1:3000</span> в браузере
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Нам необходимо разработать API для работы с коллекцией фильмов
+  </div>
+
+  <div class="task__statement">
+    1. Модель фильма:
+    <pre><code class="task__code json">"id": int / string
+"title": string
+"rating": string // оценка
+"year": int // год выпуска
+"budget": int // бюджет
+"gross": int // сборы
+"poster": string // url постера
+"position": int // позиция в рейтинге</code></pre>
+  </div>
+
+  <div class="task__statement">
+    2. Составить <span class="task__inline-code">top250.json</span> из 10 фильмов из <a target="_blank" href="https://www.kinopoisk.ru/top/" class="task__link">Top-250 Кинопоиска</a>. Начало ваших 10 фильмов определяется как <span class="task__inline-code">(N варианта - 1) * 10</span>. Позиции для фильмов начинать с 1 вне зависимости от позиции на Кинопоиске
+  </div>
+
+  <div class="task__statement">
+    3. Реализовать логику для следующих URL:
+    <br><br>
+    <span class="task__inline-code">GET /api/films/readall</span> - возвращает массив фильмов отсортированных по полю <span class="task__inline-code">position</span> по возрастанию
+    <br><br>
+    <span class="task__inline-code">GET /api/films/read</span> - возвращает фильм по переданному в теле запроса <span class="task__inline-code">id</span>
+    <br><br>
+    <span class="task__inline-code">POST /api/films/create</span> - создает фильм с переданными в теле запроса параметрами / <span class="task__inline-code">id</span> генерируется на сервере / если фильм с такой позицией уже существует, то все фильмы от данной позиции сдвигаются на один вниз / сервер возвращает созданный фильм
+    <br><br>
+    <span class="task__inline-code">POST /api/films/update</span> - обновляет фильм с переданными параметрами по переданному <span class="task__inline-code">id</span> / здесь тоже не забываем про сдвиг / возвращаем обновленный фильм / клиент может присылать для обновления только часть полей
+    <br><br>
+    <span class="task__inline-code">POST /api/films/delete</span> - удаляет фильм по переданному <span class="task__inline-code">id</span> / сдвигаем остальные фильмы так, что бы не было пробелов
+  </div>
+
+  <div class="task__statement">
+    4. Добавить валидацию входящих запросов. Например, при создании фильма клиент прислал не всю информацию - возвращаем ему ошибку. Или дата до изобретения кинематографа, или отрицательный бюджет/сборы и т.д.
+  </div>
+
+  <div class="task__statement">
+    5. Предусмотреть случай, когда клиент присылает для создания/обновления фильм с такой позицией, что образуется пробел. В этом случае нам надо изменить присланную позицию. Например, у нас два фильма с позициями 1, 2. Клиент присылает фильм на позицию 5. Мы присваиваем такому фильму позицию 3.
+  </div>
+
+  <div class="task__statement">
+    6*. При запуске сервера через setTimeout запускать функцию-воркер, которая раз в минуту сохраняет коллекцию фильмов из памяти на диск
+  </div>
+
+  <div class="task__statement task__statement_note">
+    Задания со звездочкой предназначены для персонального роста и необязательны к показу при защите лабораторной работы
+  </div>
+
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу сервера через Postman
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://expressjs.com/en/4x/api.html">Документация по Express</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

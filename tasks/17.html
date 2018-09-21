@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР17</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Загрузка файлов</div>
+    <div class="header__id">ЛР17</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-17</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеки <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/multer" target="_blank">multer</a>, <a class="task__link" href="https://www.npmjs.com/package/uuid" target="_blank">uuid</a> и <a class="task__link" href="https://www.npmjs.com/package/sharp" target="_blank">sharp</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим скрипт <span class="task__inline-code">index.js</span> и реализуем в нем простой HTTP-сервер позволяющий загружать файлы на сервер:
+
+    <pre><code class="task__code javascript">const express = require('express');
+const multer  = require('multer');
+
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+const app = express();
+
+app.post('/upload', upload.single('file'), (req, res, next) => {
+  res.json({ succeed: true });
+});
+
+app.listen(3000, () => console.log('Example app listening on port 3000!'));</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Создадим форму в файле <span class="task__inline-code">form.html</span> для того, чтобы отправлять файлы из браузера:
+
+    <pre><code class="task__code html">&lt;form action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data"&gt;
+  &lt;input name="file" type="file"&gt;
+  &lt;input type="submit"&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Запустим сервер и форму. Попробуем загрузить на него файл
+  </div>
+
+  <div class="task__statement">
+    Изменим сервер, чтобы форма раздавалась напрямую с сервера с помощью <span class="task__inline-code">express.static</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим обработчик для <span class="task__inline-code">POST /pdf</span>
+  </div>
+
+  <div class="task__statement">
+    1. Должен загружать только PDF файлы. Проверка должна быть на сервере
+  </div>
+
+  <div class="task__statement">
+    2. Файлы сохраняются в папку <span class="task__inline-code">/uploads/pdf</span>
+  </div>
+
+  <div class="task__statement">
+    3. Имя файла генерируется случайно с помощью <span class="task__inline-code">uuid/v4</span> (не забываем про расширение)
+  </div>
+
+  <div class="task__statement">
+    4. Позволяет загрузить одновременно до 3 файлов. Форма которая может отправлять несколько файлов:
+
+    <pre><code class="task__code html">&lt;form action="http://localhost:3000/pdf" method="POST" enctype="multipart/form-data"&gt;
+  &lt;input name="files" type="file" multiple&gt;
+  &lt;input type="submit"&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+
+  <div class="task__statement">
+    5. Возвращает массив сгенерированных имен загруженных файлов в формате json
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим обработчик для <span class="task__inline-code">POST /images</span>
+  </div>
+
+  <div class="task__statement">
+    1. Должен загружать только PNG и JPG файлы. Проверка должна быть на сервере
+  </div>
+
+  <div class="task__statement">
+    2. Файлы сохраняются в папку <span class="task__inline-code">/uploads/images</span>
+  </div>
+
+  <div class="task__statement">
+    3. Имя файла генерируется случайно с помощью <span class="task__inline-code">uuid/v4</span> (не забываем про расширение). К имени добавляется суффикс <span class="task__inline-code">master</span>.<br>Т.е. имя будет выглядеть так <span class="task__inline-code">110ec58a-a0f2-4ac4-8393-c866d813b8d1-master.png</span>
+  </div>
+
+  <div class="task__statement">
+    4. Позволяет загрузить одновременно только один файл
+  </div>
+
+  <div class="task__statement">
+    5. Создает дополнительно 2 файла с суффиксами <span class="task__inline-code">preview</span> (максимальный размер 800х600) и <span class="task__inline-code">thumbnail</span> (максимальный размер 300х180). Масштабирование делается с помощью библиотеки <span class="task__inline-code">sharp</span>
+  </div>
+
+  <div class="task__statement">
+    6. Возвращает массив сгенерированных имен файлов в формате json
+  </div>
+
+  <div class="task__statement">
+    7. Раздача картинок с помощью <span class="task__inline-code">express.static</span>
+  </div>
+
+  <div class="task__statement">
+    8*. Для картинок периписать загрузку через  <span class="task__inline-code">MemoryStorage</span> с последующим сохранением файлов на диск
+  </div>
+
+  <div class="task__statement">
+    9*. Дополнительная валидация расширения файлов на стороне клиента (в форме)
+  </div>
+
+  <div class="task__statement task__statement_note">
+    Задания со звездочкой предназначены для персонального роста и необязательны к показу при защите лабораторной работы
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу сервера
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://www.npmjs.com/package/multer">Документация по multer</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

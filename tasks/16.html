@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР16</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">async/await</div>
+    <div class="header__id">ЛР16</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-16</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    С помощью библиотеки axios будем отправлять GET-запросы к Google Geocode API
+  </div>
+
+  <div class="task__statement">
+    Например, получим гео-информацию по Минску:<br>
+    <span class="task__inline-code">https://maps.googleapis.com/maps/api/geocode/json?address=Minsk</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем скрипт <span class="task__inline-code">async.js</span>. В этом файле будем использовать операторы async/await для ожидания промисов
+  </div>
+
+  <div class="task__statement">
+    1. С помощью Google Geocode API отправим параллельные запросы на информацию о городах - Минск, Мадрид, Рим. Из ответов выведем соответствия <span class="task__inline-code">город - страна</span>
+  </div>
+
+  <div class="task__statement">
+    2. С помощью <span class="task__inline-code">Promise.any</span> получим страну этих городов - Париж, Ницца
+  </div>
+
+  <div class="task__statement">
+    3. Получим информацию об улице <span class="task__inline-code">Via Nicola Salvi</span> и последовательно получим координаты для всех элементов из <span class="task__inline-code">address_components</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Установим билблиотеку <a class="task__link" href="https://www.npmjs.com/package/co" target="_blank">co</a>
+  </div>
+
+  <div class="task__statement">
+    Создаем скрипт <span class="task__inline-code">co.js</span>. В этом файле будем использовать библиотеку co и оператор yield
+  </div>
+
+  <div class="task__statement">
+    1. С помощью Google Geocode API отправим параллельные запросы на информацию о городах - Брест и Минск. С помощью <span class="task__inline-code">geolib</span> вычислим расстояние между ними
+  </div>
+
+  <div class="task__statement">
+    2. С помощью Google Geocode API и <span class="task__inline-code">Promise.mapSeries</span> отправим последовательные запросы на информацию о городах - Минск, Копенгаген, Осло, Брюссель. С помощью <span class="task__inline-code">geolib.findNearest</span> найдем ближаший к Минску город
+  </div>
+
+  <div class="task__statement">
+    3. Получим информацию об улице <span class="task__inline-code">Piazza del Сolosseo</span> и последовательно получим координаты для всех элементов из <span class="task__inline-code">address_components</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу скриптов
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://habrahabr.ru/post/282477/">Async/Await в javascript. Взгляд со стороны</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://www.npmjs.com/package/co">Документация по co</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

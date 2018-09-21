@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР12</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Sequelize, часть 1</div>
+    <div class="header__id">ЛР12</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-12</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Для выполнения последующих работ нам понадобиться база данных. Выберем одну из поддерживаемых библиотекой sequelize, например, mysql
+  </div>
+
+  <div class="task__statement">
+    Создадим файлы <span class="task__inline-code">index.js</span>, <span class="task__inline-code">package.json</span>, <span class="task__inline-code">config.json</span>, <span class="task__inline-code">models/index.js</span>, <span class="task__inline-code">models/turtle.js</span>, <span class="task__inline-code">models/weapon.js</span> и <span class="task__inline-code">models/pizza.js</span>
+  </div>
+
+  <div class="task__statement">
+    Содержимое файла <span class="task__inline-code">index.js</span>:
+    <pre><code class="task__code javascript">const Sequelize = require('sequelize');
+
+const config = require('./config.json');
+
+const db = require('./models')(Sequelize, config);
+
+// TODO: запросы к БД</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Содержимое файла <span class="task__inline-code">models/index.js</span>:
+    <pre><code class="task__code javascript">const Turtle = require('./turtle');
+const Weapon = require('./weapon');
+const Pizza = require('./pizza');
+
+module.exports = (Sequelize, config) => {
+  // TODO: создание объекта для подключения к базе - sequelize
+
+  const turtles = Turtle(Sequelize, sequelize);
+  const weapons = Weapon(Sequelize, sequelize);
+  const pizzas = Pizza(Sequelize, sequelize);
+
+  // TODO: создание связей между таблицами
+
+  return {
+    turtles,
+    weapons,
+    pizzas,
+
+    sequelize: sequelize,
+    Sequelize: Sequelize,
+  };
+};</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Содержимое файла <span class="task__inline-code">models/turtle.js</span>:
+    <pre><code class="task__code javascript">module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('turtles', {
+    // TODO: описание полей
+  });
+};</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Содержимое файла <span class="task__inline-code">models/weapon.js</span>:
+    <pre><code class="task__code javascript">module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('weapons', {
+    // TODO: описание полей
+  });
+};</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Содержимое файла <span class="task__inline-code">models/pizza.js</span>:
+    <pre><code class="task__code javascript">module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('pizzas', {
+    // TODO: описание полей
+  });
+};</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Нам необходимо заменить <span class="task__inline-code">TODO</span> комментарии кодом, исходя из требований
+  </div>
+
+  <div class="task__statement">
+    1. Модель черепашки-ниндзя:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"color": string
+"weaponId": int
+"firstFavoritePizzaId": int
+"secondFavoritePizzaId": int</code></pre>
+  </div>
+
+  <div class="task__statement">
+    2. Модель оружия:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"dps": int</code></pre>
+  </div>
+
+  <div class="task__statement">
+    3. Модель пиццы:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"description": string
+"calories": double</code></pre>
+  </div>
+
+  <div class="task__statement">
+    4. Напишем код для синхронизации моделей с БД. Будем выполнять полное пересоздание таблиц при каждом запуске скрипта
+  </div>
+
+  <div class="task__statement">
+    5. Напишем код для наполнения таблиц данными из скрипта. Данные для таблиц поможет найти <span class="task__inline-code">Google</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Продемонстрируем различные операции с помощью sequelize
+  </div>
+
+  <div class="task__statement">
+    1. Выведем всех черепашек-ниндзя
+  </div>
+
+  <div class="task__statement">
+    2. Выведем всех черепашек-ниндзя у кого любимая пицца <span class="task__inline-code">"Mozzarella"</span>
+  </div>
+
+  <div class="task__statement">
+    3. Выведем все пиццы отмеченные как любимые без повторов
+  </div>
+
+  <div class="task__statement">
+    4. Создадим пятую черепашку с вашим именем и любимым цветом. Незабываем про оружие
+  </div>
+
+  <div class="task__statement">
+    5. Обновим все пиццы с количеством калорий больше <span class="task__inline-code">3000</span> добавив к описанию <span class="task__inline-code">"SUPER FAT!"</span>
+  </div>
+
+  <div class="task__statement">
+    6. Запросим число оружий с <span class="task__inline-code">dps</span> больше <span class="task__inline-code">100</span>
+  </div>
+
+  <div class="task__statement">
+    7. Найдем пиццу с <span class="task__inline-code">id</span> равным <span class="task__inline-code">1</span>
+  </div>
+
+  <div class="task__statement">
+    8. Добавим пятой черепашке любимую пиццу через объект черепахи
+  </div>
+
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу скрипта
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://docs.sequelizejs.com/">Документация по Sequelize</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
