@@ -735,6 +735,259 @@ a.then(...)
     </code></pre>
   </section>
 
+  <section>
+    <h4>Bluebird</h4>
+
+    <pre class="javascript fragment"><code>
+http://bluebirdjs.com/
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install bluebird
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+const Promise = require('bluebird');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Promisify</h4>
+
+    <pre class="javascript"><code>
+const fs = Promise.promisifyAll(require('fs'));
+
+fs.readFileAsync('hero.txt', 'utf-8')
+  .then((content) => console.log(content));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Spread</h4>
+
+    <pre class="javascript"><code>
+readDir('/tmp/images')
+
+  .then((files) => { return zip(files) })
+
+  .then((file) => {
+    return Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+  })
+  .spread((result1, result2) => { ... })
+  .catch((err) => { ... });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map / MapSeries</h4>
+
+    <pre class="javascript"><code>
+function downloadS3Directory(from, to) {
+  return getS3DirectoryFiles(from)
+  .then(names =>
+    Promise.map(names, downloadS3File);
+  )
+
+  .then(files => files.map((file) => {
+    file.name = file.name.replace(from, '');
+    file.name = path.join(to, file.name);
+    return file;
+  }))
+
+  .then(files =>
+    Promise.mapSeries(files, saveFile)
+  );
+}
+    </code></pre>
+  </section>
+
+  <section>
+  <h4>Bluebird - Some</h4>
+
+  <pre class="javascript"><code>
+Promise.some([
+  ping("ns1.example.com"),
+  ping("ns2.example.com"),
+  ping("ns3.example.com"),
+  ping("ns4.example.com")
+], 2).then(pingArray => {
+  console.log('OK');
+});
+    </code></pre>
+  </section>
+
+  <section>
+  <h4>Bluebird - Some</h4>
+
+  <pre class="javascript"><code>
+Promise.any([
+  ping("ns1.example.com"),
+  ping("ns2.example.com"),
+  ping("ns3.example.com"),
+  ping("ns4.example.com")
+]).then(ping => {
+  console.log('OK');
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Spread</h4>
+
+    <pre class="javascript"><code>
+readDir('/tmp/images')
+
+  .then((files) => { return zip(files) })
+
+  .then((file) => {
+    return Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+  })
+  // .then([result1, result2]) => { ... })
+  .spread((result1, result2) => { ... })
+  .catch((err) => { ... });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird</h4>
+
+    <ul>
+      <li class="left fragment">finally - выполняется всегда</li>
+      <li class="left fragment">join - как all, только для фиксированного числа промисов</li>
+      <li class="left fragment">try - любая ошибка отклоняет промис</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>http://caniuse.com/</h4>
+
+    <img src="images/promises-caniuse.png">
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>sync/Await</h3>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function read() {
+  let content = await
+    fs.readFileAsync('hero.txt', 'utf-8');
+
+  console.log(content);
+};
+
+read();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function magic() {
+  try {
+    const files = await readDir('/tmp/images');
+
+    const archive = await zip(files);
+
+    await Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+
+    ...
+  } catch (error) {
+    ...
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+(async function () {
+  ...
+})();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <pre class="javascript fragment"><code>
+http://babeljs.io/
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save-dev babel-core
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save-dev babel-preset-es-2017
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+npm install --save babel-polyfill
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+https://babeljs.io/repl/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+       .babelrc
+    </p>
+    <pre class="javascript"><code>
+{
+  "presets": ["es-2017"]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+      babel.js
+    </p>
+    <pre class="javascript"><code>
+const fs = require('fs');
+
+require("babel-core")
+  .transformFile('index.js', (err, result) => {
+    let code = 'require("babel-polyfill");\n'
+      + result.code;
+
+    fs.writeFile('index.es5.js', code);
+  });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await - Babel</h4>
+
+    <p class="left">
+      index.es5.js
+    </p>
+
+    <img src="images/babel-code.png">
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
