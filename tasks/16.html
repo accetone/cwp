@@ -22,12 +22,12 @@
   </div>
 
   <div class="task__statement">
-    С помощью библиотеки axios будем отправлять GET-запросы к Google Geocode API
+    С помощью библиотеки axios будем отправлять GET-запросы к Geocode.XYZ API (или другой сервис геокодирования)
   </div>
 
   <div class="task__statement">
     Например, получим гео-информацию по Минску:<br>
-    <span class="task__inline-code">https://maps.googleapis.com/maps/api/geocode/json?address=Minsk</span>
+    <span class="task__inline-code">https://geocode.xyz/Minsk?json=1</span>
   </div>
 </section>
 
@@ -37,7 +37,7 @@
   </div>
 
   <div class="task__statement">
-    1. С помощью Google Geocode API отправим параллельные запросы на информацию о городах - Минск, Мадрид, Рим. Из ответов выведем соответствия <span class="task__inline-code">город - страна</span>
+    1. С помощью Geocode.XYZ API отправим параллельные запросы на информацию о городах - Минск, Мадрид, Рим. Из ответов выведем соответствия <span class="task__inline-code">город - страна</span>
   </div>
 
   <div class="task__statement">
@@ -45,7 +45,11 @@
   </div>
 
   <div class="task__statement">
-    3. Получим информацию об улице <span class="task__inline-code">Via Nicola Salvi</span> и последовательно получим координаты для всех элементов из <span class="task__inline-code">address_components</span>
+    3. С помощью Geocode.XYZ API отправим параллельные запросы на информацию о городах - Брест и Минск. С помощью <span class="task__inline-code">geolib</span> вычислим расстояние между ними
+  </div>
+
+  <div class="task__statement">
+    4. С помощью Geocode.XYZ API и <span class="task__inline-code">Promise.mapSeries</span> отправим последовательные запросы на информацию о городах - Минск, Копенгаген, Осло, Брюссель. С помощью <span class="task__inline-code">geolib.findNearest</span> найдем ближаший к Минску город
   </div>
 </section>
 
