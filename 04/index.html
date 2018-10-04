@@ -745,6 +745,70 @@ console.log(4);
         <h4>http://latentflip.com/loupe</h4>
     </section>
 
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <img src="images/event-loop-order.png">
+    </section>
+
+    <section>
+        <h4>Node.js - Event Loop</h4>
+        <img src="images/event-loop-order-2.png">
+    </section>
+
+  <section>
+    <h4>Node.js - Event Loop</h4>
+
+
+    <pre class="javascript"><code>console.log('script start');
+
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+
+console.log('script end');</code></pre>
+
+    <pre class="javascript fragment"><code>
+// https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
+script start, script end, promise1, promise2,
+setTimeout</code></pre>
+  </section>
+
+    <section>
+      <h4>Node.js - Event Loop</h4>
+
+      <p>
+        <ul>
+          <li class="fragment">макро-задачи - выполняются по одной за один проход цикла</li>
+          <li class="fragment">микро-задачи - на каждом проходе цикл выполняет все накопившееся</li>
+        </ul>
+      </p>
+    </section>
+
+    <section>
+      <h4>Node.js - Event Loop</h4>
+
+      <p>
+      <ul>
+        <li class="fragment">макро-задачи (tasks queue): <span class="fragment">setTimeout,</span> <span class="fragment">setInterval,</span> <span class="fragment">setImmediate,</span> <span class="fragment">requestAnimationFrame,</span> <span class="fragment">I/O,</span> <span class="fragment">UI rendering</span></li>
+        <li class="fragment">микро-задачи - <span class="fragment">process.nextTick,</span> <span class="fragment">Object.observe,</span> <span class="fragment">Promises (resolved)</span></li>
+      </ul>
+      </p>
+    </section>
+
+    <section>
+        <h4>Node.js и ES6+</h4>
+        <ul>
+            <li class="fragment">node --v8-options</li>
+            <li class="fragment">node -p process.versions.v8</li>
+            <li class="fragment">http://node.green/</li>
+        </ul>
+    </section>
 
 
 </div></div>
