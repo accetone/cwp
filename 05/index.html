@@ -406,6 +406,367 @@ app.route('/book')
             </code></pre>
     </section>
 
+    <section>
+        <h3><span class="red">M</span>iddleware</h3>
+        <h4>Промежуточные обработчики</h4>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <pre class="javascript fragment"><code>
+app.get('/', (req, res, next) => {
+  console.log('Hello World!');
+  next();
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <p class="left">Может:</p>
+
+        <ul>
+            <li class="fragment">выполнять любой код</li>
+            <li class="fragment">изменять объекты запроса и ответа</li>
+            <li class="fragment">заканчивать цикл обработки</li>
+            <li class="fragment">вызывать следующий middleware из очереди</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <p class="left">Обязан:</p>
+
+        <ul>
+            <li class="fragment">завершить запрос</li>
+            <li class="fragment">или вызвать следующий middleware</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware - Use</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(express.static('public'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+const logger = function (req, res, next) {
+  console.log(req.url);
+  next();
+};
+
+app.use(logger);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Порядок</h4>
+
+        <pre class="javascript fragment"><code>
+app.use(logger);
+app.get('/', (req, res) => res.send('Hello'));
+        </code></pre>
+
+        <pre class="javascript fragment"><code>
+app.get('/', (req, res) => res.send('Hello'));
+app.use(logger);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware</h4>
+
+        <pre class="javascript"><code>
+app.use('/api/*', logger);
+
+app.post('/api/news', parse);
+app.post('/api/news', validate);
+app.post('/api/news', writeToDb);
+app.post('/api/news', respond);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Типы</h4>
+
+        <ul>
+            <li class="fragment">уровня приложения</li>
+            <li class="fragment">уровня роутера</li>
+            <li class="fragment">оброботка ошибок</li>
+            <li class="fragment">встроенные</li>
+            <li class="fragment">сторонние</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4>Middleware - Application-level</h4>
+
+        <pre class="javascript"><code>
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now());
+  next();
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Router-level</h4>
+
+        <pre class="javascript"><code>
+const newsRouter = express.Router();
+
+newsRouter.post('/', parse);
+newsRouter.post('/', validate);
+newsRouter.post('/', writeToDb);
+newsRouter.post('/', respond);
+
+// монтирование роутера
+app.use('/api/news', newsRouter);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Router-level</h4>
+
+        <pre class="javascript"><code>
+api.use('/news', newsRouter);
+api.use('/user', userRouter);
+
+app.use('/api', api);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// 4 входных параметра
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// всегда последние
+app.use(express.static('public'));
+app.use(logger);
+app.use('/api', api);
+app.use(errorHandler);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+// 1+
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+const parser = (req, res, next) => {
+  req.params.userId
+    = parseInt(req.params.userId);
+
+  next();
+};
+
+const validator = (req, res, next) => {
+  if (isNaN(req.params.userId)) {
+    next({
+      message: 'User id should be integer'
+    });
+  }
+  else next();
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+const logError = (err, req, res, next) => {
+  console.log(err.message);
+
+  next(err);
+};
+
+const errorHandler = (err, req, res, next) => {
+  res.send(err.message);
+};
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+app.use('/news', () => {
+  throw new Error('stack overflow!');
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Error-handling</h4>
+
+        <pre class="javascript"><code>
+app.use('/api/*', (err, req, res, next) => {
+  ...
+});
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Built-in</h4>
+
+        <pre class="javascript"><code>
+const options = {
+  dotfiles: 'ignore',
+  etag: false,
+  extensions: ['htm', 'html'],
+  fallthrough: true,
+  index: false,
+  maxAge: '1h',
+  redirect: false,
+  setHeaders: function (res, path, stat) {
+    res.set('x-timestamp', Date.now());
+  }
+}
+
+app.use(express.static('public', options));
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// dotfiles: 'ignore'
+
+allow
+deny - 403
+ignore - 404 | default
+
+.gitignore
+.idea
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// etag: false
+
+ETag: "686897696a7c876b7e"
+
+If-None-Match: "686897696a7c876b7e"
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// extensions: ['htm', 'html']
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// fallthrough: true
+
+app.use(express.static('public'));
+app.use(express.static('files'));
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// index: false
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// maxAge: '1h'
+
+Cache-Control: max-age=3600
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+// redirect: false
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Static</h4>
+
+        <pre class="javascript"><code>
+/*
+  setHeaders: function (res, path, stat) {
+    res.set('x-timestamp', Date.now());
+  }
+*/
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Third-party</h4>
+
+        <pre class="javascript"><code>
+npm install cookie-parser
+        </code></pre>
+
+        <pre class="javascript"><code>
+const cookieParser = require('cookie-parser');
+
+// req.cookies
+app.use(cookieParser());
+        </code></pre>
+    </section>
+
+    <section>
+        <h4>Middleware - Third-party</h4>
+
+        <pre class="javascript"><code>
+npm install body-parser
+        </code></pre>
+
+        <pre class="javascript"><code>
+const bodyParser = require('body-parser');
+
+// req.body
+app.use(bodyParser.json())
+        </code></pre>
+    </section>
 
 </div></div>
 
