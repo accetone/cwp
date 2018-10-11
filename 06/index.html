@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP06</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>ES.next</h2>
+    <p class="author">
+      <small>Лекция 06</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>ECMAScript</h4>
+
+    <ul>
+      <li class="fragment">ES3 - 1999</li>
+      <li class="fragment">ES5 - 2009</li>
+      <li class="fragment">ES6 - 2015</li>
+      <li class="fragment">годовой цикл</li>
+      <li class="fragment">Babel</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo} = pony
+
+var foo = pony.foo</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo: baz} = pony
+
+var baz = pony.foo</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo='baz'} = pony
+
+var foo = pony.foo
+if (!foo) foo = 'baz'</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo, bar: baz} = pony
+
+var foo = pony.foo,
+    bar = pony.baz;</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var {foo: {bar}} = pony
+
+var bar = pony.foo.bar</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var [a, b] = [0, 1]
+// a = 0, b = 1</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>var [a, , b] = [0, 1, 2]
+// a = 0, b = 2</code></pre>
+  </section>
+
+  <section>
+    <h4>Деструктуризация</h4>
+
+    <pre class="javascript"><code>function foo ({ a, b=2 }) {}
+
+foo({ a: 3, b: 3 })</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для массивов</h4>
+
+    <pre class="javascript"><code>fn(...[1, 2, 3])
+
+fn(1, 2, 3)</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для массивов</h4>
+
+    <pre class="javascript"><code>[1, 2, ...[3, 4, 5], 6, 7]</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для объектов</h4>
+
+    <pre class="javascript"><code>var x = { a: 2, b: 3 };
+var y = { c: 4, ...x };
+var z = { ...y, a: 5 };</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор расширения для объектов</h4>
+
+    <pre class="javascript"><code>var x = { a: 2, b: 3, c: 4 };
+var { a, ...y } = x;
+
+// a = 3
+// y = { b: 3, c: 4 }</code></pre>
+  </section>
+
+  <section>
+    <h4>Оставшиеся параметры</h4>
+
+    <pre class="javascript"><code>function foo (...everything) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Оставшиеся параметры</h4>
+
+    <pre class="javascript"><code>function foo (bar, ...rest) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>[1, 2].map (x => x * 2)</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>p1 => expr
+p1 => { return expr; }
+p1 => ({ foo: 'bar' })</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>(  )     => expr
+(p1)     => expr
+ p1      => expr
+(p1, p2) => expr</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  this.age = 0;
+
+  setInterval(function () {
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  var self = this;
+
+  this.age = 0;
+
+  setInterval(function () {
+    self.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+
+  <section>
+    <h4>Стрелочные функции</h4>
+
+    <pre class="javascript"><code>function Person() {
+  this.age = 0;
+
+  setInterval(()=> {
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();</code></pre>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+</script>
+</body>
+</html>
