@@ -57,27 +57,27 @@
 
 <section class="task">
   <div class="task__statement">
-    Создадим скрипт <span class="task__inline-code">pokeapi.js</span>, который будет использовать в своей работе <span class="task__inline-code">http://pokeapi.co/</span>. Далее реализуем операции которые будут выполняться последоватьельно
+    Создадим скрипт <span class="task__inline-code">population.js</span>, который будет использовать в своей работе <a href="http://api.population.io" target="_blank" class="task__link">Population API</a>. Далее реализуем операции которые будут выполняться последовательно.
   </div>
 
   <div class="task__statement">
-    1. Загрузим из Pokeapi покемона с id <span class="task__inline-code">42</span>. Выведем на консоль его имя, вес и размер
+    1. Загрузим информацию о населении Беларуси в 2017 году. Просуммируем людей всех возрастов и выведем общее количество населения.
   </div>
 
   <div class="task__statement">
-    2. С помощью метода <span class="task__inline-code">Promise.all</span> параллельно загрузим 30 покемонов порциями по 10. Выведем имена загруженных покемонов
+    2. С помощью метода <span class="task__inline-code">Promise.all</span> параллельно загрузим информацию о населении Канады, Германии и Франции за 2017 год. Выведем отдельно суммарное количество женщин и мужчин.
   </div>
 
   <div class="task__statement">
-    3. С помощью метода <span class="task__inline-code">Promise.any</span> параллельно загрузим покемонов с id <span class="task__inline-code">1</span>, <span class="task__inline-code">4</span> и <span class="task__inline-code">7</span>. Выведем на консоль имя загруженного покемона
+    3. С помощью метода <span class="task__inline-code">Promise.any</span> параллельно загрузим информацию о населении Беларуси за 2014 и 2015 года. Выведем на консоль год и количество женщин и мужчин в возрасте 25 лет.
   </div>
 
   <div class="task__statement">
-    4. С помощью метода <span class="task__inline-code">Promise.props</span> параллельно загрузим по 10 покемонов, предметов (items) и локаций (location). Выведем на консоль их имена по группам
+    4. С помощью метода <span class="task__inline-code">Promise.props</span> параллельно загрузим статистику смертности для Греции и Турции. Выведем на консоль страну и возраст наибольшей смертности.
   </div>
 
   <div class="task__statement">
-    5. Получить 4 первых ягоды (berry), затем с помощью метода <span class="task__inline-code">Promise.map</span> параллельно загрузим информацию по каждой ягоде. Выведем на консоль их имена и размер
+    5. Получим список стран и затем с помощью метода <span class="task__inline-code">Promise.map</span> параллельно загрузим информацию о населении по первым 5 странам за 2007 год. Выведем на консоль страны и общее население.
   </div>
 
   <div class="task__statement">
@@ -162,7 +162,7 @@
   </div>
 
   <div class="task__statement">
-    <a class="task__link" target="_blank" href="http://pokeapi.co/docsv2/">Документация по Pokeapi</a>
+    <a class="task__link" target="_blank" href="http://api.population.io">Документация по Population API</a>
   </div>
 
   <div class="task__statement">
