@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP07</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Прототипы</h2>
+    <p class="author">
+      <small>Лекция 07</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>Прототип</h4>
+
+    <ul>
+      <li class="fragment">объект имеет внутренюю ссылку на другой объект - прототип</li>
+      <li class="fragment">у прототипа есть свой прототип, и т.д - пока не null</li>
+      <li class="fragment">__proto__ / [[Prototype]]</li>
+      <li class="fragment">динамическое наследование</li>
+      <li class="fragment">поиск свойств/методов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Прототип - Поиск</h4>
+
+    <pre class="javascript"><code>const animal = {
+  eats: true
+};
+
+const rabbit = {
+  jumps: true
+};
+
+rabbit.__proto__ = animal;
+
+console.log( rabbit.jumps ); // true
+console.log( rabbit.eats ); // true</code></pre>
+  </section>
+
+  <section>
+    <h4>Прототип - Поиск</h4>
+
+    <pre class="javascript"><code>const animal = {
+  eats: true
+};
+
+const rabbit = {
+  jumps: true,
+  eats: false
+};
+
+rabbit.__proto__ = animal;
+
+console.log( rabbit.eats ); // false</code></pre>
+  </section>
+
+  <section>
+    <h4>Прототип - hasOwnProperty</h4>
+
+    <pre class="javascript"><code>const animal = {
+  eats: true
+};
+
+const rabbit = {
+  jumps: true,
+  __proto__: animal
+};
+
+for (var key in rabbit) {
+  console.log(`${key} = ${rabbit[key]}`);
+}
+
+// eats = true
+// jumps = true</code></pre>
+  </section>
+
+  <section>
+    <h4>Прототип - hasOwnProperty</h4>
+
+    <pre class="javascript"><code>const animal = {
+  eats: true
+};
+
+const rabbit = {
+  jumps: true,
+  __proto__: animal
+};
+
+for (var key in rabbit) {
+  if (!rabbit.hasOwnProperty(key)) continue;
+
+  console.log(`${key} = ${rabbit[key]}`);
+}
+
+// jumps = true</code></pre>
+  </section>
+
+  <section>
+    <h4>Конструктор</h4>
+
+    <pre class="javascript"><code>function Class(){/*поля*/}
+
+Class.prototype = {/*Методы*/}</code></pre>
+  </section>
+
+  <section>
+    <h4>Конструктор</h4>
+
+    <pre class="javascript"><code>function Men(name) {
+  this.name = name;
+}
+
+Men.prototype = {
+  sayHi: function () {
+    console.log(`Hi! I'm ${this.name}.`);
+  },
+
+  sleep: function () {
+    console.log('Z-z-z');
+  }
+};
+
+const rick = new Men('Rick');
+
+rick.sayHi();</code></pre>
+  </section>
+
+  <section>
+    <h4>Наследование</h4>
+
+    <pre class="javascript"><code>function Xmen(name, power) {
+  this.name = name;
+  this.power = power;
+}
+
+Xmen.prototype = Object.create(Men.prototype);
+
+Xmen.prototype.sayHi = function () {
+  console.log(`
+      Hi! I'm ${this.name}.
+      My superpower is ${this.power}
+  `);
+}
+
+const logan = new Xmen('Logan', 'Regeneration');
+
+logan.sayHi();
+logan.sleep();</code></pre>
+  </section>
+
+  <section>
+    <h4>Динамика</h4>
+
+    <pre class="javascript"><code>function Xmen(name, power) {...}
+
+Xmen.prototype = Object.create(Men.prototype);
+
+const logan = new Xmen('Logan', 'Regeneration');
+
+logan.skeleton = 'adamantium';
+logan.attac = function () {
+  console.log(`${this.name} attac!`);
+}
+
+logan.sleep();</code></pre>
+  </section>
+
+  <section>
+    <h4>Динамика</h4>
+
+    <pre class="javascript"><code>function Xmen(name, power) {...}
+
+Xmen.prototype = Object.create(Men.prototype);
+
+const logan = new Xmen('Logan', 'Regeneration');
+
+Men.prototype.sleep = function () {
+  console.log(`${this.name}: Z-z-z`);
+}
+
+logan.sleep();</code></pre>
+  </section>
+
+  <section>
+    <h4>Конструктор предка</h4>
+
+    <pre class="javascript"><code>function Xmen(name, power) {
+  Men.apply(this, arguments);
+
+  this.power = power;
+}
+
+...</code></pre>
+  </section>
+
+  <section>
+    <h4>Классы</h4>
+
+    <pre class="javascript"><code>class Men {
+  constructor(name) {
+  	this.name = name;
+  }
+
+  sayHi() {
+    console.log(`Hi! I'm ${this.name}.`);
+  }
+
+  sleep() {
+    console.log('Z-z-z');
+  }
+}</code></pre>
+  </section>
+
+  <section>
+    <h4>Классы</h4>
+
+    <pre class="javascript"><code>class Xmen extends Men {
+  constructor(name, power) {
+    super(name);
+
+    this.power = power;
+  }
+
+  sayHi() {
+    console.log(`
+      Hi! I'm ${this.name}.
+      My superpower is ${this.power}
+    `);
+  }
+}
+
+const logan = new Xmen('Logan', 'Regeneration');
+logan.sayHi();</code></pre>
+  </section>
+
+  <section>
+    <h4>instanceof</h4>
+
+    <pre class="javascript"><code>logan instanceof Xmen // true
+logan instanceof Men // true
+logan instanceof Object // true
+logan instanceof Apple // false</code></pre>
+  </section>
+
+  <section>
+    <h4>favor composition over class inheritance</h4>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+</script>
+</body>
+</html>

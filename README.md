@@ -7,6 +7,7 @@
 [CWP/LECTION/04 - Архитектура Node.js](https://accetone.github.io/cwp/04)  
 [CWP/LECTION/05 - Express, часть 1](https://accetone.github.io/cwp/05)  
 [CWP/LECTION/06 - ES.next](https://accetone.github.io/cwp/06)  
+[CWP/LECTION/07 - Прототипы](https://accetone.github.io/cwp/07)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)   
