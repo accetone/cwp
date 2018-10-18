@@ -204,6 +204,198 @@ var p = new Person();</code></pre>
 
 var p = new Person();</code></pre>
   </section>
+
+  <section>
+    <h4>Литералы шаблонов</h4>
+
+    <pre class="javascript"><code>var rating = 5;
+
+`ponyfoo.com is ${rating}`
+`ponyfoo.com is ${2 * 3}`
+`ponyfoo.com is ${foo()}`</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы шаблонов</h4>
+
+    <pre class="javascript"><code>function fn(template, ...expressions) {
+/*
+  template = [
+    'foo, ',
+    ' and ',
+    ''
+  ]
+
+  expressions = [
+    bar,
+    baz
+  ]
+*/
+}
+
+fn`foo, ${bar} and ${baz}`</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>{ foo }
+
+{ foo: foo }</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>var prefix = 'moz'
+
+var obj = { [prefix + 'Foo'] : 'bar' }</code></pre>
+  </section>
+
+  <section>
+    <h4>Литералы объектов</h4>
+
+    <pre class="javascript"><code>{
+  foo () {}
+}
+
+{
+  foo: function () {}
+}</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>if (...) {
+  var a = 5;
+}
+
+console.log(a); // 5</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>if (...) {
+  let a = 5;
+}
+
+console.log(a); // ReferenceError</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>const a = { foo: 42 };
+
+a = { bar: 9000 }; // TypeError</code></pre>
+  </section>
+
+  <section>
+    <h4>let, const</h4>
+
+    <pre class="javascript"><code>const a = { foo: 42 };
+
+a.foo = 9000;
+a.bar = 9000;</code></pre>
+  </section>
+
+  <section>
+    <h4>Оператор возведения в степень</h4>
+
+    <pre class="javascript"><code>x ** y
+
+Math.pow(x, y)</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.assign</h4>
+
+    <pre class="javascript"><code>const a = { a: 1 }, b = { b: 2 };
+
+const c = Object.assign({}, a, b);
+
+// { a: 1, b: 2}</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.assign</h4>
+
+    <pre class="javascript"><code>const a = { a: 1 }, b = { b: 2 };
+
+const c = Object.assign({}, a, b);
+
+// { a: 1, b: 2}</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.keys</h4>
+
+    <pre class="javascript"><code>const a = { a: 1, b: 2 }
+
+const keys = Object.keys(a);
+
+// ['a', 'b']</code></pre>
+  </section>
+
+  <section>
+    <h4>Object.entries</h4>
+
+    <pre class="javascript"><code>Object.entries({ one: 1, two: 2 })
+
+// [ [ 'one', 1 ], [ 'two', 2 ] ]</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>let obj = {
+    first: 'Jane',
+    last: 'Doe',
+};</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>let arr = [
+  'red',
+  'green',
+  'blue',
+];</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>function foo(
+  param1,
+  param2,
+) {}</code></pre>
+  </section>
+
+  <section>
+    <h4>Висящие запятые</h4>
+
+    <pre class="javascript"><code>foo(
+  'abc',
+  'def',
+);</code></pre>
+  </section>
+
+  <section>
+    <h4>Асинхронная итерация</h4>
+
+    <pre class="javascript"><code>for await (const line of readFiles(dirPath)) {
+  console.log(line);
+}</code></pre>
+  </section>
+
+  <section>
+    <h4>Promise.prototype.finally()</h4>
+  </section>
+
 </div></div>
 
 <script src="../lib/js/head.min.js"></script>
