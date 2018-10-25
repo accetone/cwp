@@ -852,15 +852,15 @@ User.findOrCreate({
 Users.findAndCountAll({
    where: {
     title: {
-      $like: '%@gmail.com'
+      [Op.like]: '%@gmail.com'
     }
    },
    offset: 10,
    limit: 5
   })
   .then(function(result) {
-  console.log(result.count);
-  console.log(result.rows);
+    console.log(result.count);
+    console.log(result.rows);
   });
     </code></pre>
   </section>
@@ -902,21 +902,22 @@ Users.findAll({ where: { id: [1,2,3] } })
     <h4>Models - Filtering</h4>
 
     <pre class="javascript"><code>
+// Sequelize.Op
 where: {
   id: {
-    $and: {a: 5}       // AND (a = 5)
-    $or: [{a: 5}, {a: 6}]  // (a = 5 OR a = 6)
-    $gt: 6,        // id > 6
-    $gte: 6,         // id >= 6
-    $lt: 10,         // id < 10
-    $lte: 10,        // id <= 10
-    $ne: 20,         // id != 20
-    $between: [6, 10],   // BETWEEN 6 AND 10
-    $notBetween: [11, 15], // NOT BETWEEN 11 AND 15
-    $in: [1, 2],       // IN [1, 2]
-    $notIn: [1, 2],    // NOT IN [1, 2]
-    $like: '%hat',     // LIKE '%hat'
-    $notLike: '%hat'     // NOT LIKE '%hat'
+    [Op.and]: {a: 5}       // AND (a = 5)
+    [Op.or]: [{a: 5}, {a: 6}]  // (a = 5 OR a = 6)
+    [Op.gt]: 6,        // id > 6
+    [Op.gte]: 6,         // id >= 6
+    [Op.lt]: 10,         // id < 10
+    [Op.lte]: 10,        // id <= 10
+    [Op.ne]: 20,         // id != 20
+    [Op.between]: [6, 10],   // BETWEEN 6 AND 10
+    [Op.notBetween]: [11, 15], // NOT BETWEEN 11 AND 15
+    [Op.in]: [1, 2],       // IN [1, 2]
+    [Op.notIn]: [1, 2],    // NOT IN [1, 2]
+    [Op.like]: '%hat',     // LIKE '%hat'
+    [Op.notLike]: '%hat'     // NOT LIKE '%hat'
   }
 }
     </code></pre>
@@ -931,13 +932,13 @@ where: {
 Model.findAll({
   where: {
   name: 'a project',
-  $or: [
+  [Op.or]: [
     {id: [1, 2, 3]},
     {
-    $and: [
-      {id: {gt: 10}},
-      {id: {lt: 100}}
-    ]
+      [Op.and]: [
+        {id: {gt: 10}},
+        {id: {lt: 100}}
+      ]
     }
   ]
   }
@@ -952,7 +953,7 @@ Model.findAll({
 Project.findOne({
   where: {
   name: 'a project',
-  $or: [
+  [Op.or]: [
     { id: [1,2,3] },
     { id: { $gt: 10 } }
   ]
@@ -969,9 +970,9 @@ Project.findOne({
   where: {
   name: 'a project',
   id: {
-    $or: [
-    [1,2,3],
-    { $gt: 10 }
+    [Op.or]: [
+      [1,2,3],
+      { [Op.gt]: 10 }
     ]
   }
   }
@@ -1027,6 +1028,8 @@ Project.findAll({ where: { ... }, raw: true })
     </code></pre>
   </section>
 
+  
+
   <section>
     <h4>Models - Count</h4>
 
@@ -1054,12 +1057,12 @@ Project.count({ where: ["id > ?", 25] })
 */
 Users.max('age')
   .then(function(max) {
-  // this will return 40
+    // this will return 40
   })
 
-Users.max('age', { where: { age: { lt: 20 } } })
+Users.max('age', { where: { age: { [Op.lt]: 20 } } })
   .then(function(max) {
-  // will be 10
+    // will be 10
   })
     </code></pre>
   </section>
@@ -1075,18 +1078,18 @@ Users.max('age', { where: { age: { lt: 20 } } })
 */
 Users.min('age')
   .then(function(min) {
-  // this will return 5
+    // this will return 5
   })
 
-Users.min('age', { where: { age: { $gt: 5 } } })
+Users.min('age', { where: { age: { [Op.gt]: 5 } } })
   .then(function(min) {
-  // will be 10
+    // will be 10
   })
     </code></pre>
   </section>
 
   <section>
-    <h4>Models - Min & Max</h4>
+    <h4>Models - Sum</h4>
 
     <pre class="javascript"><code>
 /*
@@ -1096,12 +1099,12 @@ Users.min('age', { where: { age: { $gt: 5 } } })
 */
 Users.sum('age')
   .then(function(sum) {
-  // this will return 55
+    // this will return 55
   })
 
-Users.sum('age', { where: { age: { $gt: 5 } } })
+Users.sum('age', { where: { age: { [Op.gt]: 5 } } })
   .then(function(sum) {
-  // will be 50
+    // will be 50
   })
     </code></pre>
   </section>
@@ -1140,8 +1143,9 @@ Users.findAll({
 
     <pre class="javascript"><code>
 Posts.findAll({
-  include: [{ model: Comments, as: 'comments',
-  include: [{ model: Users, as: 'user' }]
+  include: [{ 
+    model: Comments, as: 'comments',
+    include: [{ model: Users, as: 'user' }]
   }]
 }).then(function () { ... });
     </code></pre>
@@ -1151,8 +1155,12 @@ Posts.findAll({
     <h4>Models - Include</h4>
 
     <pre class="javascript"><code>
-User.findAll({ include:
-  [{ all: true, nested: true }]});
+User.findAll({ 
+  include: [{ 
+    all: true, 
+    nested: true 
+  }]
+});
     </code></pre>
   </section>
 
@@ -1168,16 +1176,16 @@ const Posts = sequelize.define('Posts', {...}, {
   defaultScope: { where: { deleted: false } },
 
   scopes: {
-  draft: { where: { draft: true } },
-  published: { where: { draft: false } },
-  publishedOn: function (date) {
-    return {
-      where: {
-        draft: false,
-        date: date
-      }
-    };
-  }
+    draft: { where: { draft: true } },
+    published: { where: { draft: false } },
+    publishedOn: function (date) {
+      return {
+        where: {
+          draft: false,
+          date: date
+        }
+      };
+    }
   }
 });
     </code></pre>
@@ -1278,9 +1286,12 @@ scopes: {
     <h4>Scopes - Methods</h4>
 
     <pre class="javascript"><code>
-Posts.scope('random', {
-  method: ['publishedOn', '14.09.2016']})
-  .findAll();
+Posts.scope(
+
+ 'random', 
+ { method: ['publishedOn', '14.09.2016'] }
+
+).findAll();
     </code></pre>
 
     <pre class="sql fragment"><code>
@@ -1298,13 +1309,13 @@ SELECT * FROM Posts
 scope1: {
   where: {
     firstname: 'bob',
-    age: { $gt: 20 }
+    age: { [Op.gt]: 20 }
   }
   limit: 2
 },
 scope2: {
   where: {
-    age: { $gt: 30 }
+    age: { [Op.gt]: 30 }
   },
   limit: 10
 }
@@ -1528,7 +1539,7 @@ Posts.bulkCreate([
     <pre class="javascript"><code>
 Posts.update(
     { draft: true },
-    { where: { title: { $like: '%Internet%' }}}
+    { where: { title: { [Op.like]: '%Internet%' }}}
   )
   .spread(function(affectedCount, affectedRows) {
     ...
@@ -1541,7 +1552,7 @@ Posts.update(
 
     <pre class="javascript"><code>
 Posts.destroy(
-    { where: { title: { $like: '%Internet%' }}}
+    { where: { title: { [Op.like]: '%Internet%' }}}
   )
   .then(function(affectedCount) {
     ...
