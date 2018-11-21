@@ -9,6 +9,8 @@
 [CWP/LECTION/06 - ES.next](https://accetone.github.io/cwp/06)  
 [CWP/LECTION/07 - Прототипы](https://accetone.github.io/cwp/07)  
 [CWP/LECTION/08 - Sequelize](https://accetone.github.io/cwp/08)  
+[CWP/LECTION/09 - Express, 2](https://accetone.github.io/cwp/09)  
+[CWP/LECTION/10 - N-layer архитектура](https://accetone.github.io/cwp/10)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)   

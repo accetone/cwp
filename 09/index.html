@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP09</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Express, 2</h2>
+    <p class="author">
+      <small>Лекция 09</small>
+    </p>
+  </section>
+
+  <section>
+    <h3><span class="red">D</span>ebugging</h3>
+    <h4>Отладка</h4>
+  </section>
+
+  <section>
+    <h4>Debugging</h4>
+
+    <pre class="javascript"><code>
+// *nix
+DEBUG=express:* node index.js
+
+// Windows
+set DEBUG=express:* & node index.js
+
+// JS
+process.env.DEBUG = 'express:*';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Debugging</h4>
+
+    <pre class="javascript"><code>
+const logger = (req, res, next) => {
+  console.log(req.url);
+  next();
+};
+
+const hello = (req, res) => {
+  res.send('hello');
+};
+
+app.use(express.static('.'), { index: false });
+app.use(logger);
+app.use(hello);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Debugging</h4>
+
+    <pre class="javascript"><code>
+express:router use / query +1ms
+express:router use / expressInit +1ms
+express:router use / serveStatic +1ms
+express:router use / logger +0ms
+express:router use / hello +0ms
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Debugging</h4>
+
+    <pre><code>
+GET http://127.0.0.1:3000/
+
+express:router dispatching GET / +1s
+express:router query  : / +1ms
+express:router expressInit  : / +0ms
+express:router serveStatic  : / +1ms
+express:router logger  : / +3ms
+express:router hello  : / +0ms
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>PI</h3>
+    <h4>Express</h4>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+const options = {
+  caseSensitive: false,
+  strict: false,
+  mergeParams: false
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// caseSensitive: false
+
+'/news' === '/News'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// strict: false
+
+'/news' === '/news/'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: false
+
+const news = express.Router();
+const comments = express.Router();
+
+comments.get('/:commentId', (req, res) => {
+  console.log(req.params);
+  res.send(`c#${req.params.commentId}
+    / n#${req.params.newsId}`);
+});
+
+news.use('/:newsId/comments', comments);
+
+app.use('/news', news);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: false
+
+GET http://127.0.0.1:3000/news/1/comments/2
+
+{ commentId: '2' }
+
+c#2 / n#undefined
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: true
+
+const news = express.Router();
+const comments
+  = express.Router({ mergeParams: true });
+
+comments.get('/:commentId', (req, res) => {
+  console.log(req.params);
+  res.send(`c#${req.params.commentId}
+    / n#${req.params.newsId}`);
+});
+
+news.use('/:newsId/comments', comments);
+
+app.use('/news', news);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: true
+
+GET http://127.0.0.1:3000/news/1/comments/2
+
+{ newsId: '1', commentId: '2' }
+
+c#2 / n#1
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: true
+
+const news = express.Router();
+const comments
+  = express.Router({ mergeParams: true });
+
+comments.get('/:id', (req, res) => {
+  console.log(req.params);
+  res.send(`c#${req.params.id}`);
+});
+
+news.use('/:id/comments', comments);
+
+app.use('/news', news);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express - Router</h4>
+
+    <pre class="javascript"><code>
+// mergeParams: true
+
+GET http://127.0.0.1:3000/news/1/comments/2
+
+{ id: '2' }
+
+c#2
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>PI</h3>
+    <h4>Application</h4>
+  </section>
+
+  <section>
+    <h4>App</h4>
+
+    <pre class="javascript"><code>
+const app = express();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Locals</h4>
+
+    <pre class="javascript"><code>
+app.locals.title = 'My App';
+app.locals.email = 'me@myapp.com';
+
+...
+
+const logger = (req, res, next) => {
+  console.log(req.app.locals.title);
+  next();
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Mountpath</h4>
+
+    <pre class="javascript"><code>
+const app = express(); // the main app
+const admin = express(); // the sub app
+
+admin.get('/', (req, res) => {
+  console.log(admin.mountpath); // /admin
+  res.send('Admin Homepage');
+});
+
+app.use('/admin', admin); // mount the sub app
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Path</h4>
+
+    <pre class="javascript"><code>
+const app = express(),
+  blog = express(),
+  blogAdmin = express();
+
+app.use('/blog', blog);
+blog.use('/admin', blogAdmin);
+
+console.log(app.path()); // ''
+console.log(blog.path()); // '/blog'
+console.log(blogAdmin.path()); // '/blog/admin'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Param</h4>
+
+    <pre class="javascript"><code>
+app.param('userId', (req, res, next, id) => {
+  User.find(id, (err, user) => {
+    if (err) next(err);
+
+    req.user = user;
+    next();
+  });
+});
+
+app.get('/user/:userId', (req, res) => {
+  ...
+});
+
+app.get('/user/:userId/comment', (req, res) => {
+  ...
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Param</h4>
+
+    <pre class="javascript"><code>
+app.param('id', (req, res, next, id) => {
+  console.log('CALLED ONLY ONCE');
+  next();
+});
+
+app.get('/user/:id', (req, res, next) => {
+  console.log('although this matches');
+  next();
+});
+
+app.get('/user/:id', (req, res) => {
+  console.log('and this matches too');
+  res.end();
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Param</h4>
+
+    <pre class="javascript"><code>
+GET http://127.0.0.1:3000/user/42
+
+CALLED ONLY ONCE
+although this matches
+and this matches too
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Param</h4>
+
+    <pre class="javascript"><code>
+app.param(['id', 'page'], function (req, res, next, value) {
+  console.log('CALLED ONLY ONCE with', value);
+  next();
+});
+
+app.get('/user/:id/:page', function (req, res, next) {
+  console.log('although this matches');
+  next();
+});
+
+app.get('/user/:id/:page', function (req, res) {
+  console.log('and this matches too');
+  res.end();
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Param</h4>
+
+    <pre class="javascript"><code>
+CALLED ONLY ONCE with 42
+CALLED ONLY ONCE with 3
+although this matches
+and this matches too
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+app.get(property);
+app.set(property, value);
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+app.disable(property);
+app.enable(property);
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+app.disabled(property);
+app.enabled(property);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+case sensitive routing // '/Foo', '/foo'
+etag
+strict routing // '/foo', '/foo/'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+query parser | Varied
+
+false
+'simple' - querystring
+'extended' - qs
+function
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+// https://www.npmjs.com/package/qs
+
+'foo[bar][baz]=foobarbaz'
+
+=>
+
+{
+  foo: {
+    bar: {
+      baz: 'foobarbaz'
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+// https://www.npmjs.com/package/qs
+
+'a[]=b&a[]=c'
+
+=>
+
+{
+  a: ['b', 'c']
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+// https://www.npmjs.com/package/qs
+
+'a[0]=b&a[2]=c&a[1]=d'
+
+=>
+
+{
+  a: ['b', 'd', 'c']
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+env | String
+
+'production'
+'development'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+x-powered-by | Boolean
+
+"X-Powered-By: Express" HTTP header
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>App - Settings</h4>
+
+    <pre class="javascript"><code>
+app.set('title', 'Brand New App');
+app.get('title');
+
+> 'Brand New App'
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>PI</h3>
+    <h4>Request</h4>
+  </section>
+
+  <section>
+    <h4>Request - Url</h4>
+
+    <pre class="javascript"><code>
+app.get('/news', (req, res) => { ... });
+
+GET http://127.0.0.1:3000/news/42/comments?sort=desc
+
+req.baseUrl
+> '/news' // маршрут сработавшего middleware
+
+req.path
+> '/42/comments'
+
+req.originalUrl
+> '/news/42/comments'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Url</h4>
+
+    <pre class="javascript"><code>
+app.get('/news', (req, res) => { ... });
+
+GET http://example.com/news/42/comments?sort=desc
+
+req.hostname
+> 'example.com'
+
+req.ip
+> '127.0.0.1'
+
+req.protocol
+> 'http'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Fresh</h4>
+
+    <pre class="javascript"><code>
+req.fresh
+req.stale
+
+// cache-control, etag
+// if-modified-since, if-none-match
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Method</h4>
+
+    <pre class="javascript"><code>
+app.use((req, res, next) => {
+  if (req.method === 'PUT') {
+    res.status(405)
+      .send('Invalid method');
+  }
+  else {
+    next();
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Params</h4>
+
+    <pre class="javascript"><code>
+app.get('/news/:id', (req, res, next) => { ... });
+
+GET 127.0.0.1:3000/news/42
+
+req.params
+> { id: 42 }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Params</h4>
+
+    <pre class="javascript"><code>
+app.get('/news/*/*', (req, res, next) => { ... });
+
+GET 127.0.0.1:3000/news/42/comment
+
+req.params
+> { '0': '42', '1': 'comment' }
+
+req.params[0]
+> '42'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Query</h4>
+
+    <pre class="javascript"><code>
+GET /search?q=tobi+ferret
+
+req.query.q
+> 'tobi ferret'
+
+GET /shoes?order=desc&shoe[color]=blue
+  &shoe[type]=converse
+
+req.query.order
+> 'desc'
+
+req.query.shoe.color
+> 'blue'
+
+req.query.shoe.type
+> 'converse'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Secure</h4>
+
+    <pre class="javascript"><code>
+GET https://example.com/news
+
+req.secure
+> true
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+req.protocol == 'https'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Subdomains</h4>
+
+    <pre class="javascript"><code>
+GET tobi.ferrets.example.com
+
+req.subdomains
+> ["ferrets", "tobi"]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - XHR (AJAX)</h4>
+
+    <pre class="javascript"><code>
+POST example.com
+
+req.xhr
+> true
+
+// XMLHttpRequest
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Accepts</h4>
+
+    <pre class="javascript"><code>
+// Accept: text/*, application/json
+req.accepts('html');
+> 'html'
+
+req.accepts('text/html');
+> 'text/html'
+
+req.accepts(['json', 'text']);
+> 'json'
+
+req.accepts(['text', 'json']);
+> 'json'
+
+req.accepts('image/png');
+req.accepts('png');
+> undefined
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Accepts</h4>
+
+    <pre class="javascript"><code>
+req.acceptsCharsets(charset [, ...]);
+
+req.acceptsEncodings(encoding [, ...]);
+
+req.acceptsLanguages(lang [, ...]);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Header</h4>
+
+    <pre class="javascript"><code>
+req.header('Content-Type');
+> "text/plain"
+
+req.header('content-type');
+> "text/plain"
+
+req.get('Content-Type');
+> "text/plain"
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Request - Is</h4>
+
+    <pre class="javascript"><code>
+// With Content-Type: text/html; charset=utf-8
+req.is('html');
+req.is('text/html');
+req.is('text/*');
+> true
+
+// When Content-Type is application/json
+req.is('json');
+req.is('application/json');
+req.is('application/*');
+> true
+
+req.is('html');
+> false
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>PI</h3>
+    <h4>Response</h4>
+  </section>
+
+  <section>
+    <h4>Response - Append</h4>
+
+    <pre class="javascript"><code>
+res.append('Set-Cookie', 'foo=bar;');
+res.append('Warning', '199 warnings');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Cookie</h4>
+
+    <pre class="javascript"><code>
+res.cookie('name', 'tobi',
+  {
+    domain: '.example.com',
+    path: '/admin',
+    secure: true,
+    maxAge: 900000
+  });
+
+res.cookie('rememberme', '1',
+  {
+    expires: new Date(Date.now() + 900000),
+    httpOnly: true
+  });
+
+res.clearCookie('__auth_id');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Format</h4>
+
+    <pre class="javascript"><code>
+res.format({
+  'text/plain': () => {
+  res.send('hey');
+  },
+
+  'text/html': () => {
+  res.send('<p>hey</p>');
+  },
+
+  'application/json': () => {
+  res.send({ message: 'hey' });
+  },
+
+  'default': () => {
+  res.status(406).send('Not Acceptable');
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Format</h4>
+
+    <pre class="javascript"><code>
+res.format({
+  text: function(){
+  res.send('hey');
+  },
+
+  html: function(){
+  res.send('<p>hey</p>');
+  },
+
+  json: function(){
+  res.send({ message: 'hey' });
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - JSON</h4>
+
+    <pre class="javascript"><code>
+res.json(null);
+
+res.json({ user: 'tobi' });
+
+res.status(500).json({ error: 'message' });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Redirect</h4>
+
+    <pre class="javascript"><code>
+res.redirect('/foo/bar');
+
+res.redirect('http://example.com');
+
+res.redirect(301, 'http://example.com');
+
+res.redirect('../login');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Send</h4>
+
+    <pre class="javascript"><code>
+res.send(new Buffer('whoop'));
+
+res.send({ some: 'json' });
+
+res.send('<p>some html</p>');
+
+res.status(404)
+  .send('Sorry, we cannot find that!');
+
+res.status(500)
+  .send({ error: 'something blew up' });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Send file</h4>
+
+    <pre class="javascript"><code>
+const options = {
+  root: __dirname + '/public/',
+  dotfiles: 'deny',
+  headers: {
+    'x-timestamp': Date.now(),
+    'x-sent': true
+  }
+};
+
+const errorHandler = (err) => { ... };
+
+res.sendFile(fileName, options, errorHandler);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Send status</h4>
+
+    <pre class="javascript"><code>
+// res.status(200).send('OK')
+res.sendStatus(200);
+
+// res.status(403).send('Forbidden')
+res.sendStatus(403);
+
+// res.status(404).send('Not Found')
+res.sendStatus(404);
+
+// res.status(500).send('Internal Server Error')
+res.sendStatus(500);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - Headers</h4>
+
+    <pre class="javascript"><code>
+res.set('Content-Type', 'text/plain');
+
+res.get('Content-Type');
+
+res.set({
+  'Content-Type': 'text/plain',
+  'Content-Length': '123',
+  'ETag': '12345'
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Response - End</h4>
+
+    <pre class="javascript"><code>
+res.end();
+
+res.status(404).end();
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">c</span>ookie-parser</h3>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+cookieParser(secret, options)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>cookie-parser</h4>
+
+    <pre class="javascript"><code>
+app.use(cookieParser('my private key'));
+
+res.cookie('user', 'tobi', { signed: true });
+
+Cookie: user=tobi.CP7AWaXDfAKIRfH49dQzKJx7sKzzSoPq7/AcBBRVwlI3
+
+req.cookies.user
+> user=tobi.CP7AWaXDfAKIRfH49dQzKJx7sKzzSoPq7/AcBBRVwlI3
+
+req.signedCookies.user
+> "tobi"
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">b</span>ody-parser</h3>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.json(options)
+
+inflate // прием сжатых данных, true
+limit // макс. размер тела, '100kb'
+reviver // ф-я трансформации выходного объекта
+strict // только объекты и массивы, true
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.raw(options)
+
+inflate
+limit
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.text(options)
+
+defaultCharset // кодировка, 'utf-8'
+inflate
+limit
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>body-parser</h4>
+
+    <pre class="javascript"><code>
+bodyParser.urlencoded(options)
+
+extended // querystring vs qs
+inflate
+limit
+parameterLimit // макс. число параметров, 1000
+    </code></pre>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    slideNumber: true,
+    history: true,
+    center: true,
+    hideAddressBar: true,
+    transition: 'slide',
+    dependencies: [
+      {
+        src: '../plugin/highlight/highlight.js',
+        async: true,
+        condition: function () {
+          return Boolean(document.querySelector('pre code'));
+        },
+        callback: function () {
+          hljs.initHighlightingOnLoad();
+        }
+      }
+    ]
+  });
+</script>
+</body>
+</html>
