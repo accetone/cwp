@@ -50,7 +50,1494 @@
   </code></pre>
   </section>
 
+  <section>
+  <h4>index.js</h4>
 
+  <pre class="javascript"><code>
+const Sequelize = require('sequelize');
+
+const config = require('./config.json');
+
+const db = require('./context')(Sequelize, config);
+const server = require('./server')(db, config);
+
+...
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>index.js</h4>
+
+  <pre class="javascript"><code>
+...
+
+(async function () {
+  await db.sequelize.sync();
+
+  await db.roles.findOrCreate({
+    where: { name: 'adminstrator' }
+  });
+
+  await db.roles.findOrCreate({
+    where: { name: 'user' }
+  });
+
+  server.listen(3000, () => console.log('Running'));
+})();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>config.json</h4>
+
+  <pre class="javascript"><code>
+{
+  "db": {
+    "host": "127.0.0.1",
+    "name": "my_db",
+    "user": "myuser",
+    "password": "123#qwe"
+  },
+  "cookie": {
+    "key": "secret key",
+    "auth": "__auth_id"
+  }
+}
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
+const errors = require('./helpers/errors');
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+const PostsService = require('./services/posts');
+const UsersService = require('./services/users');
+const RolesService = require('./services/roles');
+const CacheService = require('./services/cache');
+
+const AuthenticationService
+  = require('./services/authentication');
+
+const AuthorizationService
+  = require('./services/authorization');
+
+module.exports = (db, config) => {
+  ...
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+const app = express();
+
+// Services
+const postsService = new PostsService(
+  db.posts,
+  errors
+);
+
+const usersService = new UsersService(
+  db.users,
+  db.roles,
+  errors
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+const rolesService = new RolesService(
+  db.roles,
+  errors
+);
+
+const authenticationService = new AuthenticationService(
+  db.users,
+  db.roles,
+  errors
+);
+
+const authorizationService = new AuthorizationService(
+  db.roles,
+  errors
+);
+
+const cacheService = new CacheService();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+// Controllers
+const logger
+  = require('./global-controllers/logger');
+
+const authenticator
+  = require('./global-controllers/authenticator')(
+    usersService,
+    config
+  );
+
+const authorizator
+  = require('./global-controllers/authorizator')
+      (authorizationService);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+const cache
+  = require('./global-controllers/cache')
+      (cacheService);
+
+const error
+  = require('./global-controllers/error');
+
+const apiController = require('./controllers/api')(
+  postsService,
+  usersService,
+  rolesService,
+  authenticationService,
+  cacheService,
+  config,
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>server.js</h4>
+
+  <pre class="javascript"><code>
+// Mounting
+app.use(express.static('public'));
+app.use(cookieParser(config.cookie.key));
+app.use(bodyParser.json());
+
+app.use('/api', logger);
+app.use('/api', authenticator);
+app.use('/api', authorizator);
+app.use('/api', cache);
+app.use('/api', apiController);
+app.use('/api', error);
+
+return app;
+  </code></pre>
+  </section>
+
+  <section>
+  <h3>Helpers</h3>
+  </section>
+
+  <section>
+  <h4>./helpers/hash.js</h4>
+
+  <pre class="javascript"><code>
+// TODO: user hash algorithm e.g. bcrypt
+module.exports = {
+  get: plain => {
+    return plain;
+  },
+
+  isValid: (plain, hash) => {
+    return plain === hash;
+  },
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./helpers/wrap.js</h4>
+
+  <pre class="javascript"><code>
+module.exports =
+  fn =>
+    (req, res, next) =>
+      fn(req, res, next).catch(next);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./utils/errors.js</h4>
+
+  <pre class="javascript"><code>
+const express = require('express');
+
+express.response.error = function(error) {
+  if (!error.code) {
+    error = {
+      message: error.toString(),
+      code: 'server_error',
+      status: 500
+    };
+  }
+
+  this.status(error.status).json(error);
+};
+...
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./utils/errors.js</h4>
+
+  <pre class="javascript"><code>
+...
+module.exports = {
+  invalidId: {
+    message: 'Invalid id',
+    code: 'invalid_id', status: 400 },
+  notFound: {
+    message: 'Entity not found',
+    code: 'entity_not_found', status: 404 },
+  wrongCredentials: {
+    message: 'Email or password are wrong',
+    code: 'wrong_credentials', status: 404 },
+  accessDenied: {
+    message: 'Access denied',
+    code: 'access_denied', status: 403 }
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h3><span class="red">M</span>odel</h3>
+  <h4>Модель</h4>
+  </section>
+
+  <section>
+  <h4>Модель</h4>
+
+  <ul>
+  <li class="left fragment">класс, структура, схема</li>
+  <li class="left fragment">отражает сущность предметной области</li>
+  <li class="left fragment">абстракция</li>
+  <li class="left fragment">таблица в БД - модель в коде</li>
+  </ul>
+  </section>
+
+  <section>
+  <h4>./models/post.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('posts', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    title: { type: Sequelize.STRING },
+    content: Sequelize.STRING,
+    date: Sequelize.DATEONLY,
+    rating: Sequelize.INTEGER,
+
+    draft: Sequelize.BOOLEAN
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./models/user.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('users', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    email: Sequelize.STRING,
+    password: Sequelize.STRING,
+
+    firstname: Sequelize.STRING,
+    lastname: Sequelize.STRING
+  });
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./models/role.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('roles', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    name: Sequelize.STRING
+  });
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h3><span class="red">C</span>ontext</h3>
+  <h4>Контекст / ORM</h4>
+  </section>
+
+  <section>
+  <h4>Контекст</h4>
+
+  <ul>
+  <li class="left fragment">связи между моделями</li>
+  <li class="left fragment">перевод вызова методов в запросы</li>
+  <li class="left fragment">маппинг ответов на объекты</li>
+  </ul>
+  </section>
+
+  <section>
+  <h4>./context/index.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  const options = {
+    host: config.db.host,
+    dialect: 'mysql',
+    logging: false,
+    define: {
+      timestamps: true,
+      paranoid: true,
+      defaultScope: {
+        where: { deletedAt: { $eq: null } }
+      }
+    }
+  };
+  ...
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./context/db.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  const sequelize = new Sequelize(config.db.name,
+    config.db.user, config.db.password, options);
+
+  const User = require('../models/user')
+    (Sequelize, sequelize);
+  const Role = require('../models/role')
+    (Sequelize, sequelize);
+  const Post = require('../models/post')
+    (Sequelize, sequelize);
+  ...
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./context/db.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  // User <-> Role
+  User.belongsToMany(Role,
+    { through: 'userRoles' });
+  Role.belongsToMany(User,
+    { through: 'userRoles' });
+
+  // Post -> User
+  Post.belongsTo(User);
+  User.hasMany(Post);
+  ...
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./context/db.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (Sequelize, config) => {
+  ...
+  return {
+    users: User,
+    roles: Role,
+    posts: Post,
+
+    sequelize,
+    Sequelize,
+  };
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h3><span class="red">R</span>epository</h3>
+  <h4>Репозиторий</h4>
+  </section>
+
+  <section>
+  <h4>Репозиторий</h4>
+
+  <ul>
+  <li class="left fragment">каждой модели - репозиторий</li>
+  <li class="left fragment">CRUD</li>
+  </ul>
+  </section>
+
+  <section>
+  <h3><span class="red">S</span>ervice</h3>
+  <h4>Сервис</h4>
+  </section>
+
+  <section>
+  <h4>Сервис</h4>
+
+  <ul>
+  <li class="left fragment">потребляет 1 и более репозиториев</li>
+  <li class="left fragment">валидация</li>
+  <li class="left fragment">бизнес-логика</li>
+  <li class="left fragment">может возвращать DTO</li>
+  </ul>
+  </section>
+
+  <section>
+  <h4>./services/crud.js</h4>
+
+  <pre class="javascript"><code>
+class CrudService {
+  constructor(repository, errors) { ... }
+
+  async readChunk(options) { ... }
+
+  async read(id) { ... }
+
+  async create(data) { ... }
+
+  async update(id, data) { ... }
+
+  async delete(id) { ... }
+}
+
+module.exports = CrudService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => constructor</h4>
+
+  <pre class="javascript"><code>
+this.repository = repository;
+this.errors = errors;
+
+this.defaults = {
+  readChunk: {
+    limit: 10,
+    page: 1,
+    order: 'asc',
+    orderField: 'id'
+  }
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => readChunk(options)</h4>
+
+  <pre class="javascript"><code>
+options = Object.assign(
+  {}, this.defaults.readChunk, options
+);
+
+let limit = options.limit;
+let offset = (options.page - 1) * options.limit;
+
+return await this.repository.findAll({
+  limit: limit,
+  offset: offset,
+  order: [[
+    options.orderField,
+    options.order.toUpperCase()
+  ]],
+  raw: true
+});
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => read(id)</h4>
+
+  <pre class="javascript"><code>
+id = parseInt(id);
+
+if (isNaN(id)) {
+  throw this.errors.invalidId;
+}
+
+const item = await this.repository.findById(
+  id,
+  { raw: true }
+);
+
+if (!item) {
+  throw this.errors.notFound;
+}
+
+return item;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => create(data)</h4>
+
+  <pre class="javascript"><code>
+const item = await this.repository.create(data);
+
+return item.get({ plain: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => update(id, data)</h4>
+
+  <pre class="javascript"><code>
+await this.repository.update(data, {
+  where: { id: id },
+  limit: 1
+});
+
+return this.read(id);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/crud.js => delete(id)</h4>
+
+  <pre class="javascript"><code>
+return this.repository.destroy({
+  where: { id: id }
+});
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/posts.js</h4>
+
+  <pre class="javascript"><code>
+const CrudService = require('./crud');
+
+class PostsService extends CrudService {
+  async create(data) { ... }
+
+  async update(data) { ... }
+
+  async upvote(id) { ... }
+
+  async downvote(id) { ... }
+}
+
+module.exports = PostsService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/posts.js => create(data)</h4>
+
+  <pre class="javascript"><code>
+let post = {
+  title: data.title,
+  content: data.content,
+  date: data.date,
+  draft: data.draft,
+  userId: data.userId,
+  rating: 0
+};
+
+return super.create(post);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/posts.js => update(data)</h4>
+
+  <pre class="javascript"><code>
+let post = {
+  title: data.title,
+  content: data.content,
+  date: data.date,
+  draft: data.draft
+};
+
+return super.update(data.id, post);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/posts.js => upvote(id)</h4>
+
+  <pre class="javascript"><code>
+const post = await this.repository.findById(id);
+
+if (!post) {
+  throw this.errors.notFound;
+}
+
+return post.increment({ rating: 1 });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/posts.js => downvote(id)</h4>
+
+  <pre class="javascript"><code>
+const post = await this.repository.findById(id);
+
+if (!post) {
+  throw this.errors.notFound;
+}
+
+return post.increment({ rating: -1 });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/users.js</h4>
+
+  <pre class="javascript"><code>
+const Promise = require('bluebird');
+const CrudService = require('./crud');
+const hash = require('../helpers/hash');
+
+class UsersService extends CrudService {
+  constructor(usersRepository, rolesRepository,
+  errors) { ... }
+
+  async update(data) { ... }
+  async grant(userId, roleId) { ... }
+  async revoke(userId, roleId) { ... }
+}
+
+module.exports = UsersService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/users.js => update(data)</h4>
+
+  <pre class="javascript"><code>
+let user = {
+  password: data.password
+  && hash.get(data.password),
+  firstname: data.firstname,
+  lastname: data.lastname
+};
+
+return super.update(data.id, user);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/users.js => grant(userId, roleId)</h4>
+
+  <pre class="javascript"><code>
+const [ user, role ] = await Promise.all([
+  this.repository.findById(userId),
+  this.rolesRepository.findById(roleId),
+]);
+
+if (!user || !role) {
+  throw this.errors.invalidId;
+}
+
+await user.addRole(role);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/users.js => revoke(userId, roleId)</h4>
+
+  <pre class="javascript"><code>
+const [ user, role ] = await Promise.all([
+  this.repository.findById(userId),
+  this.rolesRepository.findById(roleId),
+]);
+
+if (!user || !role) {
+  throw this.errors.invalidId;
+}
+
+await user.removeRole(role);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/roles.js</h4>
+
+  <pre class="javascript"><code>
+const CrudService = require('./crud');
+
+class RolesService extends CrudService {
+  async create(data) { ... }
+}
+
+module.exports = RolesService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/roles.js => create(data)</h4>
+
+  <pre class="javascript"><code>
+let role = {
+  name: data.name
+};
+
+return super.create(role);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authentication.js</h4>
+
+  <pre class="javascript"><code>
+const Promise = require('bluebird');
+const hash = require('../helpers/hash');
+
+class AuthenticationService {
+  constructor(usersRepository, rolesRepository,
+    errors) { ... }
+
+  async login(data) { ... }
+  async register(data) { ... }
+}
+
+module.exports = AuthenticationService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authentication.js => constructor</h4>
+
+  <pre class="javascript"><code>
+this.usersRepository = usersRepository;
+this.rolesRepository = rolesRepository;
+this.errors = errors;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authentication.js => login(data)</h4>
+
+  <pre class="javascript"><code>
+const user = await this.usersRepository.findOne({
+  where: { email: data.email },
+  attributes: ['id', 'password']
+});
+
+if (!user
+  || !hash.isValid(data.password, user.password)) {
+  throw this.errors.wrongCredentials;
+}
+
+return user;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authentication.js => register(data)</h4>
+
+  <pre class="javascript"><code>
+const user = this.usersRepository.build({
+  email: data.email,
+  password: hash.get(data.password),
+  firstname: data.firstname,
+  lastname: data.lastname
+});
+
+const [, role] = await Promise.all([
+  user.save(),
+  this.rolesRepository.findOne({
+    where: { name: 'user' }
+  })
+]);
+
+await user.addRole(role);
+
+return user;
+  </code></pre>
+  </section>
+
+
+
+  <section>
+  <h4>./services/authorization.js</h4>
+
+  <pre class="javascript"><code>
+const permissions = {
+  '/posts/create': 'user',
+  '/posts/update': 'user',
+  '/posts/delete': 'user',
+
+  '/users': 'administrator',
+  '/users/update': 'administrator',
+  '/users/delete': 'administrator',
+  '/users/grant': 'administrator',
+  '/users/revoke': 'administrator',
+
+  '/roles': 'administrator',
+  '/roles/create': 'administrator',
+  '/roles/delete': 'administrator'
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authorization.js</h4>
+
+  <pre class="javascript"><code>
+class AuthorizationService {
+  constructor(rolesRepository, errors) { ... }
+
+  async checkPermissions(user, route)  { ... }
+}
+
+module.exports = AuthorizationService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authorization.js => constructor</h4>
+
+  <pre class="javascript"><code>
+this.rolesRepository = rolesRepository;
+this.errors = errors;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/authorization.js => checkPermissions(user, route)</h4>
+
+  <pre class="javascript"><code>
+if (!permissions[route]) return;
+
+if(!user) throw this.errors.accessDenied;
+
+const role = await this.rolesRepository.findOne({
+  where: { name: permissions[route] }
+});
+
+const hasRole = await user.hasRole(role);
+
+if (!hasRole) {
+  throw this.errors.accessDenied;
+}
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./services/cache.js</h4>
+
+  <pre class="javascript"><code>
+// TODO: implement cache, in memory or external
+class CacheService {
+  async set(req, data) {}
+  async get(req) {}
+  async invalidate(req) {}
+}
+
+module.exports = CacheService;
+  </code></pre>
+  </section>
+
+  <section>
+  <h3><span class="red">C</span>ontroller</h3>
+  <h4>Контроллер</h4>
+  </section>
+
+  <section>
+  <h4>Контроллер</h4>
+
+  <ul>
+  <li class="left fragment">потребляет 1 и более сервисов</li>
+  <li class="left fragment">запросы от клиента</li>
+  <li class="left fragment">логика приложения</li>
+  </ul>
+  </section>
+
+  <section>
+  <h4>./global-contollers/logger.js</h4>
+
+  <pre class="javascript"><code>
+const moment = require('moment');
+
+module.exports = (req, res, next) => {
+  res.locals.trace = { ... };
+
+  console.log(moment().format('HH:mm:ss'));
+  console.log(`${req.method} ${req.path}`);
+  console.log(JSON.stringify(req.query));
+  console.log(JSON.stringify(req.body));
+  console.log();
+
+  next();
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./global-contollers/authenticator.js</h4>
+
+  <pre class="javascript"><code>
+const wrap = require('../helpers/wrap');
+
+module.exports = (usersService, config) =>
+  wrap(async (req, res, next) => {
+    let userId = req.signedCookies[
+      config.cookie.auth
+    ];
+
+    if (userId) {
+      req.user = await usersService.get(userId);
+    }
+
+    next();
+  });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./global-contollers/authorizator.js</h4>
+
+  <pre class="javascript"><code>
+const wrap = require('../helpers/wrap');
+
+module.exports = (authorizationService) =>
+  wrap(async (req, res, next) => {
+    await authorizationService
+      .checkPermissions(req.user, req.path);
+
+    next();
+  });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./global-contollers/cache.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (cacheService) => async (req, res, next) => {
+  const cached = await cacheService.get(req);
+
+  if (cached) {
+    res.json(cached);
+    return;
+  }
+
+  next();
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./global-contollers/error.js</h4>
+
+  <pre class="javascript"><code>
+module.exports = (error, req, res, next) => {
+  // TODO: log error + 'res.locals.trace'
+
+  res.error(error);
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/api.js</h4>
+
+  <pre class="javascript"><code>
+const express = require('express');
+
+module.exports = (
+  postsService,
+  usersService,
+  rolesService,
+  authenticationService,
+  cacheService,
+  config,
+) => {
+  ...
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/api.js</h4>
+
+  <pre class="javascript"><code>
+const router = express.Router();
+
+const postsController = require('./posts')(
+  postsService,
+  cacheService
+);
+
+const usersController = require('./users')(
+  usersService
+);
+
+const rolesController = require('./roles')(
+  rolesService
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/api.js</h4>
+
+  <pre class="javascript"><code>
+const authController = require('./auth')(
+  authenticationService,
+  config
+);
+
+router.use('/posts', postsController);
+router.use('/users', usersController);
+router.use('/roles', rolesController);
+router.use('/auth', authController);
+
+return router;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/crud.js</h4>
+
+  <pre class="javascript"><code>
+const express = require('express');
+const wrap = require('../helpers/wrap');
+
+class CrudController {
+  constructor(service) {...}
+
+  async readAll(req, res) {...}
+  async read(req, res) {...}
+  async create(req, res) {...}
+  async update(req, res) {...}
+  async delete(req, res) {...}
+
+  registerRoutes() {...}
+}
+
+module.exports = CrudController;
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => constructor</h4>
+
+  <pre class="javascript"><code>
+this.service = service;
+
+this.readAll = this.readAll.bind(this);
+this.read = this.read.bind(this);
+this.create = this.create.bind(this);
+this.update = this.update.bind(this);
+this.delete = this.delete.bind(this);
+
+this.router = express.Router();
+this.routes = {
+  '/': [{ method: 'get', cb: this.readAll }],
+  '/:id': [{ method: 'get', cb: this.read }],
+  '/create': [{ method: 'post', cb: this.create }],
+  '/update': [{ method: 'post', cb: this.update }],
+  '/delete': [{ method: 'post', cb: this.delete }]
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => readAll(req, res)</h4>
+
+  <pre class="javascript"><code>
+res.json(
+  await this.service.readChunk(req.params)
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => read(req, res)</h4>
+
+  <pre class="javascript"><code>
+res.json(
+  await this.service.read(req.params.id)
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => create(req, res)</h4>
+
+  <pre class="javascript"><code>
+res.json(
+  await this.service.create(req.body)
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => update(req, res)</h4>
+
+  <pre class="javascript"><code>
+res.json(
+  await this.service.update(req.body)
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => delete(req, res)</h4>
+
+  <pre class="javascript"><code>
+res.json(
+  await this.service.delete(req.body.id)
+);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/crud.js => registerRoutes()</h4>
+
+  <pre class="javascript"><code>
+Object.keys(this.routes).forEach(route => {
+  let handlers = this.routes[route];
+
+  if (!handlers || !Array.isArray(handlers)) {
+    return;
+  }
+
+  for (let handler of handlers) {
+    this.router[handler.method](
+      route,
+      wrap(handler.cb)
+    );
+  }
+});
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/posts.js</h4>
+
+  <pre class="javascript"><code>
+const CrudController = require('./crud');
+
+class PostsController extends CrudController {
+  constructor(postsService, cahceService) {...}
+  async readAll(req, res) {...}
+  async upvote(req, res) {...}
+  async downvote(req, res) {...}
+}
+
+module.exports = (postsService, cacheService) => {
+  const controller = new PostsController(
+    postsService,
+    cacheService
+  );
+
+  return controller.router;
+};
+  </code></pre>
+  </section>
+
+
+  <section>
+  <h4>ctrls/posts.js => constructor</h4>
+
+  <pre class="javascript"><code>
+super(postsService);
+
+this.cacheService = cahceService;
+
+this.readAll = this.readAll.bind(this);
+this.upvote = this.upvote.bind(this);
+this.downvote = this.downvote.bind(this);
+
+this.routes['/'] = [{ method: 'get',
+  cb: this.readAll }];
+this.routes['/upvote'] = [{ method: 'post',
+  cb: this.upvote }];
+this.routes['/downvote'] = [{ method: 'post',
+  cb: this.downvote }];
+
+this.registerRoutes();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/posts.js => readAll(req, res)</h4>
+
+  <pre class="javascript"><code>
+const posts = await this.service.readChunk(
+  req.params
+);
+
+this.cacheService.set(req, posts);
+
+res.json(posts);
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/posts.js => upvote(req, res)</h4>
+
+  <pre class="javascript"><code>
+await this.service.upvote(req.body.id);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/posts.js => downvote(req, res)</h4>
+
+  <pre class="javascript"><code>
+await this.service.downvote(req.body.id);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/users.js</h4>
+
+  <pre class="javascript"><code>
+const CrudController = require('./crud');
+
+class UsersController extends CrudController {
+  constructor(usersService) {...}
+  async grant(req, res) {...}
+  async revoke(req, res) {...}
+}
+
+module.exports = (usersService) => {
+  const controller = new UsersController(
+    usersService
+  );
+
+  return controller.router;
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/users.js => constructor</h4>
+
+  <pre class="javascript"><code>
+super(usersService);
+
+this.grant = this.grant.bind(this);
+this.revoke = this.revoke.bind(this);
+
+this.routes['/create'] = undefined;
+
+this.routes['/grant'] = [{ method: 'post',
+  cb: this.grant
+}];
+
+this.routes['/revoke'] = [{ method: 'post',
+  cb: this.revoke
+}];
+
+this.registerRoutes();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/users.js => grant(req, res)</h4>
+
+  <pre class="javascript"><code>
+await this.service.grant(
+  req.body.userId,
+  req.body.roleId
+);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/users.js => revoke(req, res)</h4>
+
+  <pre class="javascript"><code>
+await this.service.revoke(
+  req.body.userId,
+  req.body.roleId
+);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/roles.js</h4>
+
+  <pre class="javascript"><code>
+const CrudController = require('./crud');
+
+class RolesController extends CrudController {
+  constructor(rolesService) {...}
+}
+
+module.exports = (rolesService) => {
+  const controller = new RolesController(
+    rolesService
+  );
+
+  return controller.router;
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/roles.js => constructor</h4>
+
+  <pre class="javascript"><code>
+super(rolesService);
+
+this.routes['/update'] = undefined;
+
+this.registerRoutes();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>./controllers/auth.js</h4>
+
+  <pre class="javascript"><code>
+const CrudController = require('./crud');
+
+class AuthController extends CrudController {
+  constructor(authenticationService, config) {...}
+  async login(req, res) {...}
+  async register(req, res) {...}
+  async logout(req, res) {...}
+}
+
+module.exports = (authenticationService, config) => {
+  const controller = new AuthController(
+    authenticationService,
+    config
+  );
+
+  return controller.router;
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/auth.js => constructor</h4>
+
+  <pre class="javascript"><code>
+super(authenticationService);
+
+this.config = config;
+
+this.login = this.login.bind(this);
+this.register = this.register.bind(this);
+this.logout = this.logout.bind(this);
+
+this.routes = { ... };
+
+this.registerRoutes();
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/auth.js => constructor</h4>
+
+  <pre class="javascript"><code>
+this.routes = {
+  '/login': [{
+    method: 'post',
+    cb: this.login
+  }],
+
+  '/register': [{
+    method: 'post',
+    cb: this.register
+  }],
+
+  '/logut': [{
+    method: 'post',
+    cb: this.logout
+  }],
+};
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/auth.js => login</h4>
+
+  <pre class="javascript"><code>
+const user = await this.service.login(req.body);
+
+res.cookie(
+  this.config.cookie.auth,
+  user.id,
+  { signed: true }
+);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/auth.js => register</h4>
+
+  <pre class="javascript"><code>
+const user = await this.service.register(req.body);
+
+res.cookie(
+  this.config.cookie.auth,
+  user.id,
+  { signed: true }
+);
+
+res.json({ success: true });
+  </code></pre>
+  </section>
+
+  <section>
+  <h4>ctrls/auth.js => logout</h4>
+
+  <pre class="javascript"><code>
+res.cookie(this.config.cookie.auth, '');
+
+res.json({ success: true });
+  </code></pre>
+  </section>
 
 </div></div>
 
