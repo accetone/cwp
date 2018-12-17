@@ -37,3 +37,4 @@
 [CWP/TASK/20 - Шаблоны](https://accetone.github.io/cwp/tasks/20.html)  
 
 #### Дополнительно
+[Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exams/Q1.pdf)  
