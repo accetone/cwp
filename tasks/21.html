@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР21</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">N-layer архитектура</div>
+    <div class="header__id">ЛР21</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-21</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Установим библиотеки <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a>, <a class="task__link" href="https://www.npmjs.com/package/joi" target="_blank">joi</a>, <a class="task__link" href="https://www.npmjs.com/package/winston" target="_blank">winston</a> и <a class="task__link" href="https://www.npmjs.com/package/lru-cache" target="_blank">lru-cache</a>
+  </div>
+
+  <div class="task__statement">
+    Изучим ещё раз слои N-layer модели и пример её реализации из 10-ой лекции
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим слой моделей. Таблицы базы данных будем создавать с помощью подхода code first
+  </div>
+
+  <div class="task__statement">
+    1. Таблица <span class="task__inline-code">Properties / Недвижимость</span>
+    <pre><code class="task__code json">"id": int / autoincrement
+"heading": string
+"price": int
+"currency": string
+"location": string
+"agentId": int / reference to "agents"</code></pre>
+  </div>
+
+  <div class="task__statement">
+    2. Таблица <span class="task__inline-code">Agents / Агенты</span>
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"email": string
+"tel": string
+"officeId": int / reference to "offices"</code></pre>
+  </div>
+
+  <div class="task__statement">
+    3. Таблица <span class="task__inline-code">Offices / Офисы</span>
+    <pre><code class="task__code json">"id": int / autoincrement
+"title": string
+"website": string
+"address": string</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим слой контекста задав связи указанные в описании моделей
+  </div>
+
+  <div class="task__statement">
+    Выполним создание таблиц в базе данных через синхронизацию
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим слой сервисов. Все методы сервисов должны быть помечены ключевым словом <span class="task__inline-code">async</span> и использовать <span class="task__inline-code">await</span> для ожидания промисов
+  </div>
+
+  <div class="task__statement">
+    1. Сервис для недвижимости должен предоставлять операциии:<br>
+    a) чтения порции данных с возможностью задания limit (от 5 до 25 с шагом 5), offset, sortOrder, sortField<br>
+    b) чтение по id, проверка является ли id числом<br>
+    c) создание записи, с валидацией через <span class="task__inline-code">joi</span> - price больше 0, currency - BYN, USD или EUR, оставшиеся поля не пустые<br>
+    d) обновление записи по id с валидацией через <span class="task__inline-code">joi</span><br>
+    e) удаление записи по id<br>
+    f) привязка агента<br>
+    g) отвязка агента
+  </div>
+
+  <div class="task__statement">
+    2. Сервис для агентов должен предоставлять операциии:<br>
+    a) чтения порции данных с возможностью задания limit, offset, sortOrder, sortField<br>
+    b) чтение по id, проверка является ли id числом<br>
+    c) создание записи, с валидацией через <span class="task__inline-code">joi</span> - email - адрес почты, оставшиеся поля не пустые<br>
+    d) обновление записи по id с валидацией через <span class="task__inline-code">joi</span><br>
+    e) удаление записи по id, с отвязкой недвижимости<br>
+    f) привязка к офису<br>
+    g) отвязка от офиса<br>
+    h) чтение привязанной недвижемости по id агента с возможностью задания limit, offset
+  </div>
+
+  <div class="task__statement">
+    3. Сервис для офисов должен предоставлять операциии:<br>
+    a) чтения порции данных с возможностью задания limit, offset, sortOrder, sortField<br>
+    b) чтение по id, проверка является ли id числом<br>
+    c) создание записи, с валидацией через <span class="task__inline-code">joi</span> - поля не пустые<br>
+    d) обновление записи по id с валидацией через <span class="task__inline-code">joi</span><br>
+    e) удаление записи по id, с отвязкой агентов<br>
+    f) чтение привязанных агентов по id офиса с возможностью задания limit, offset
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим слой контроллеров - по одному контроллеру на каждый сервис. Контроллеры оформлять в виде отдельных express-роутеров. Контролеры должны предоставлять доступ ко всем методам сервисов через HTTP.
+  </div>
+
+  <div class="task__statement">
+    Все методы контроллеров должны быть помечены ключевым словом <span class="task__inline-code">async</span> и использовать <span class="task__inline-code">await</span> для ожидания промисов
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим глобальный контроллер по отлову ошибок как в примере 10-ой лекции
+  </div>
+</section>
+
+
+<section class="task">
+  <div class="task__statement">
+    Создадим глобальный контроллер логгирования используя <span class="task__inline-code">winston</span>. Запись логов в файл, максимальный размер файла 0.5 Кб. Записываем дату и время запроса (можем использовать <span class="task__inline-code">moment</span> для форматирования), URL, метод запроса, полезную нагрузку (body и query)
+  </div>
+
+  <div class="task__statement">
+    Для корретной реализации этого контроллера вам понадобиться вернуться на слой сервисов и реализовать сервис логирования
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим глобальный контроллер кэширования используя <span class="task__inline-code">lru-cache</span>. Максимальный размер кэша - 5, максимальное время хранения в кэше - 30 секунд. При успешной отдаче из кэша записывать в лог URL, метод и строку "FROM CACHE". Ключом для кэширования может быть комбинация из URL(включая query параметры)+метод. Кэшироваться должны только GET запросы.
+  </div>
+
+  <div class="task__statement">
+    Для корретной реализации этого контроллера вам понадобиться вернуться на слой сервисов и реализовать сервис кэширования
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Запустим сервер и проверим его работу
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу сервера через Postman
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте и объясните архитектуру сервера
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html">The Clean Architecture by Uncle Bob</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://jeffreypalermo.com/blog/the-onion-architecture-part-1/">The Onion Architecture by Jeffrey Palermo</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

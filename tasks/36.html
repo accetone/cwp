@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР36</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Сборка</div>
+    <div class="header__id">ЛР36</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-36</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-35</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/wepback" target="_blank">webpack</a> и <a class="task__link" href="https://www.npmjs.com/package/gulp" target="_blank">gulp</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Вынесем javascript из <span class="task__inline-code">public/index.html</span> в <span class="task__inline-code">scripts/app/</span> разместив каждый компонент/модель в отдельном файле и связав их с помощью ключевых слов <span class="task__inline-code">import</span> и <span class="task__inline-code">export</span>
+  </div>
+
+  <div class="task__statement">
+    React и ReactDOM также будем импортировать, поэтому удалим все js-файлы из <span class="task__inline-code">public</span>
+  </div>
+
+  <div class="task__statement">
+    Переместим <span class="task__inline-code">public/style.css</span> в <span class="task__inline-code">styles/app.css</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью <span class="task__inline-code">webpack</span> и <span class="task__inline-code">gulp</span> настроим процесс сборки
+  </div>
+
+  <div class="task__statement">
+    Для JS:<br>
+    1. Компонавать javascript нашего todo-приложения в один файл (обрабатывать import/export)<br>
+    2. Компилировать JSX в JS<br>
+    3. Компилировать ES6+ в ES5 с добавлением <span class="task__inline-code">babel polyfill</span><br>
+    4. Сторонние библиотеки (React, ReactDOM, axios, ...) выделять в отдельный файл <span class="task__inline-code">vendor.js</span><br>
+    5. Минифицировать JS <br>
+    6. Сохранять итоговые файлы как <span class="task__inline-code">public/app.js</span> и <span class="task__inline-code">public/vendor.js</span><br>
+  </div>
+
+  <div class="task__statement">
+    Для CSS:<br>
+    1. Модифицировать с помощью <span class="task__inline-code">autoprefixer</span><br>
+    2. Минифицировать с помощью <span class="task__inline-code">csso</span><br>
+    3. Сохранять итоговый файл как <span class="task__inline-code">public/app.css</span><br>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью <span class="task__inline-code">gulp</span> добавим задачи, которые отслеживают изменения в js и css файлах и запускают сборку
+  </div>
+
+  <div class="task__statement">
+    Добавим к этим задачам горячее обновление через <span class="task__inline-code">browsersync</span>
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите и объясните процесс сборки приложениия
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://webpack.js.org/">Документация по Webpack</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://gulpjs.com/">Документация по Gulp</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

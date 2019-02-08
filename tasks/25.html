@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР25</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">HTTP2 / Encoding</div>
+    <div class="header__id">ЛР25</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-25</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Проверяем установленную версию nodejs, должна быть не ниже <span class="task__inline-code">9.х.х</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a> и <a class="task__link" href="https://www.npmjs.com/package/shrink-ray" target="_blank">shrink-ray</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Для HTTP2 сервера нам понадобится SSL-сертификат. Для лабораторнай работы достаточно будет самоподписанного
+  </div>
+
+  <div class="task__statement">
+    Идём на <a class="task__link" href="http://www.selfsignedcertificate.com/" target="_blank">selfsignedcertificate.com</a> и генеририуем сертификат для <span class="task__inline-code">localhost</span>
+  </div>
+
+  <div class="task__statement">
+    Скачаем полученные файлы и поместим их в папку проекта
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Напишем простой HTTP2-сервер в файле <span class="task__inline-code">http2.js</span>
+  </div>
+
+  <div class="task__statement">
+    <pre><code class="task__code javascript">const http2 = require('http2');
+const fs = require('fs');
+
+const key = fs.readFileSync('localhost.key');
+const cert = fs.readFileSync('localhost.cert');
+
+const server = http2.createSecureServer(
+  { key, cert },
+  onRequest
+);
+
+function onRequest(req, res) {
+  console.log(req.headers[':path']);
+
+  res.stream.respond({
+    'content-type': 'text/html',
+    ':status': 200
+  });
+
+  res.stream.end('&lt;h1&gt;Hello World&lt;/h1&gt;');
+}
+
+server.listen(8443);</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Проверим его работу <span class="task__inline-code">https://localhost:8443/</span>. Из-за того, что наш сертификат самоподписанный браузер будет на него ругаться и просто так не пустит нас дальше. Необходимо явно выразить свои намерения. Например, в Chrome находим на странице ссылку "ADVANCED" и нажимаем "Proceed to localhost (unsafe)"
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим файлы <span class="task__inline-code">public/index.html</span>, <span class="task__inline-code">public/site.css</span> и <span class="task__inline-code">public/app.js</span> с произвольным содержимым. Подключим CSS и JS файлы к HTML
+  </div>
+
+  <div class="task__statement">
+    С помощью метода <span class="task__inline-code">respondWithFile</span> напишем раздачу этих файлов при помощи HTTP2. Для остальных запросов будем возвращать 404 ошибку
+  </div>
+
+  <div class="task__statement">
+    В файле <span class="task__inline-code">http1.js</span> реализуем раздачу статики через express
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    В <span class="task__inline-code">public/index.html</span> подключим 20 скриптов, например, можно подключить наш <span class="task__inline-code">public/app.js</span> с увеличивающимся query-параметром - <span class="task__inline-code">app.js?v=1</span>, <span class="task__inline-code">app.js?v=2</span>, ...
+  </div>
+
+  <div class="task__statement">
+    Сравним диаграммы сетевой загрузки HTTP1 и HTTP2 серверов (через инструменты разработчика в браузере)
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    С помощью метода <span class="task__inline-code">pushStream</span> напишем push CSS и JS файла при запросе <span class="task__inline-code">/</span>
+  </div>
+
+  <div class="task__statement">
+    Увидеть результат можно, например, в хроме во вкладке <span class="task__inline-code">Network</span> колонке <span class="task__inline-code">Initiator</span>
+  </div>
+
+  <div class="task__statement task__statement_note">
+    В версии Chrome 65 баг/фича запрещающая push с использованием недоверенного сертификата, поэтому работу фичи можно проверить с помощью <span class="task__inline-code">chrome://net-internals/#http2</span>. Подробнее в <a class="task__link" href="https://bugs.chromium.org/p/chromium/issues/detail?id=824988" target="_blank">баг-трекере Chromium</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Добавим какой-нибудь бесполезной логики в <span class="task__inline-code">public/app.js</span> чтобы общий размер файла составлял около 0.5Мб
+  </div>
+
+  <div class="task__statement">
+    С помощью <span class="task__inline-code">shrink-ray</span> для express включим поддержку сжатия
+  </div>
+
+  <div class="task__statement">
+    В файле <span class="task__inline-code">downloader.js</span> разработаем скрипт, который при помощи <span class="task__inline-code">httt.request</span> скачивает на диск ответы для 4 разных запросов: без компрессии, gzip (<span class="task__inline-code">Accept-Encoding: gzip</span>), deflate (<span class="task__inline-code">Accept-Encoding: deflate</span>) и brotli (<span class="task__inline-code">Accept-Encoding: br</span>)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу HTTP2 сервера
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Объясните диаграммы из <span class="task__inline-code">task04</span>. Как называется фича?
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите результаты работы компрессии
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://nodejs.org/api/http2.html">Документация по HTTP2 модулю для Node.js</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

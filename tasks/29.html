@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР29</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">GraphQL</div>
+    <div class="header__id">ЛР29</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-29</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Будем дорабатывать пример из лекции 17. Скопируем его в папку проекта, установим зависимости, зададим настройки для подключения к БД, запустим сервер и проверим работоспособность через веб-интерфейс <span class="task__inline-code">GraphiQL</span> на <a href="http://localhost:4040/" target="_blank" class="task__link">http://localhost:4040/</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Перепишем graphql-схему с помощью SDL и будем её парсить с помощью <span class="task__inline-code">graphql.buildSchema</span>
+  </div>
+
+  <div class="task__statement">
+    Поместим схему в отдельный файл <span class="task__inline-code">tnmt.graphql</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Допишем возможность получения пицц и оружия по <span class="task__inline-code">id</span>
+  </div>
+
+  <div class="task__statement">
+    Допишем для ресурсов <span class="task__inline-code">pizzas</span>, <span class="task__inline-code">weapons</span> возможность указать лимит и сортировку. Предоставим значения по-умолчанию
+  </div>
+
+  <div class="task__statement">
+    Допишем для ресурса <span class="task__inline-code">turtles</span> возможность фильтрации по имени любимой пиццы. Учтем наличие нескольких любимых позиций
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Допишем возможность создания, удаления и обновления черепахи
+  </div>
+
+  <div class="task__statement">
+    Допишем возможность привязки и отвязки оружия и пиццы к черепахе. Учтем наличие нескольких любимых позиций
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу всех ресурсов API через GraphiQL
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://graphql.org/learn/">Документация по GraphQL</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://graphql.org/graphql-js/">Документация по GraphQL.js</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР32</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Авторизация</div>
+    <div class="header__id">ЛР32</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-32</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/body-parser" target="_blank">body-parser</a> и <a class="task__link" href="https://www.npmjs.com/package/casl" target="_blank">casl</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Данные будем хранить в оперативной памяти. Заполним массивы тестовыми данными по приведенным схемам
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Repo</span>
+    <pre><code class="task__code json">"id": int
+"name": string
+"author": string</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Commit</span>
+    <pre><code class="task__code json">"id": int
+"repoId": int
+"message": string
+"hash": string</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим REST API для предоставления доступа к данным:<br>
+    1. Пять endpoint-ов для CRUD операций с репозиториями<br>
+    2. Пять endpoint-ов для CRUD операций с коммитами (вложены в путь репозиториев)<br>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Нам необходимо предоставлять доступ к API по приведенным правилам
+  </div>
+
+  <div class="task__statement">
+    1. Гость (<span class="task__inline-code">guest</span>) может:<br>
+    а) просматривать коммиты и репозитории
+  </div>
+
+  <div class="task__statement">
+    2. Зарегестрированный пользователь (<span class="task__inline-code">member</span>) может:<br>
+    а) просматривать коммиты и репозитории<br>
+    б) создавать репозитории<br>
+    в) создавать коммиты к своим репозиториям<br>
+    г) редактировать свои репозитории и коммиты
+  </div>
+
+  <div class="task__statement">
+    3. Модератор (<span class="task__inline-code">moderator</span>) может:<br>
+    а) просматривать коммиты и репозитории<br>
+    б) редактировать репозитории и коммиты<br>
+    в) удалять репозитории и коммиты
+  </div>
+
+  <div class="task__statement">
+    Для этого создадим глобальный middleware, который будет строить объект-доступа (<span class="task__inline-code">ability</span>) с помощью casl в зависимости от переданной в запросе роли. Также вместе с ролью в запросе будем передавать имя пользователя. Это требуется для проверки прав на принадлежность репозитория.
+    <pre><code class="task__code javascript">...
+app.use('/api', (req, res, next) => {
+  const { rules, can, cannot } = AbilityBuilder.extract();
+  const role = req.query.role || req.body.role || 'guest';
+
+  if (role === 'guest') {
+      can(...);
+      ...
+  }
+
+  if (role === 'member') {
+      can(...);
+      ...
+  }
+
+  ...
+
+  req.ability = new Ability(rules);
+
+  next();
+});
+...</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Внесём изменения в методы API для использования объекта-доступа для проверки авторизованности запроса. В случае ошибки вернём 403.
+  </div>
+
+  <div class="task__statement">
+    Добавим в API метод <span class="task__inline-code">ability</span> возвращающий набор правил в формате json в поле <span class="task__inline-code">rules</span>. Его можно получить из <span class="task__inline-code">req.ability.rules</span>
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу API для разных ролей
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://stalniy.github.io/casl/">Документация по casl</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР30</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">SSO и двухфакторная аутентификация</div>
+    <div class="header__id">ЛР30</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-30</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a>, <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/cookie-parser" target="_blank">cookie-parser</a>, <a class="task__link" href="https://www.npmjs.com/package/jsonwebtoken" target="_blank">jsonwebtoken</a> и <a class="task__link" href="https://www.npmjs.com/package/bcryptjs" target="_blank">bcryptjs</a>
+  </div>
+
+  <div class="task__statement">
+    Будем реализовывать стратегию аутентификации <span class="task__inline-code">Single Sign-On</span> с двумя факторами
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Потребуется одна таблица и sequelize-модель к ней
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">User</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"email": string
+"password": string
+"codes": string / json array</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Создадим эту таблицу в <span class="task__inline-code">code first</span> стиле и предзаполним тестовыми данными (тоже из кода, как в примере из лекции 17). Учтём, что пароли будут хранится в хэшированном виде с помощью пакета <span class="task__inline-code">bcrypt</span>
+  </div>
+
+  <div class="task__statement">
+    В поле <span class="task__inline-code">codes</span> поместим 4 случайных 5-ти значных числа в виде массива. Например, <span class="task__inline-code">[12345,54321,44444,21543]</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    В файлах <span class="task__inline-code">sso.js</span> и <span class="task__inline-code">service.js</span> реализуем express-сервера использующие стратегию <span class="task__inline-code">SSO</span>
+  </div>
+
+  <div class="task__statement">
+    Финальный алгоритм работы будет выглядтеть следующим образом:<br>
+    1. Пользователь запрашивает у сервиса (<span class="task__inline-code">service.js</span>) ресурс <span class="task__inline-code">/protected-resource</span><br>
+    2. Сервис проверяет cookie <span class="task__inline-code">__service_token</span> и проверяет валидность токена<br>
+    2а. Верно: загружает пользователя из БД, отдаёт в формате JSON<br>
+    2б. Неверно: перенаправляет на аутентификатор (<span class="task__inline-code">sso.js</span>) с указанием адреса исходного запроса (<span class="task__inline-code">source</span>) и адреса колбека для сохранения токена (<span class="task__inline-code">callback</span>) в query<br>
+    - localhost:8000/login?source=/protected-resource&callback=localhost:7000/token<br>
+    3. Аутентификатор проверяет cookie <span class="task__inline-code">__sso_token</span> и проверяет валидность токена<br>
+    3а. Верно: => (9)<br>
+    3б. Неверно: отдаёт форму для логина<br>
+    4. Пользователь заполняет форму и отправляет обратно аутентификатору<br>
+    5. Аутентификатор находит пользователя в БД, сравнивает верность пароля<br>
+    5а. Верно: генерирует jwt-токен с <span class="task__inline-code">id</span> пользователя в качестве полезной нагрузки с временем жизни 1 минута, генерирует цифру от 1 до 4<br>
+    5б. Неверно: отдаёт ошибку<br>
+    6. Перенаправляет пользователя на форму ввода кода<br>
+    - localhost:8000/codes?source=X&callback=Y&token=Z&code=2<br>
+    7. Пользователь вводит код под соответстующим номером (в нашем примере второй код) и отправляет обратно аутентификатору<br>
+    8. Аутентификатор проверяет валидность токена и правильность кода
+    8а. Верно: генерирует jwt-токен с <span class="task__inline-code">id</span> пользователя в качестве полезной нагрузки с временем жизни 30 минут, записывает токен в cookie <span class="task__inline-code">__sso_token</span><br>
+    8б. Неверно: отдаёт ошибку<br>
+    9. Перенаправляет пользователя на <span class="task__inline-code">callback</span> с указанием с указанием адреса исходного запроса (<span class="task__inline-code">source</span>) и токена (<span class="task__inline-code">token</span>) в query<br>
+    - http://localhost:7000/token?source=/protected-resource&token=XYZ<br>
+    10. Сервис сохраняет токен в cookie <span class="task__inline-code">__service_token</span> и перенаправляет пользователя на адреса исходного запроса (<span class="task__inline-code">source</span>)<br>
+    11. => (2)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу аутентификации
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Сотрите <span class="task__inline-code">__service_token</span> и покажите заново
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://jwt.io/introduction/">Документация по JWT</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР33</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">Деплой</div>
+    <div class="header__id">ЛР33</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-33-cli</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-32</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://devcenter.heroku.com/articles/heroku-cli" target="_blank">heroku cli</a>
+  </div>
+
+  <div class="task__statement">
+    Опубликуем проект на Heroku используя командную строку
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-33-cd</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Копируем файлы из <span class="task__inline-code">cwp-32</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a>
+  </div>
+
+  <div class="task__statement">
+    Перенесём хранение данных из оперативной памяти в базу данных
+  </div>
+
+  <div class="task__statement">
+    Сконфигурируем сервер для использования локальной БД при локальном запуске и БД на Heroku (postgre) при запуске на сервере. Для этих целей отлично подойдут переменные окружения
+  </div>
+
+  <div class="task__statement">
+    Настроим автоматическую публикацию проекта с Github на Heroku
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-33-pm</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/bcryptjs" target="_blank">bcryptjs</a>, <a class="task__link" href="https://www.npmjs.com/package/uuid" target="_blank">uuid</a>, <a class="task__link" href="https://www.npmjs.com/package/siege" target="_blank">siege</a> и <a class="task__link" href="https://www.npmjs.com/package/pm2" target="_blank">pm2</a>
+  </div>
+
+  <div class="task__statement">
+    В файле <span class="task__inline-code">index.js</span> напишем express-сервер, который по пути <span class="task__inline-code">/hash</span> будет отдавать хэш от <span class="task__inline-code">uuid/v4</span>. Количество циклов bcrypt установим в 10.
+  </div>
+
+  <div class="task__statement">
+    В файле <span class="task__inline-code">benchmark.js</span> напишем нагрузочный тест с помощью <span class="task__inline-code">siege</span>. Нагрузку будем подавать в течении 120 секунд и 50 параллельными запросами.
+  </div>
+
+  <div class="task__statement">
+    Запустим сервер и тест. Запишем результаты
+  </div>
+
+  <div class="task__statement">
+    С помощью <span class="task__inline-code">pm2</span> запустим сервер в кластерном режиме с количеством потоков равным количеству ядер процессора. Запустим тест и сравним результаты
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу API на Heroku и расскажите как публикуется проект через командную строку
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу автоматической публикации на Heroku
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите результаты нагрузочного тестирования
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://devcenter.heroku.com/categories/reference">Документация по Heroku</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://pm2.keymetrics.io/docs/usage/cluster-mode">Документация по PM2</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

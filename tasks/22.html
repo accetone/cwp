@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР22</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">npm-пакеты</div>
+    <div class="header__id">ЛР22</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-22-1</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">package.json</span> заполняем поля name, author, description, version, repository
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">index.js</span>
+  </div>
+
+  <div class="task__statement">
+    Реализуем функцию, которая принимает на вход строку с записью математического выражения в <a class="task__link" href="https://ru.wikipedia.org/wiki/Обратная_польская_запись" target="_blank">обратной польской нотации</a>, а возвращает вычесленное целое число
+  </div>
+
+  <div class="task__statement">
+    Экспортируем эту функцию с помощью <span class="task__inline-code">module.exports</span>
+  </div>
+
+  <div class="task__statement">
+    В начало файла вставляем <span class="task__inline-code">console.log</span> с приветствием и номером версии
+  </div>
+
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Зарегистируемся на <a class="task__link" href="https://www.npmjs.com/signup" target="_blank">npm</a>
+  </div>
+
+  <div class="task__statement">
+    Опубликуем пакет на npm как scoped package
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-22-2</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Создаем файл <span class="task__inline-code">index.js</span> и <span class="task__inline-code">package.json</span>
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем наш опубликованный пакет и импортируем его в <span class="task__inline-code">index.js</span>
+  </div>
+
+  <div class="task__statement">
+    С помощью пакеты вычислим следующие строки:
+    <pre><code class="task__code json">15 9 + 10 - 14 - 7 * 5 14 * 14 - *
+8 2 15 * + 8 - 13 * 15 - 6 6 13 + + -
+4 9 + 1 - 2 6 13 8 0 6 9 * - - + + - *
+6 1 - 14 * 11 + 3 - 2 12 5 - * +
+2 11 6 * - 6 * 7 - 7 + 14 + 8 10 * +
+13 3 14 * 10 + * 12 4 + + 8 *
+10 3 11 - + 7 + 2 - 10 - 10 -
+4 9 - 1 14 - - 12 + 2 1 - - 8 -
+2 11 0 * * 13 15 - + 0 - 4 * 1 *
+4 8 6 10 * * * 0 11 * -</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Проверим ответы (реализовать в коде):
+    <pre><code class="task__code json">0
+350
+-948
+92
+-290
+5536
+-13
+11
+-8
+1920</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Синхронизируем локальный репозиторий с удаленным (сделаем push на Github)
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Попробуем работу с версиями - последовательно изменим minor, patch, major, minor. После каждого изменения делаем публикацию пакета
+  </div>
+
+  <div class="task__statement">
+    Присвоем последней версии тэг <span class="task__inline-code">beta-0</span>, а предпоследней <span class="task__inline-code">lts</span>
+  </div>
+
+  <div class="task__statement">
+    Удалим пакет из npm (у нас есть 24 часа)
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите историю коммитов своего репозитория на Github
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу пакета
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Продемонстрируйте работу с версиями и тэгами своего пакета
+    </span>
+  </div>
+
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Расскажите о своих 3 любимых пакетах на npm
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html">The Clean Architecture by Uncle Bob</a>
+  </div>
+
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://jeffreypalermo.com/blog/the-onion-architecture-part-1/">The Onion Architecture by Jeffrey Palermo</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

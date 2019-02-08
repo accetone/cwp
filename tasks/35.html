@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР35</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">React</div>
+    <div class="header__id">ЛР35</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-35</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a> и <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Напишем базовый сервер с помощью express для раздачи статики из директории <span class="task__inline-code">public</span>
+  </div>
+
+  <div class="task__statement">
+    Поместим в <span class="task__inline-code">public</span> файл <span class="task__inline-code">todo-react.html</span> из лекции 22 (директория <span class="task__inline-code">examples</span>) назвав <span class="task__inline-code">index.html</span>
+  </div>
+
+  <div class="task__statement">
+    Стили из <span class="task__inline-code">public/index.html</span> переместим в <span class="task__inline-code">public/style.css</span>
+  </div>
+
+  <div class="task__statement">
+    Подключаемые с <span class="task__inline-code">unpkg.com</span> разместим также в <span class="task__inline-code">public</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Напишем API на express для работы со списком задач хранимом в базе данных
+  </div>
+
+  <div class="task__statement">
+    При добавлении задачи на стороне сервера будем случайным образом либо успешно добавлять задачу, либо возвращать ошибку
+  </div>
+
+  <div class="task__statement">
+    Перепишем клиента для взаимодейтсвия с полученным API. Для HTTP-запросов можем использовать <a class="task__link" href="https://www.npmjs.com/package/axios" target="_blank">axios</a>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Оптимизируем перерисовку каждого компонента наследуясь от <span class="task__inline-code">PureComponent</span> или реализовав <span class="task__inline-code">shouldComponentUpdate</span> в зависимости от ситуации
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Добавим компонент <span class="task__inline-code">Popup</span> и используем его для подтверждения удаления задачи из списка
+  </div>
+
+  <div class="task__statement">
+    Добавим компонент <span class="task__inline-code">Notifications</span> (в правом верхнем углу) как список компонентов <span class="task__inline-code">Notification</span>. Уведомления показываются в течении 5 секунд, затем автоматически закрываются. Будем уведомлять пользователя об успешном или неуспешном добавлении задачи
+  </div>
+
+  <div class="task__statement">
+    Добавление задачи будем делать в оптимистичном стиле т.е. не дожидаясь ответа от сервера добавляем задачу в список, в случае получения ошибки - удаляем
+  </div>
+</section>
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу веб-приложения
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="https://reactjs.org/">Документация по React</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

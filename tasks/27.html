@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ПСКП: ЛР27</title>
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/darcula.css">
+</head>
+<body>
+
+<section class="header">
+  <div class="header__content">
+    <div class="header__subject">REST</div>
+    <div class="header__id">ЛР27</div>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создаем на Github репозиторий <span class="task__inline-code">cwp-27</span>, клонируем его, открываем в IDE
+  </div>
+
+  <div class="task__statement">
+    Устанавливаем <a class="task__link" href="https://www.npmjs.com/package/express" target="_blank">express</a>, <a class="task__link" href="https://www.npmjs.com/package/sequelize" target="_blank">sequelize</a> и <a class="task__link" href="https://www.npmjs.com/package/joi" target="_blank">joi</a>
+  </div>
+
+  <div class="task__statement">
+    Будем разрабатывать REST API для веб-приложения по типу Twitter
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Опишем модели данных
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">User</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"name": string
+"email": string</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Tweet</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"message": string
+"publishedOn": string
+"authorId": int / reference to Users</code></pre>
+  </div>
+
+  <div class="task__statement">
+    <span class="task__inline-code">Like</span>:
+    <pre><code class="task__code json">"id": int / autoincrement
+"tweerId": int / reference to Tweets
+"authorId": int / reference to Users</code></pre>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Создадим набор REST API endpoint-ов для предоставления фукционала клиентской части
+  </div>
+
+  <div class="task__statement">
+    1. Пять endpoint-ов для CRUD операций с пользователями<br>
+    2. Пять endpoint-ов для CRUD операций с твитами (будет вложены в путь пользователей)<br>
+    3. Два endpoint-а для создания/удаления лайков (будет вложены в путь твитов пользователей)<br>
+    4. Endpoint для чтения всех твитов от всех пользователей (получение всех твитов)
+  </div>
+
+  <div class="task__statement">
+    Добавим валидацию на методы создания/обновления с помощью <span class="task__inline-code">joi</span>
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Добавим постраничную навигацию при получении всех твитов с возможностью выбрать лимит от 5 до 20 (10 по-умолчанию). Ответ должен быть в формате:
+    <pre><code class="task__code json">{
+  "tweets": [...],
+  "meta": {
+    "offset": 0,
+    "count": 54,
+    "limit": 10,
+    "pages": 6,
+    "page": 1
+  }
+}</code></pre>
+  </div>
+
+  <div class="task__statement">
+    Добавим сортировку при получении всех твитов с возможностью выбрать поля и порядок сортировки. Допустимые поля - <span class="task__inline-code">publishedOn</span> (по-умолчанию), <span class="task__inline-code">author.name</span>. Допустимые порядки - <span class="task__inline-code">desc</span> (по-умолчанию), <span class="task__inline-code">asc</span>. Должна быть возможность сортировки сразу по двум полям. Возможный синтаксис - <span class="task__inline-code">...?order=author.name:asc|publishedon:desc</span>. Не забудем добавить в поле <span class="task__inline-code">meta</span> информацию о сортировке
+  </div>
+
+  <div class="task__statement">
+    Добавим фильтрацию при получении всех твитов по полям <span class="task__inline-code">author.email</span>, <span class="task__inline-code">publishedAfter</span> и <span class="task__inline-code">publishedBefore</span>. Должна быть возможность указания нескольких фильтров. Не забудем добавить в поле <span class="task__inline-code">meta</span> информацию о фильтрах
+  </div>
+</section>
+
+<section class="task">
+  <div class="task__statement">
+    Реализуем принцип HATEOAS при получении всех твитов добавив каждому твиту массив <span class="task__inline-code">links</span> c элементами <span class="task__inline-code">self</span>, <span class="task__inline-code">next</span> и <span class="task__inline-code">prev</span>. Примерный вид ответа:
+    <pre><code class="task__code json">{
+  "tweets": [
+    ...
+    {
+      "id": 42,
+      ...
+      "links": [
+        {
+          "rel": "self",
+          "href": "http://localhost:3000/api/tweets/42"
+        },
+        ...
+      ]
+    },
+    ...
+  ],
+  "meta": { ... }
+}</code></pre>
+  </div>
+</section>
+
+
+<section class="task task_questions">
+  <div class="task__statement">
+    <input class="task__checkbox" type="checkbox">
+    <span>
+      Покажите работу всех узлов REST API через Postman
+    </span>
+  </div>
+</section>
+
+<section class="task task_extras">
+  <div class="task__statement">
+    <a class="task__link" target="_blank" href="http://www.restapitutorial.com/media/RESTful_Best_Practices-v1_1.pdf">RESTful Best Practices</a>
+  </div>
+</section>
+
+<section class="solution">
+  <pre><code class="javascript"></code></pre>
+</section>
+
+<script src="assets/jquery-3.2.1.min.js"></script>
+<script src="assets/highlight.pack.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>
