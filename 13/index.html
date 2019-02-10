@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP13</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Handlebars</h2>
+    <p class="author">
+      <small>Лекция 13</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>Handlebars</h4>
+
+    <ul>
+      <li class="left fragment">шаблонизатор</li>
+      <li class="left fragment">развитие Mustache</li>
+      <li class="left fragment">Node.js, Chrome, Firefox, Safari 5+, Opera 11+, IE 6+</li>
+      <li class="left fragment">http://handlebarsjs.com/</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">H</span>ello World</h3>
+  </section>
+
+  <section>
+    <h4>Hello World</h4>
+
+    <pre class="bash"><code>
+npm install handlebars
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Hello World</h4>
+
+    <pre class="handlebars"><code>
+// hello.hbs
+&lt;div class=&quot;entry&quot;&gt;
+  &lt;h1&gt;
+    {{title}}
+  &lt;/h1&gt;
+  &lt;div class=&quot;body&quot;&gt;
+    {{body}}
+  &lt;/div&gt;
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Hello World</h4>
+
+    <pre class="javascript"><code>
+const source = // читаем hello.hbs
+
+const template = Handlebars.compile(source);
+
+const result = template({
+  title: 'Hello World',
+  body: 'First handlebars template',
+});
+
+// записываем hello.html
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Hello World</h4>
+
+    <pre class="html"><code>
+// hello.html
+&lt;div class=&quot;entry&quot;&gt;
+  &lt;h1&gt;
+    Hello World
+  &lt;/h1&gt;
+  &lt;div class=&quot;body&quot;&gt;
+    First handlebars template
+  &lt;/div&gt;
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">E</span>xpressions</h3>
+  </section>
+
+  <section>
+    <h4>Expressions</h4>
+
+    <pre class="handlebars"><code>
+&lt;h1&gt;{{title}}&lt;/h1&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Expressions</h4>
+
+    <pre class="handlebars"><code>
+&lt;h1&gt;{{article.title}}&lt;/h1&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Expressions</h4>
+
+    <pre class="handlebars"><code>
+Идентификаторы не могут содержать:
+
+Пробел ! " # % & ' ( ) * + , . / ;
+< = > @ [ \ ] ^ ` { | } ~
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Expressions</h4>
+
+    <pre class="handlebars"><code>
+Но всё таки могут:
+
+{{articles.[10].[published at]}}
+{{articles.[10].[#author]}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Expressions</h4>
+
+    <pre class="handlebars"><code>
+{{foo}}
+{{{foo}}}
+
+&amp;lt;b&amp;gt;Hello&amp;lt;/b&amp;gt;
+&lt;b&gt;Hello&lt;/b&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">H</span>elpers</h3>
+  </section>
+
+  <section>
+    <h4>Helpers - If</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;entry&quot;&gt;
+  {{#if author}}
+    &lt;h1&gt;{{author.firstName}} {{author.lastName}}&lt;/h1&gt;
+  {{/if}}
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - If-Else</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;entry&quot;&gt;
+  {{#if author}}
+    &lt;h1&gt;{{author.firstName}} {{author.lastName}}&lt;/h1&gt;
+  {{else}}
+    Author unknown
+  {{/if}}
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - If-Else-If</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;entry&quot;&gt;
+  {{#if author}}
+    ...
+  {{else if authorLegacy}}
+    ...
+  {{else}}
+    ...
+  {{/if}}
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - Unless</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;entry&quot;&gt;
+  {{#unless author}}
+    Author unknown
+  {{/unless}}
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - Each</h4>
+
+     <pre class="handlebars"><code>
+&lt;ul class=&quot;people_list&quot;&gt;
+  {{#each people}}
+    &lt;li&gt;{{this}}&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;
+    </code></pre>
+
+     <pre class="json"><code>
+{
+  people: [
+    "Yehuda Katz",
+    "Alan Johnson",
+    "Charles Jolley"
+  ]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Each-Else</h4>
+
+     <pre class="handlebars"><code>
+{{#each paragraphs}}
+  &lt;p&gt;{{this}}&lt;/p&gt;
+{{else}}
+  &lt;p class=&quot;empty&quot;&gt;No content&lt;/p&gt;
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Each-Index</h4>
+
+     <pre class="handlebars"><code>
+{{#each array}}
+  {{@index}}: {{this}}
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Each-Key</h4>
+
+    <pre class="handlebars"><code>
+{{#each array}}
+  {{@key}}: {{this}}
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Each-First-Last</h4>
+
+     <pre class="handlebars"><code>
+{{#each array}}
+  {{#if @first}}
+    ...
+  {{else if @last}}
+    ...
+  {{else}}
+    ...
+  {{/if}}
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Each-As</h4>
+
+     <pre class="handlebars"><code>
+{{#each array as |value key|}}
+  {{#each child as |childValue childKey|}}
+    {{key}} - {{childKey}}. {{childValue}}
+  {{/each}}
+{{/each}}
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - With</h4>
+
+    <pre class="handlebars"><code>
+{{#with author}}
+  &lt;h2&gt;By {{firstName}} {{lastName}}&lt;/h2&gt;
+{{/with}}
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - With-Else</h4>
+
+    <pre class="handlebars"><code>
+{{#with author}}
+  &lt;p&gt;{{name}}&lt;/p&gt;
+{{else}}
+  &lt;p class=&quot;empty&quot;&gt;No content&lt;/p&gt;
+{{/with}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - With-As</h4>
+
+    <pre class="handlebars"><code>
+{{#with author as |myAuthor|}}
+  &lt;h2&gt;By {{myAuthor.firstName}} {{myAuthor.lastName}}&lt;/h2&gt;
+{{/with}}
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - Lookup</h4>
+
+    <pre class="handlebars"><code>
+{{#each bar}}
+  {{lookup ../foo @index}}
+{{/each}}
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Helpers - Log</h4>
+
+    <pre class="handlebars"><code>
+{{log "Look at me!"}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Path</h4>
+
+    <pre class="handlebars"><code>
+{{#each comments}}
+  &lt;h2&gt;Comment for {{../title}}&lt;/h2&gt;
+  &lt;div&gt;{{body}}&lt;/div&gt;
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Helpers - Root</h4>
+
+    <pre class="handlebars"><code>
+{{#each comments}}
+  &lt;h2&gt;Comment for {{@root.title}}&lt;/h2&gt;
+  &lt;div&gt;{{body}}&lt;/div&gt;
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>artials</h3>
+  </section>
+
+  <section>
+    <h4>Partials</h4>
+
+    <pre class="javascript"><code>
+Handlebars.registerPartial(
+  'myPartial',
+  '{{name}}'
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials</h4>
+
+    <pre class="handlebars"><code>
+{{> myPartial }}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Dynamic Name</h4>
+
+    <pre class="handlebars"><code>
+{{> (whichPartial) }}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Dynamic Context</h4>
+
+    <pre class="handlebars"><code>
+{{> myPartial myOtherContext }}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Parameters</h4>
+
+    <pre class="handlebars"><code>
+{{> myPartial parameter=value }}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Blocks</h4>
+
+    <pre class="handlebars"><code>
+{{#> myPartial }}
+  Failover content
+{{/myPartial}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Blocks</h4>
+
+    <pre class="handlebars"><code>
+{{#> layout }}
+  My Content
+{{/layout}}
+    </code></pre>
+
+    <pre class="handlebars"><code>
+Site Content
+{{> @partial-block }}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Partials - Inline</h4>
+
+    <pre class="handlebars"><code>
+{{#*inline "myPartial"}}
+  My Content
+{{/inline}}
+
+{{#each children}}
+  {{> myPartial}}
+{{/each}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">C</span>ustom Helpers</h3>
+  </section>
+
+  <section>
+    <h4>Custom Helpers</h4>
+
+    <pre class="javascript"><code>
+Handlebars.registerHelper(
+  'fullName',
+  (person) =>
+    `${person.firstName} ${person.lastName}`,
+);
+    </code></pre>
+  </section>
+
+   <section>
+    <h4>Custom Helpers</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;post&quot;&gt;
+  &lt;h1&gt;By {{fullName author}}&lt;/h1&gt;
+  &lt;div class=&quot;body&quot;&gt;{{body}}&lt;/div&gt;
+
+  &lt;h1&gt;Comments&lt;/h1&gt;
+
+  {{#each comments}}
+    &lt;h2&gt;By {{fullName author}}&lt;/h2&gt;
+    &lt;div class=&quot;body&quot;&gt;{{body}}&lt;/div&gt;
+  {{/each}}
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Custom Helpers - Block</h4>
+
+    <pre class="javascript"><code>
+Handlebars.registerHelper('bold', function(options) {
+  return new Handlebars.SafeString(
+    '&lt;div class="mybold";&gt;'
+    + options.fn(this)
+    + '&lt;/div;&gt;');
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Custom Helpers - Block</h4>
+
+    <pre class="handlebars"><code>
+&lt;div class=&quot;entry&quot;&gt;
+  &lt;h1&gt;{{title}}&lt;/h1&gt;
+  &lt;div class=&quot;body&quot;&gt;
+    {{#bold}}{{body}}{{/bold}}
+  &lt;/div&gt;
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">E</span>xpress Integration</h3>
+  </section>
+
+  <section>
+    <h4>Express Integration</h4>
+
+    <pre class="javascript"><code>
+npm install hbs
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Express Integration</h4>
+
+    <pre class="javascript"><code>
+app.set('view engine', 'hbs');
+
+...
+
+res.render('not-found', { title: '404 Not Found' });
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">I</span>RL</h3>
+  </section>
+
+  <section>
+    <h4>IRL - Comparators</h4>
+
+    <pre class="javascript"><code>
+Handlebars.registerHelper('eq', function (a, b) {
+  return a === b;
+});
+
+Handlebars.registerHelper('gt', function (a, b) {
+  return a > b;
+});
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>IRL - Comparators</h4>
+
+    <pre class="handlebars"><code>
+{{#if (eq value1 value2)}}
+  // true
+{{else}}
+  // false
+{{/if}}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>IRL - Logical</h4>
+
+    <pre class="javascript"><code>
+Handlebars.registerHelper('and', function () {
+  const operands = Array.prototype.slice.call(
+    arguments,
+    0,
+    arguments.length - 1
+  );
+
+  return operands.reduce((r, x) => r && x, true);
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>IRL - Complex Filters</h4>
+
+    <pre class="handlebars"><code>
+{{set 'video' (
+  $findby property.files (
+    $defer @helpers.$fieldMatches 'url' (
+      $defer
+        @helpers.$stringIncludes
+          'https://youtu.be'
+          'https://www.youtube.com'
+    )
+  )
+)}}
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

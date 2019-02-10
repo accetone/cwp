@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP14</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Promises in Depth</h2>
+    <p class="author">
+      <small>Лекция 14</small>
+    </p>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>romises</h3>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - состояние</h4>
+
+    <ul>
+      <li class="left fragment magenta">pending / ожидание</li>
+      <li class="left fragment green">fullfiled / выполнено</li>
+      <li class="left fragment red">rejected / отклонено</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - обертка</h4>
+
+    <pre class="javascript"><code>
+function resolver(resolve, reject) {
+  return (err, data) => {
+    if (err) reject(err);
+    else resolve(data);
+  }
+}
+
+function readDir(dir) {
+  return new Promise((res, rej) => {
+    fs.readir(dir, resolver(res, rej));
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - цепочка</h4>
+
+    <pre class="javascript"><code>
+function readDir(dir) {
+  return new Promise((res, rej) => {
+    // читаем файлы из папки
+  });
+}
+
+function zip(files) {
+  return new Promise((res, rej) => {
+    // архивируем файлы
+  });
+}
+
+function sendByEmail(file) {
+  return new Promise((res, rej) => {
+    // отправляем файл по email
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - цепочка</h4>
+
+    <pre class="javascript"><code>
+readDir('/tmp/images')
+
+  .then((files) => { return zip(files) })
+
+  .then((file) => { return sendByEmail(file) })
+
+  .then(() => { ... })
+
+  .catch((err) => { ... });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - All</h4>
+
+    <pre class="javascript"><code>
+readDir('/tmp/images')
+
+  .then((files) => { return zip(files) })
+
+  .then((file) => {
+    return Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+  })
+
+   // results - массив с данными от промиссов
+  .then((results) => { ... })
+
+  .catch((err) => { ... });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - Race</h4>
+
+    <pre class="javascript"><code>
+readDir('/tmp/images')
+
+  .then((files) => { return zip(files) })
+
+  .then((file) => {
+    return Promise.race([
+      sendByEmail(user.email[0], file),
+      sendByEmail(user.email[1], file)
+    ]);
+  })
+
+   // result - данные от выполненного промиса
+  .then((result) => { ... })
+
+  .catch((err) => { ... });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - особенности</h4>
+
+    <pre class="javascript"><code>
+const a = new Promise(...);
+
+a.then((data) => ..., (error) => ...);
+
+!=
+
+a.then(...).catch(...);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - особенности</h4>
+
+    <pre class="javascript"><code>
+const a = new Promise(...);
+
+a.then(...);
+a.then(...);
+
+!=
+
+a.then(...).then(...);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Promises/A+ - особенности</h4>
+
+    <pre class="javascript"><code>
+const a = new Promise(...);
+
+a.then(...)
+  .catch(...)
+  .then(...)
+  .catch(...);
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>sync/Await</h3>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function read() {
+  let content = await
+    fs.readFileAsync('hero.txt', 'utf-8');
+
+  console.log(content);
+};
+
+read();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Async/Await</h4>
+
+    <pre class="javascript"><code>
+async function magic() {
+  try {
+    const files = await readDir('/tmp/images');
+
+    const archive = await zip(files);
+
+    await Promise.all([
+      sendByEmail(user.email, file),
+      sendByEmail(admin.email, file)
+    ]);
+
+    ...
+  } catch (error) {
+    ...
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>nti-patterns</h3>
+  </section>
+
+  <section>
+    <h4>Anti-patterns</h4>
+
+    <pre class="javascript"><code>
+asyncOp()
+  .then(() => new Promise(...));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Anti-patterns</h4>
+
+    <pre class="javascript"><code>
+async function magic() {
+  await asyncOp().then(...);
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">B</span>luebird</h3>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+// after fullfill -> always
+Promise.resolve(42)
+  .then(() => console.log('after fullfill'))
+  .catch(() => console.log('after reject'))
+  .finally(() => console.log('always'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+// after reject -> always
+Promise.reject(42)
+  .then(() => console.log('after fullfill'))
+  .catch(() => console.log('after reject'))
+  .finally(() => console.log('always'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 3 -
+// after fullfill -> always -> a bit later
+Promise.resolve(42)
+  .then(() => console.log('after fullfill'))
+  .finally(() => console.log('always'))
+  .then(() => console.log('a bit later'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 4 -
+// after reject -> always -> a bit later
+Promise.reject(42)
+  .catch(() => console.log('after reject'))
+  .finally(() => console.log('always'))
+  .then(() => console.log('a bit later'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 5 -
+// always -> after reject
+Promise.reject(42)
+  .then(() => console.log('after fullfill'))
+  .finally(() => console.log('always'))
+  .then(() => console.log('never'))
+  .catch(() => console.log('after reject'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Finally</h4>
+
+    <pre class="javascript"><code>
+// - 6 -
+// always -> after 1s
+Promise.resolve(42)
+  .finally(() => {
+    console.log('always');
+
+    return delay(1000);
+  })
+  .then(() => console.log('after 1s'));
+
+function delay(ms) {
+  return new Promise(resolve =>
+    setTimeout(resolve, ms)
+  );
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+class DeannonizationError extends Error {}
+class BigBrotherWatchingYouError extends Error {}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+// better run
+Promise.reject(new DeannonizationError())
+  .catch(
+    DeannonizationError,
+    () => console.log('better run')
+  )
+  .catch(
+    BigBrotherWatchingYouError,
+    () => console.log('too late')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+// too late
+Promise.reject(new BigBrotherWatchingYouError())
+  .catch(
+    DeannonizationError,
+    () => console.log('better run')
+  )
+  .catch(
+    BigBrotherWatchingYouError,
+    () => console.log('too late')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+// - 3 -
+// oh no
+Promise.reject(new BigBrotherWatchingYouError())
+  .catch(
+    DeannonizationError,
+    BigBrotherWatchingYouError,
+    () => console.log('oh no')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+// - 4 -
+// predicate
+Promise.reject({ code: 42 })
+  .catch(
+    error => error.code === 42,
+    () => console.log('error 42')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Catch</h4>
+
+    <pre class="javascript"><code>
+// - 5 -
+// shorthand for checking properties
+Promise.reject({ code: 42 })
+  .catch(
+    { code: 42 },
+    () => console.log('error 42')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Any</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+// 42
+Promise.any([
+  Promise.reject(40),  // error
+  Promise.reject(41),  // error
+  Promise.resolve(42), // success
+]).then(x => console.log(x));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Any</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+// 500
+Promise.any([
+  delay(1000),
+  delay(500),
+  delay(700),
+]).then(x => console.log(x));
+    </code></pre>
+  </section>
+
+  <section>
+  <h4>Bluebird - Any</h4>
+
+  <pre class="javascript"><code>
+// - 3 -
+// 40 -> 41 -> 42
+Promise.any([
+  Promise.reject(40),
+  Promise.reject(41),
+  Promise.reject(42),
+]).catch(error =>
+  error.forEach(x => console.log(x))
+);
+    </code></pre>
+  </section>
+
+
+  <section>
+  <h4>Bluebird - Any</h4>
+
+  <pre class="javascript"><code>
+// - 4 -
+// 500 -> 700 -> 1000
+Promise.any([
+  delayAndReject(1000),
+  delayAndReject(500),
+  delayAndReject(700),
+]).catch(error =>
+  error.forEach(x => console.log(x))
+);
+
+function delayAndReject(ms) {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => reject(ms), ms)
+  );
+}
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h4>Bluebird - Some</h4>
+
+    <pre class="javascript"><code>
+// [40, 41]
+Promise.some([
+  Promise.resolve(40),
+  Promise.resolve(41),
+  Promise.reject(42),
+], 2).then(x => console.log(x));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map</h4>
+
+    <pre class="javascript"><code>
+// - 1.1 -
+// [1, 2, 3]
+const promises = [1, 2, 3]
+  .map(x => Promise.resolve(x));
+
+Promise.all(promises)
+  .then(x => console.log(x));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map</h4>
+
+    <pre class="javascript"><code>
+// - 1.2 -
+// [1, 2, 3]
+Promise.map(
+
+  [1, 2, 3],
+  x => Promise.resolve(x)
+
+).then(x => console.log(x));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+// start of 1000ms timer
+// start of 2000ms timer
+// end of 1000ms timer
+// start of 3000ms timer
+// end of 2000ms timer
+// end of 3000ms timer
+// after 4000ms
+Promise.map(
+
+  [1000, 2000, 3000],
+  x => delay(x),
+  { concurrency: 2 }
+
+).then(x => console.log('after 4000ms'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map Series</h4>
+
+    <pre class="javascript"><code>
+// - 1.1 -
+// start of 1000ms timer
+// end of 1000ms timer
+// start of 2000ms timer
+// start of 3000ms timer
+// end of 2000ms timer
+// end of 3000ms timer
+// after 6000ms
+Promise.map(
+
+  [1000, 2000, 3000],
+  x => delay(x),
+  { concurrency: 1 }
+
+).then(x => console.log('after 6000ms'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Map Series</h4>
+
+    <pre class="javascript"><code>
+// - 1.2 -
+Promise.mapSeries(
+
+  [1000, 2000, 3000],
+  x => delay(x)
+
+).then(x => console.log('after 6000ms'));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Bind</h4>
+
+    <pre class="javascript"><code>
+// {x: 42, y: 43}
+Promise.resolve(42)
+  .bind({})
+  .then(function (x) {
+    this.x = x;
+    return Promise.resolve(43);
+  })
+  .then(function (y) {
+    this.y = y;
+  })
+  .then(function () {
+    console.log(this)
+  });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Method</h4>
+
+    <pre class="javascript"><code>
+function semiAsyncFn() {
+  if (Math.random() > 0.5) {
+    return 420;
+  }
+
+  return delay(42);
+}
+
+const asyncFn = Promise.method(semiAsyncFn);
+
+asyncFn.then(x =>
+    console.log(
+      'I handle both sync and async results', x
+    )
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Tap</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+// log 42
+// process 42
+Promise.resolve(42)
+  .tap(x => console.log(`log ${x}`))
+  .then(x => console.log(`process ${x}`));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Tap</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+// start logging
+// log 42
+// process 42
+Promise.resolve(42)
+  .tap(x => asyncLogging(x))
+  .then(x => console.log(`process ${x}`));
+
+function asyncLogging(x) {
+  console.log('start logging');
+
+  return new Promise(resolve => setTimeout(() => {
+    console.log(`log ${x}`);
+    resolve();
+  }, 1000));
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Tap Catch</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+// log error 42
+// process error 42
+Promise.reject(42)
+  .tapCatch(x => console.log(`log error ${x}`))
+  .catch(x => console.log(`process error ${x}`));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Tap Catch</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+Promise.reject(new DeannonizationError())
+  .tapCatch(
+      DeannonizationError,
+      x => console.log('log deannonimization')
+  )
+  .tapCatch(
+    BigBrotherWatchingYouError,
+    x => console.log('log bbwy')
+  )
+  .catch(
+    DeannonizationError,
+    () => console.log('process deannonimization')
+  )
+  .catch(
+    BigBrotherWatchingYouError,
+    () => console.log('process bbwy')
+  );
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+Promise.config({ cancellation: true });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 1 -
+const promise = delay(1000)
+  .then(() => console.log('We will never see this'));
+
+promise.cancel();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 2 -
+const promise = delay(1000)
+  .then(() => console.log('We will never see this'));
+
+promise.cancel();
+
+function delay(ms) {
+  return new Promise((resolve, reject, onCancel) => {
+    const timer = setTimeout(() =>  {
+       console.log('and this one too');
+       resolve();
+    }, ms);
+
+    onCancel(() => clearTimeout(timer));
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+function delay(ms) {
+  return new Promise((resolve, reject, onCancel) => {
+    const timer = setTimeout(() =>  {
+       console.log('timer fired');
+       resolve();
+    }, ms);
+
+    onCancel(() => {
+      console.log('timer cancelled');
+      clearTimeout(timer);
+    });
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 3 -
+// timer fired, A, B
+const source = delay(1000);
+
+const consumerA = source.then(() => console.log(`A`));
+const consumerB = source.then(() => console.log(`B`));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 4 -
+// timer cancelled
+const source = delay(1000);
+
+const consumerA = source.then(() => console.log(`A`));
+const consumerB = source.then(() => console.log(`B`));
+
+source.cancel();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 5 -
+// timer fired, B
+const source = delay(1000);
+
+const consumerA = source.then(() => console.log(`A`));
+const consumerB = source.then(() => console.log(`B`));
+
+consumerA.cancel();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 6 -
+// timer cancelled
+const source = delay(1000);
+
+const consumerA = source.then(() => console.log(`A`));
+const consumerB = source.then(() => console.log(`B`));
+
+consumerA.cancel();
+consumerB.cancel();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Cancellation</h4>
+
+    <pre class="javascript"><code>
+// - 7 -
+// timer fired, A
+const source = delay(1000);
+
+const consumerA = source.then(() => console.log(`A`));
+const consumerB = source.then(() => console.log(`B`));
+const consumerС = consumerB.then(() => console.log(`С`));
+
+consumerС.cancel();
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Timeout</h4>
+
+    <pre class="javascript"><code>
+// Time's up!
+delay(1000)
+  .timeout(100)
+  .then(() => console.log(`We will never see this`))
+  .catch(
+    Promise.TimeoutError,
+    error => console.log(`Time's up!`)
+  )
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Bluebird - Delay</h4>
+
+    <pre class="javascript"><code>
+Promise.delay(1000)
+  .then(() => console.log(`after 1s`));
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
