@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP19</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>GraphQL</h2>
+    <p class="author">
+      <small>Лекция 19</small>
+    </p>
+  </section>
+
+  <section>
+    <img src="images/graphql.png" style="width: 500px;">
+  </section>
+
+  <section>
+    <h4>Недостатки REST</h4>
+
+    <ul>
+      <li class="left fragment">многословен - чтобы получить необходимые данные часто требуется несколько запросов</li>
+      <li class="left fragment">слишком много информации - отдаёт все поля объекта</li>
+      <li class="left fragment">нет контрактов / типов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>GraphQL</h4>
+
+    <ul>
+      <li class="left fragment">спецификация для построения API от Facebook</li>
+      <li class="left fragment">минимальная полезная нагрузка</li>
+      <li class="left fragment">человеко-читаемый формат</li>
+      <li class="left fragment">язык запросов</li>
+      <li class="left fragment">система типов</li>
+      <li class="left fragment"><a href="http://graphql.org/" target="_blank">оффициальный сайт</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>GraphQL</h4>
+
+    <ul>
+      <li class="left fragment">C#</li>
+      <li class="left fragment">Go</li>
+      <li class="left fragment">Java</li>
+      <li class="left fragment">Ruby</li>
+      <li class="left fragment">Python</li>
+      <li class="left fragment">JavaScript</li>
+      <li class="left fragment">...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>GraphQL</h4>
+
+    <ul>
+      <li class="left fragment">задаём типы</li>
+      <li class="left fragment">определяем функции для работы с источниками данных</li>
+      <li class="left fragment">запускаем сервис обработки запросов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>GraphQL - Типы</h4>
+
+    <pre class="javascript"><code>
+type Query {
+  me: User
+}
+
+type User {
+  id: ID
+  name: String
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Функции</h4>
+
+    <pre class="javascript"><code>
+function Query_me(request) {
+  return request.auth.user;
+}
+
+function User_name(user) {
+  return user.getName();
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Запрос</h4>
+
+    <pre class="javascript"><code>
+{
+  me {
+    name
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Ответ</h4>
+
+    <pre class="javascript"><code>
+{
+  "me": {
+    "name": "Luke Skywalker"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">З</span>апросы</h3>
+  </section>
+
+  <section>
+    <h4>Запросы - Частичное чтение</h4>
+
+    <pre class="javascript"><code>
+{
+  hero {
+    name
+  }
+}
+    </code></pre>
+
+    <pre class="javascript"><code>
+"hero": {
+  "name": "R2-D2"
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Частичное чтение</h4>
+
+    <pre class="javascript"><code>
+{
+  hero {
+    # Queries can have comments!
+    friends {
+      name
+    }
+  }
+}
+    </code></pre>
+
+    <pre class="javascript"><code>
+"hero": {
+  "friends": [
+    { "name": "Luke Skywalker" },
+    ...
+  ]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Аргументы</h4>
+
+    <pre class="javascript"><code>
+{
+  human(id: "1000") {
+    name
+    height
+  }
+}
+    </code></pre>
+
+    <pre class="javascript"><code>
+"human": {
+  "name": "Luke Skywalker",
+  "height": 1.72
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Аргументы</h4>
+
+    <pre class="javascript"><code>
+{
+  human(id: "1000") {
+    name
+    height(unit: FOOT)
+  }
+}
+    </code></pre>
+
+    <pre class="javascript"><code>
+"human": {
+  "name": "Luke Skywalker",
+  "height": 5.6430448
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Алиасы</h4>
+
+    <pre class="javascript"><code>
+{
+  empireHero: hero(episode: EMPIRE) {
+    name
+  }
+  jediHero: hero(episode: JEDI) {
+    name
+  }
+}
+    </code></pre>
+
+    <pre class="javascript"><code>
+{
+  empireHero: ...,
+  jediHero: ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Фрагменты</h4>
+
+    <pre class="javascript"><code>
+{
+  empireHero: hero(episode: EMPIRE) {
+    ...heroFields
+  }
+  jediHero: hero(episode: JEDI) {
+    ...heroFields
+  }
+}
+
+fragment heroFields on Character {
+  name
+  appearsIn
+  friends {
+    name
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Имя операции</h4>
+
+    <pre class="javascript"><code>
+# type - query, mutation, subscription
+# name - для логирования и дебага
+
+query HeroNameAndFriends {
+  hero {
+    name
+    friends {
+      name
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Переменные</h4>
+
+    <pre class="javascript"><code>
+query HeroNameAndFriends($episode: Episode) {
+  hero(episode: $episode) {
+    name
+    friends {
+      name
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Директивы</h4>
+
+    <pre class="javascript"><code>
+# @include(if: Boolean)
+# @skip(if: Boolean)
+
+query Hero($episode: Episode, $withFriends: Boolean!) {
+  hero(episode: $episode) {
+    name
+    friends @include(if: $withFriends) {
+      name
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Изменения</h4>
+
+    <pre class="javascript"><code>
+# несколько операций в одной мутации
+# будут выполнены последовательно
+
+mutation CreateReviewForEpisode(
+    $ep: Episode!,
+    $review: ReviewInput!
+) {
+  createReview(episode: $ep, review: $review) {
+    # возвращаемые значения
+    stars
+    commentary
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Привидение типов</h4>
+
+    <pre class="javascript"><code>
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Мета-поле - имя типа</h4>
+
+    <pre class="javascript"><code>
+{
+  search(text: "an") {
+    __typename
+    ... on Human {
+      name
+    }
+    ... on Droid {
+      name
+    }
+    ... on Starship {
+      name
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Запросы - Мета-поле - имя типа</h4>
+
+    <pre class="javascript"><code>
+{
+  "data": {
+    "search": [
+      {
+        "__typename": "Human",
+        "name": "Han Solo"
+      },
+      {
+        "__typename": "Human",
+        "name": "Leia Organa"
+      },
+      {
+        "__typename": "Starship",
+        "name": "TIE Advanced x1"
+      }
+    ]
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">Т</span>ипы</h3>
+  </section>
+
+  <section>
+    <h4>Типы</h4>
+
+    <pre class="javascript"><code>
+type Character {
+  # nullable string
+  name: String
+
+  # non-nullable array of Episode
+  appearsIn: [Episode]!
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Встроенные</h4>
+
+    <pre class="javascript"><code>
+Int
+Float
+String
+Boolean
+ID
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Перечисления</h4>
+
+    <pre class="javascript"><code>
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Интерфейсы</h4>
+
+    <pre class="javascript"><code>
+interface Character {
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Собственные</h4>
+
+    <pre class="javascript"><code>
+type Human implements Character {
+  id: ID!
+  name: String!
+  friends: [Character]
+  appearsIn: [Episode]!
+  starships: [Starship]
+  totalCredits: Int
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Объединения</h4>
+
+    <pre class="javascript"><code>
+union SearchResult = Human | Droid | Starship
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Типы - Аргументы</h4>
+
+    <pre class="javascript"><code>
+type Starship {
+  id: ID!
+  name: String!
+
+  # не просто поле - функция
+  length(unit: LengthUnit = METER): Float
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">Р</span>езолверы</h3>
+  </section>
+
+  <section>
+    <h4>Резолверы</h4>
+
+    <pre class="javascript"><code>
+Query: {
+  human(obj, args, context) {
+    return context.db.loadHumanByID(args.id).then(
+      userData => new Human(userData)
+    )
+  }
+}
+
+# obj - предыдущий разрезолвленный объект
+# args - аргументы запроса к полю
+# context - в зависимости от реализации
+# может хранить текущего юзера, подключение к БД, ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Резолверы - Асинхронные</h4>
+
+    <pre class="javascript"><code>
+Query: {
+  human(obj, args, context) {
+    return context.db.loadHumanByID(args.id).then(
+      userData => new Human(userData)
+    )
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Резолверы - Тривиальные</h4>
+
+    <pre class="javascript"><code>
+Human: {
+  name(obj, args, context) {
+    return obj.name
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <img src="images/business_layer.png">
+  </section>
+
+  <section>
+    <h4>GraphQL - Недостатки</h4>
+
+    <ul>
+      <li class="left fragment">плохо интегрируется с ненормализованными данными</li>
+      <li class="left fragment">сложно отлавливать ошибки</li>
+      <li class="left fragment">могут быть проблемы с кэшированием (зависит от реализации)</li>
+      <li class="left fragment">повышается использование CPU на проверку типов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+npm i express
+npm i sequelize
+npm i graphql
+npm i express-graphql
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/turtle.js
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('turtles', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    name: Sequelize.STRING,
+    color: Sequelize.STRING,
+  });
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/pizza.js
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('pizzas', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    name: Sequelize.STRING,
+    colories: Sequelize.DOUBLE,
+  });
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/weapon.js
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('weapons', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    name: Sequelize.STRING,
+    dps: Sequelize.INTEGER,
+  });
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/index.js
+module.exports = (Sequelize, config) => {
+  const options = {
+    host: config.db.host,
+    dialect: 'mysql',
+    logging: false,
+    define: {
+      timestamps: true,
+    }
+  };
+
+  const sequelize = new Sequelize(...);
+
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/index.js
+module.exports = (Sequelize, config) => {
+  ...
+
+  const Turtle = require('../models/turtle')(Sequelize, sequelize);
+  const Pizza = require('../models/pizza')(Sequelize, sequelize);
+  const Weapon = require('../models/weapon')(Sequelize, sequelize);
+
+  Weapon.hasOne(Turtle);
+
+  Pizza.hasOne(Turtle, {as: 'favoritePizza'});
+  Pizza.hasOne(Turtle, {as: 'secondFavoritePizza'});
+
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/index.js
+module.exports = (Sequelize, config) => {
+  ...
+
+  return {
+    turtles: Turtle,
+    pizzas: Pizza,
+    weapons: Weapon,
+
+    sequelize: sequelize,
+    Sequelize: Sequelize,
+    Op: Sequelize.Op,
+  };
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/test-data.js
+module.exports = async function (db) {
+  await db.sequelize.sync({force: true});
+
+  await db.pizzas.bulkCreate([
+    {name: "Neapolitan", colories: 1000},
+    {name: "Sicilian", colories: 1400},
+    {name: "Pepperoni", colories: 2200},
+    {name: "Mozzarella", colories: 1700},
+  ]);
+
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/test-data.js
+module.exports = async function (db) {
+  ...
+
+  await db.weapons.bulkCreate([
+    {name: "Katana", dps: 79},
+    {name: "Nunchucks", dps: 55},
+    {name: "Staff", dps: 60},
+    {name: "Sai", dps: 70},
+  ]);
+
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/test-data.js
+module.exports = async function (db) {
+  ...
+
+  await db.turtles.bulkCreate([
+    { name: "Leo", color: "Blue",
+      favoritePizzaId: 1,
+      weaponId: 1 },
+    { name: "Mikey", color: "Orange",
+      favoritePizzaId: 1,
+      secondFavoritePizzaId: 2,
+      weaponId: 2 },
+    ...
+  ]);
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// models/test-data.js
+module.exports = async function (db) {
+  ...
+
+  await db.turtles.bulkCreate([
+    ...
+    { name: "Donnie", color: "Purple",
+      favoritePizzaId: 2,
+      weaponId: 3 },
+    { name: "Raph", color: "Red",
+      favoritePizzaId: 3,
+      secondFavoritePizzaId: 1,
+      weaponId: 4 },
+  ]);
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLString,
+  GraphQLFloat,
+  GraphQLList,
+} = require('graphql');
+
+module.exports = db => {
+  ...
+
+  return new GraphQLSchema({ query: Query });
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Pizza = new GraphQLObjectType({
+  name: 'Pizza',
+  fields: {
+    id: { type: GraphQLInt },
+    name: { type: GraphQLString },
+    colories: { type: GraphQLInt },
+  },
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Weapon = new GraphQLObjectType({
+  name: 'Weapon',
+  fields: {
+    id: {type: GraphQLInt},
+    name: {type: GraphQLString},
+    dps: {type: GraphQLFloat},
+  },
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Turtle = new GraphQLObjectType({
+  name: 'Turtle',
+  fields: {
+    id: { type: GraphQLInt },
+    name: { type: GraphQLString },
+    color: { type: GraphQLString },
+    weapon: {
+      type: Weapon,
+      resolve: turtle =>
+        db.weapons.findById(
+          turtle.weaponId,
+          { raw: true }
+        )
+    },
+    ...
+  },
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Turtle = new GraphQLObjectType({
+  name: 'Turtle',
+  fields: {
+    ...
+    favoritePizza: {
+      type: Pizza,
+      resolve: turtle =>
+        db.pizzas.findById(
+          turtle.favoritePizzaId,
+          { raw: true }
+        )
+    },
+    ...
+  },
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Turtle = new GraphQLObjectType({
+  name: 'Turtle',
+  fields: {
+    ...
+    secondFavoritePizza: {
+      type: Pizza,
+      resolve: turtle =>
+        db.pizzas.findById(
+          turtle.secondFavoritePizzaId,
+          { raw: true }
+        )
+    },
+  },
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Query = new GraphQLObjectType({
+  name: 'TMNT',
+  fields: {
+    turtles: {
+      type: new GraphQLList(Turtle),
+      resolve: () =>
+        db.turtles.findAll({ raw: true })
+    },
+    ...
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Query = new GraphQLObjectType({
+  name: 'TMNT',
+  fields: {
+    ...
+    weapons: {
+      type: new GraphQLList(Weapon),
+      resolve: () =>
+        db.weapons.findAll({ raw: true })
+    },
+    ...
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Query = new GraphQLObjectType({
+  name: 'TMNT',
+  fields: {
+    ...
+    pizzas: {
+      type: new GraphQLList(Pizza),
+      resolve: () =>
+        db.pizzas.findAll({ raw: true })
+    },
+    ...
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// schema.js
+const Query = new GraphQLObjectType({
+  name: 'TMNT',
+  fields: {
+    ...
+    turtle: {
+      args: { id: { type: GraphQLInt } },
+      type: Turtle,
+      resolve: (obj, args) =>
+        db.turtles.findById(
+          args.id,
+          { raw: true }
+        )
+    },
+  }
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// index.js
+const Sequelize = require('sequelize');
+const Promise = require('bluebird');
+const express = require('express');
+const graphqlHttp = require('express-graphql');
+
+const config = require('./config');
+
+const db = require('./models')(Sequelize, config);
+const schema = require('./schema')(db);
+
+const fillWithTestData = require('./models/test-data');
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// index.js
+...
+
+const app = express();
+
+app.listen = Promise
+  .promisify(app.listen)
+  .bind(app);
+
+app.use(graphqlHttp({
+  schema,
+  pretty: true,
+  graphiql: true
+}));
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>GraphQL - Пример</h4>
+
+    <pre class="javascript"><code>
+// index.js
+...
+
+(async function () {
+  await fillWithTestData(db);
+
+  await app.listen(config.port);
+
+  console.log(`Server running at http://localhost:${config.port}`);
+})();
+    </code></pre>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

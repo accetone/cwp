@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP15</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>JSON / YAML</h2>
+    <p class="author">
+      <small>Лекция 15</small>
+    </p>
+  </section>
+
+  <section>
+    <h3><span class="red">J</span>SON</h3>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <ul>
+      <li class="left fragment">JavaScript Object Notation</li>
+      <li class="left fragment">текстовый формат основанный на js</li>
+      <li class="left fragment">но, независимый от него</li>
+      <li class="left fragment">легко читается</li>
+      <li class="left fragment">лаконичный</li>
+      <li class="left fragment">передача данных между приложениями</li>
+      <li class="left fragment">объект или массив</li>
+      <li class="left fragment">.json</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JSON - Object</h4>
+
+    <div class="white-bg">
+      <img class="fullscreen" src="images/json-object.gif">
+    </div>
+  </section>
+
+  <section>
+    <h4>JSON - Array</h4>
+
+    <div class="white-bg">
+      <img class="fullscreen" src="images/json-array.gif">
+    </div>
+  </section>
+
+  <section>
+    <h4>JSON - Value</h4>
+
+    <div class="white-bg">
+      <img class="fullscreen" src="images/json-value.gif">
+    </div>
+  </section>
+
+  <section>
+    <h4>JSON - String</h4>
+
+    <div class="white-bg">
+      <img class="fullscreen" src="images/json-string.gif">
+    </div>
+  </section>
+
+  <section>
+    <h4>JSON - Number</h4>
+
+    <div class="white-bg">
+      <img class="fullscreen" src="images/json-number.gif">
+    </div>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+{
+  "firstname": "Jack",
+  "lastname": "Shepard"
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+[
+  { "name": "Jack" },
+  { "name": "Jonh" },
+  { "name": "Hugo" }
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+{
+ "firstName": "Jack",
+ "lastName": "Shepard",
+ "address": {
+   "street": "Westside",
+   "city": "Los Angeles",
+   "postalCode": 101101
+ },
+ "phoneNumbers": [
+   "812 123-1234",
+   "916 123-4567"
+ ]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="xml"><code>
+<person>
+  <firstName>Jack</firstName>
+  <lastName>Shepard</lastName>
+  <address>
+    <street>Westside</street>
+    <city>Los Angeles</city>
+    <postalCode>101101</postalCode>
+  </address>
+  <phoneNumbers>
+    <phoneNumber>812 123-1234</phoneNumber>
+    <phoneNumber>916 123-4567</phoneNumber>
+  </phoneNumbers>
+</person>
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.stringify(value[, replacer[, space]])
+
+// value - значение для преобразования
+
+// replacer - функция или массив
+// для преобразования или выборки
+
+// space - отступы для форматирования
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.stringify({});
+// '{}'
+
+JSON.stringify(true);
+// 'true'
+
+JSON.stringify('foo');
+// '"foo"'
+
+JSON.stringify([1, 'false', false]);
+// '[1,"false",false]'
+
+JSON.stringify({ x: 5 });
+// '{"x":5}'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.stringify({ a: 2 }, null, ' ');
+// {
+//  "a": 2
+// }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.stringify({ a: 2, b: { c: 3 } }, null, 4);
+// {
+//     "a": 2,
+//     "b": {
+//         "c": 3
+//     }
+// }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+const obj = {
+  foo: 'foo',
+  toJSON: function() {
+    return 'bar';
+  }
+};
+
+JSON.stringify(obj);        // '"bar"'
+JSON.stringify({ x: obj }); // '{"x":"bar"}'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+const foo = {
+  foundation: 'Mozilla', model: 'box',
+  week: 45, transport: 'car', month: 7
+};
+
+JSON.stringify(foo, function(key, value) {
+  if (typeof value === 'string') {
+    return undefined;
+  }
+  return value;
+});
+
+JSON.stringify(foo, ['week', 'month']);
+// '{"week":45,"month":7}'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.parse(text[, reviver])
+
+// text - строка для разбора
+// reviver - функция для преобразования
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.parse('{}');
+// {}
+
+JSON.parse('true');
+// true
+
+JSON.parse('"foo"');
+// "foo"
+
+JSON.parse('[1, 5, "false"]');
+// [1, 5, "false"]
+
+JSON.parse('null');
+// null
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JSON</h4>
+
+    <pre class="javascript"><code>
+JSON.parse('{"p": 5}', function(k, v) {
+  if (k === '') { return v; }
+  return v * 2;
+});
+// { p: 10 }
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h3><span class="red">Y</span>AML</h3>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <ul>
+      <li class="left fragment">YAML Ain't Markup Language</li>
+      <li class="left fragment">Yet Another Markup Language</li>
+      <li class="left fragment">ориентированный на данные</li>
+      <li class="left fragment">еще более человекочитаемый</li>
+      <li class="left fragment">еще более лаконичный</li>
+      <li class="left fragment">поддерживает ссылки, комментарии, типы</li>
+      <li class="left fragment">.yml или .yaml</li>
+      <li class="left fragment"><a href="http://yaml.org/">yaml.org</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+firstname: Jack
+lastname: Shepard
+
+address:
+  street: Westside
+  city: Los Angeles
+  postalCode: 101101
+
+phoneNumbers:
+- 812 123-1234
+- 916 123-4567
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+- Mark McGwire
+- Sammy Sosa
+- Ken Griffey
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+[
+  "Mark McGwire",
+  "Sammy Sosa",
+  "Ken Griffey"
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+hr:  65    # Home runs
+avg: 0.278 # Batting average
+rbi: 147   # Runs Batted In
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+{
+  "hr": 65,
+  "avg": 0.278,
+  "rbi": 147
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+american:
+  - Boston Red Sox
+  - Detroit Tigers
+  - New York Yankees
+national:
+  - New York Mets
+  - Chicago Cubs
+  - Atlanta Braves
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+{ "american": ["Boston Red Sox","Detroit Tigers",
+    "New York Yankees"],
+  "national": ["New York Mets","Chicago Cubs",
+    "Atlanta Braves"]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+- [name, hr, avg]
+- [Mark McGwire, 65, 0.278]
+- [Sammy Sosa, 63, 0.288]
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+[
+  [ "name", "hr", "avg" ],
+  [ "Mark McGwire", 65, 0.278 ],
+  [ "Sammy Sosa", 63, 0.288 ]
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+Mark McGwire: { hr: 65, avg: 0.278 }
+Sammy Sosa: { hr: 63, avg: 0.288 }
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+{
+  "Mark McGwire": {
+    "hr": 65,
+    "avg": 0.278
+  },
+  "Sammy Sosa": {
+    "hr": 63,
+    "avg": 0.288
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+- item    : Super Hoop
+  quantity: 1
+- item    : Basketball
+  quantity: 4
+- item    : Big Shoes
+  quantity: 1
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+[
+  { "item": "Super Hoop", "quantity": 1 },
+  { "item": "Basketball", "quantity": 4 },
+  { "item": "Big Shoes", "quantity": 1 }
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+- step:  &id001
+  instrument: Lasik 2000
+  pulseEnergy: 5.4
+  pulseDuration: 12
+- step: *id001
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+[{ "step": { "pulseEnergy": 5.4,
+      "instrument": "Lasik 2000",
+      "pulseDuration": 12}
+  },
+  { "step": { "pulseEnergy": 5.4,
+      "instrument": "Lasik 2000",
+      "pulseDuration": 12}
+  }]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <img class="fullscreen" src="images/yaml-process.png">
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="xml"><code>
+http://www.yaml.org/spec/1.2/spec.html
+    </code></pre>
+
+    <pre class="xml fragment"><code>
+http://yaml-online-parser.appspot.com
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="xml"><code>
+npm install yamljs
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML</h4>
+
+    <pre class="javascript"><code>
+YAML = require('yamljs');
+
+// parse YAML string
+nativeObject = YAML.parse(yamlString);
+
+// Generate YAML
+yamlString = YAML.stringify(nativeObject, 4);
+
+// Load yaml file using YAML.load
+nativeObject = YAML.load('myfile.yml');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML - Langs case</h4>
+
+    <pre class="xml"><code>
+# COMMON
+created-at: Created At
+updated-at: Updated At
+actions: Actions
+list: List
+view: View
+new: New
+edit: Edit
+save: Save
+delete: Delete
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML - Langs case</h4>
+
+    <pre class="xml"><code>
+# COMMON
+created-at: Créé à
+updated-at: Mise à jour à
+actions: Actions
+list: Liste
+view: Vue
+new: Nouveau
+edit: Modifier
+save: Enregistrer
+delete: Supprimer
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML - Langs case</h4>
+
+    <pre class="javascript"><code>
+const langsTransform
+  = rootRequire('utils/langsTransform');
+
+app.use('/langs/:lang.json', langsTransform);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML - Langs case</h4>
+
+    <pre class="javascript"><code>
+let yaml = require('yamljs');
+let cache = {};
+
+module.exports = (request, response, next) => {
+  if (!request.params.lang) next();
+
+  try {
+    ...
+  }
+  catch(e) {
+    next();
+  }
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>YAML - Langs case</h4>
+
+    <pre class="javascript"><code>
+let cached = cache[request.params.lang];
+
+if (cached) {
+  response.json(cached);
+  return;
+}
+
+let lang = yaml.load(`${__rootdir}/public
+  /langs/${request.params.lang}.yaml`);
+
+cache[request.params.lang] = lang;
+response.json(lang);
+    </code></pre>
+  </section>
+
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

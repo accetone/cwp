@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP16</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>HTTP</h2>
+    <p class="author">
+        <small>Лекция 16</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>HTTP</h4>
+
+    <ul>
+      <li class="left fragment">Hypertext Transfer Protocol </li>
+      <li class="left fragment">Тим Бернерс-Ли, CERN, 1989</li>
+      <li class="left fragment">протокол прикладного уровня</li>
+      <li class="left fragment">80 порт</li>
+      <li class="left fragment">запрос-ответ</li>
+      <li class="left fragment">stateless</li>
+      <li class="left fragment">TCP, но можно и UDP (HTTPU)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Версии</h4>
+
+    <ul>
+      <li class="left fragment">HTTP V0.9, 1991</li>
+      <li class="left fragment">Только GET</li>
+      <li class="left fragment">Только HTML</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Версии</h4>
+
+    <ul>
+      <li class="left fragment">HTTP V1.0, 1996</li>
+      <li class="left fragment">Контент: изображения, видео, текст и другое</li>
+      <li class="left fragment">+ POST, HEAD</li>
+      <li class="left fragment">коды состояния</li>
+      <li class="left fragment">кэширование, авторизация, кодировки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Версии</h4>
+
+    <ul>
+      <li class="left fragment">HTTP V1.1, 1999</li>
+      <li class="left fragment">+ OPTIONS, PUT, DELETE, TRACE, CONNECT</li>
+      <li class="left fragment">Connection: Keep-Alive</li>
+      <li class="left fragment">возможность запрашивать сразу несколько файлов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Методы</h4>
+
+    <ul>
+      <li class="left">GET</li>
+      <li class="left">POST</li>
+      <li class="left">PUT</li>
+      <li class="left">DELETE</li>
+      <li class="left">HEAD</li>
+      <li class="left">OPTIONS</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - GET</h4>
+
+    <ul>
+      <li class="left fragment">запрос данных ресурса</li>
+      <li class="left fragment">никаких побочных эффектов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - HEAD</h4>
+
+    <ul>
+      <li class="left fragment">тоже что и GET</li>
+      <li class="left fragment">только без тела ответа</li>
+      <li class="left fragment">одни заголовки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - POST</h4>
+
+    <ul>
+      <li class="left fragment">запрос на создание ресурса на сервере</li>
+      <li class="left fragment">данные передаются в теле запроса</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - PUT</h4>
+
+    <ul>
+      <li class="left fragment">запрос на обновление ресурса</li>
+      <li class="left fragment">сервер может принимать решение о создании ресурса при отсутствии</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - DELETE</h4>
+
+    <ul>
+      <li class="left fragment">запрос на удаление ресурса</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - OPTIONS</h4>
+
+    <ul>
+      <li class="left fragment">запрос поддерживаемых методов для указанного URL</li>
+      <li class="left fragment">CORS preflight</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Идемпотентность</h4>
+
+    <ul>
+      <li class="left fragment">количество запросов не влияет на результат</li>
+      <li class="left fragment">+: GET, HEAD, OPTIONS, PUT, DELETE</li>
+      <li class="left fragment">-: POST</li>
+      <li class="left fragment">зависит от реализации</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Методы</h4>
+
+    <img class="fullscreen" src="images/http-methods-summary.png">
+  </section>
+
+  <section>
+    <h4>HTTP - Запрос</h4>
+
+    <ul>
+      <li class="left fragment">строка запроса</li>
+      <li class="left fragment">заголовки</li>
+      <li class="left fragment">пустая строка</li>
+      <li class="left fragment">тело</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Запрос</h4>
+
+    <pre class="javascript"><code>
+GET /index.html HTTP/1.1
+User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+Host: www.example.com
+Accept-Encoding: gzip, deflate
+Connection: Keep-Alive
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>HTTP - Ответ</h4>
+
+    <ul>
+      <li class="left fragment">строка статуса</li>
+      <li class="left fragment">заголовки</li>
+      <li class="left fragment">пустая строка</li>
+      <li class="left fragment">тело</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Ответ</h4>
+
+    <pre class="javascript"><code>
+HTTP/1.1 200 OK
+Date: Mon, 23 May 2005 22:38:34 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Encoding: UTF-8
+Content-Length: 138
+Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT
+Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)
+ETag: "3f80f-1b6-3e1cb03b"
+Accept-Ranges: bytes
+Connection: close
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>HTTP - Статусы</h4>
+
+    <ul>
+      <li class="left fragment">1хх - информационные</li>
+      <li class="left fragment">2хх - успешные</li>
+      <li class="left fragment">3хх - перенаправление</li>
+      <li class="left fragment">4хх - ошибка клиента</li>
+      <li class="left fragment">5хх - ошибка сервера</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - 2хх</h4>
+
+    <ul>
+      <li class="left fragment">200 - OK</li>
+      <li class="left fragment">201 - Created</li>
+      <li class="left fragment">202 - Accepted</li>
+      <li class="left fragment">204 - No Content</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - 3хх</h4>
+
+    <ul>
+      <li class="left fragment">301 - Moved permanently</li>
+      <li class="left fragment">302 - Moved Temporarily</li>
+      <li class="left fragment">304 - Not Modified</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - 4хх</h4>
+
+    <ul>
+      <li class="left fragment">400 - Bad request</li>
+      <li class="left fragment">401 - Unauthorized</li>
+      <li class="left fragment">403 - Forbidden</li>
+      <li class="left fragment">404 - Not Found</li>
+      <li class="left fragment">405 - Method Not Allowed</li>
+      <li class="left fragment">409 - Conflict</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - 5хх</h4>
+
+    <ul>
+      <li class="left fragment">500 - Internal Server Error</li>
+      <li class="left fragment">503 - Service Unavailable</li>
+      <li class="left fragment">504 - Gateway Timeout</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP - Кэширование</h4>
+
+    <img src="images/no-cache.svg">
+  </section>
+
+  <section>
+    <h4>HTTP - Кэширование</h4>
+
+    <img class="fullscreen" src="images/last-modified.svg">
+  </section>
+
+  <section>
+    <h4>HTTP - Кэширование</h4>
+
+    <img class="fullscreen" src="images/etag.svg">
+  </section>
+
+  <section>
+    <h4>HTTP - Кэширование</h4>
+
+    <img class="fullscreen" src="images/expires.svg">
+  </section>
+
+  <section>
+    <h4>HTTP - Кэширование</h4>
+
+    <img  class="fullscreen" src="images/max-age.svg">
+  </section>
+
+  <section>
+    <h3><span class="red">A</span>ccess Policy</h3>
+  </section>
+
+  <section>
+    <h4>Same origin policy</h4>
+
+    <ul>
+      <li class="left fragment">скрипты одной вкладки могут получать доступ к другой вкладке и данным посещенных сайтов</li>
+      <li class="left fragment">совпадение домена, порта и протокола</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CORS</h4>
+
+    <pre class="javascript"><code>
+GET /cors.txt HTTP/1.1
+Host: z.com
+Origin: a.com
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+Access-Control-Allow-Origin:
+  http://a.com
+  http://b.com
+  http://c.com
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+Access-Control-Allow-Origin: *
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Cross-origin resource sharing</h4>
+
+    <ul>
+      <li class="left fragment">браузер к запросам на другой домен прикрепляет - Origin, Referer</li>
+      <li class="left fragment">сервер может отказать в запросе</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CORS - Simple Request</h4>
+
+    <ul>
+      <li class="left fragment">без preflight</li>
+      <li class="left fragment">если нарушены Allow заголовки ответ не будет доступен</li>
+      <li class="left fragment">Методы - GET, HEAD, POST</li>
+      <li class="left fragment">Заголовки - Accept, Accept-Language, Content-Language, Content-Type</li>
+      <li class="left fragment">Тип - application/x-www-form-urlencoded, multipart/form-data, text/plain</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CORS - Simple Request - Request</h4>
+
+    <pre class="javascript"><code>
+var invocation = new XMLHttpRequest();
+var url = 'http://bar.other/resources/public-data/';
+
+function callOtherDomain() {
+  if(invocation) {
+    invocation.open('GET', url, true);
+    invocation.onreadystatechange = handler;
+    invocation.send();
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS</h4>
+
+    <img src="images/simple_req.png">
+  </section>
+
+  <section>
+    <h4>CORS - Simple Request - Request Body</h4>
+
+    <pre class="javascript"><code>
+GET /resources/public-data/ HTTP/1.1
+Host: bar.other
+User-Agent: XYZ
+Accept: text/html,application/xml,...
+Accept-Language: en-us,en
+Accept-Encoding: gzip,deflate
+Accept-Charset: utf-8
+Connection: keep-alive
+Referer: http://foo.example/examples/access-control/simpleXSInvocation.html
+Origin: http://foo.example
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS - Simple Request - Response body</h4>
+
+    <pre class="javascript"><code>
+HTTP/1.1 200 OK
+Date: Mon, 01 Dec 2008 00:23:53 GMT
+Server: Apache/2.0.61
+Access-Control-Allow-Origin: *
+Keep-Alive: timeout=2, max=100
+Connection: Keep-Alive
+Transfer-Encoding: chunked
+Content-Type: application/xml
+
+[XML Data]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS - Preflight Request</h4>
+
+    <ul>
+      <li class="left fragment">делается preflight / OPTIONS</li>
+      <li class="left fragment">браузер проверяет Allow заголовки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CORS - Preflight Request - Request</h4>
+
+    <pre class="javascript"><code>
+var invocation = new XMLHttpRequest();
+var url = 'http://bar.other/resources/post-here/';
+var body = '<?xml version="1.0"?><person>
+  <name>Arun</name></person>';
+
+function callOtherDomain(){
+  if(invocation) {
+    invocation.open('POST', url, true);
+    invocation.setRequestHeader('Content-Type',
+      'application/xml');
+    invocation.onreadystatechange = handler;
+    invocation.send(body);
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS</h4>
+
+    <img src="images/preflight.png">
+  </section>
+
+  <section>
+    <h4>CORS - Preflight Request - Request Body</h4>
+
+    <pre class="javascript"><code>
+OPTIONS /resources/post-here/ HTTP/1.1
+Host: bar.other
+User-Agent: XYZ
+Accept: text/html,application/xml
+Accept-Language: en-us,en
+Accept-Encoding: gzip,deflate
+Accept-Charset: utf-8
+Connection: keep-alive
+Origin: http://foo.example
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS - Preflight Request - Response body</h4>
+
+    <pre class="javascript"><code>
+HTTP/1.1 200 OK
+Date: Mon, 01 Dec 2008 01:15:39 GMT
+Server: Apache/2.0.61 (Unix)
+Access-Control-Allow-Origin: http://foo.example
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+Access-Control-Allow-Headers: X-PINGOTHER, Content-Type
+Access-Control-Max-Age: 86400
+Vary: Accept-Encoding, Origin
+Content-Encoding: gzip
+Content-Length: 0
+Keep-Alive: timeout=2, max=100
+Connection: Keep-Alive
+Content-Type: text/plain
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CORS - Allow Headers</h4>
+
+    <ul>
+      <li class="left fragment">Access-Control-Allow-Origin - разрешенные домены</li>
+      <li class="left fragment">Access-Control-Expose-Headers - разрешенные для чтения заголовки</li>
+      <li class="left fragment">Access-Control-Max-Age - насколько можно закэшировать preflight</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CORS - Allow Headers</h4>
+
+    <ul>
+      <li class="left fragment">Access-Control-Allow-Headers - разрешенные заголовки</li>
+      <li class="left fragment">Access-Control-Allow-Methods - разрешенные методы</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Content Security Policy</h4>
+
+    <ul>
+      <li class="left fragment">отдаётся заголовок вместе с html страницей</li>
+      <li class="left fragment">разрешает загрузку определенных ресурсов с определенных доменов</li>
+      <li class="left fragment">default-src, script-src, object-src, style-src, img-src, media-src, frame-src, font-src, connect-src, report-uri</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CSP - Example</h4>
+
+    <pre class="javascript"><code>
+Content-Security-Policy:
+  default-src 'self';
+  style-src 'self' http://cdn.example.com;
+  script-src http://cdn.example.com;
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">H</span>TTPS</h3>
+  </section>
+
+  <section>
+    <h4>HTTPS</h4>
+
+    <ul>
+      <li class="left fragment">HyperText Transfer Protocol Secure</li>
+      <li class="left fragment">HTTP через TLS</li>
+      <li class="left fragment">443 порт</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTPS</h4>
+
+    <img src="images/tls-handshake.png">
+  </section>
+
+  <section>
+    <h3><span class="red">H</span>TTP/2</h3>
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Цели</h4>
+
+    <ul>
+      <li class="left fragment">механизм обсуждения протокола для клиента и сервера</li>
+      <li class="left fragment">высокий уровень совместимости с HTTP 1.1</li>
+      <li class="left fragment">уменьшение сетевой задержки</li>
+      <li class="left fragment">поддержка браузеров, мобильных приложений, веб-серверов и т.д.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Цели</h4>
+
+    <ul>
+      <li class="left fragment">является потомком SPDY от Google</li>
+      <li class="left fragment">встроенная безопасность</li>
+      <li class="left fragment">83.23% браузерной поддержки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Бинарность</h4>
+
+    <ul>
+      <li class="left fragment">вместо текста</li>
+      <li class="left fragment">компактность</li>
+      <li class="left fragment">легче парсить</li>
+      <li class="left fragment">меньше ошибок</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Мультиплексирование</h4>
+
+    <img class="fullscreen" src="images/http-2-multiplexing.png">
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Приоритизация</h4>
+
+    <img class="fullscreen" src="images/http-2-priority.png">
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Компрессия заголовков</h4>
+
+    <ul>
+      <li class="left fragment">HPACK / формат сжатия</li>
+      <li class="left fragment">заголовки отправляются один раз</li>
+      <li class="left fragment">затем отправляются только изменившиеся заголовки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>HTTP/2 - Server push</h4>
+
+    <img class="fullscreen" src="images/http-2-server-push.png">
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

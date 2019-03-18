@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP17</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>REST</h2>
+    <p class="author">
+        <small>Лекция 17</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>REST</h4>
+
+    <ul>
+      <li class="left fragment">representational state transfer (en)</li>
+      <li class="left fragment">передача состояния представления (ru)</li>
+      <li class="left fragment">архитектура для построения веб-приложений</li>
+      <li class="left fragment">Рой Филдинг, диссертация, 2000</li>
+      <li class="left fragment">использует семантику запросов-ответов</li>
+      <li class="left fragment">позволяет достичь производительности, надежности, масштабируемости</li>
+      <li class="left fragment">RESTful-системы</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Основы</h4>
+
+    <ul>
+      <li class="left fragment">клиент-серверная архитектура</li>
+      <li class="left fragment">отсутствие состояния</li>
+      <li class="left fragment">кэширование</li>
+      <li class="left fragment">унифицированный интерфейс</li>
+      <li class="left fragment">слои сервисов</li>
+      <li class="left fragment">доставка кода (необязательно)</li>
+      <li class="left fragment">идентификация ресурсов через URL</li>
+      <li class="left fragment">запрос самоописывает себя</li>
+      <li class="left fragment">изменение состояния через запросы</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Сильные стороны</h4>
+
+    <ul>
+      <li class="left fragment">производительность (кэширование)</li>
+      <li class="left fragment">надёжность (отсутствие состояния)</li>
+      <li class="left fragment">масштабируемость (отсутствие состояния, простота и предсказуемость интерфеса, лёгкое изменение)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Методы</h4>
+
+    <ul>
+      <li class="left fragment">GET - чтение ресурса или коллекции</li>
+      <li class="left fragment">PUT - обновление существующего ресурса или коллекции</li>
+      <li class="left fragment">DELETE - удаление существующего ресурса</li>
+      <li class="left fragment">POST - создание ресурса + все остальные действия</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">идентификаторы вместо query</li>
+      <li class="left fragment">+: /users/12345</li>
+      <li class="left fragment">-: /api?type=user&id=23</li>
+      <li class="left fragment">-: /users?id=23</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">используйте иерархию</li>
+      <li class="left fragment">GET /users/12345/comments</li>
+      <li class="left fragment">но не стоит делать слишком большую вложенность</li>
+      <li class="left fragment">2-3 оптимально</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">используйте существительные</li>
+      <li class="left fragment">избегайте глаголов</li>
+      <li class="left fragment">+: POST /users</li>
+      <li class="left fragment">-: POST /users/update</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">используйте множественное число для консистентности</li>
+      <li class="left fragment">+: GET /customers/33245/orders/8769</li>
+      <li class="left fragment">-: GET /customer/33245/order/8769</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">используйте kebab-case</li>
+      <li class="left fragment">+: GET /customers/33245/delivery-addresses</li>
+      <li class="left fragment">-: GET /customers/33245/deliveryAddresses</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Именование</h4>
+
+    <ul>
+      <li class="left fragment">не указывайте тип коллекции</li>
+      <li class="left fragment">+: GET /customers</li>
+      <li class="left fragment">-: GET /customer-list</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Статус</h4>
+
+    <ul>
+      <li class="left fragment">используйте HTTP статусы для ответа</li>
+      <li class="left fragment">200, 201, 204, 400, 401, 403, 404, 405, 409, 500</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Форматы</h4>
+
+    <ul>
+      <li class="left">рекомендуется поддерживать json и xml</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Версионирование</h4>
+
+    <ul>
+      <li class="left fragment">версия API как часть URL</li>
+      <li class="left fragment">версия API - целое число</li>
+      <li class="left fragment">GET /api/v1/users</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Версионирование</h4>
+
+    <ul>
+      <li class="left fragment">или версионирование схем данных</li>
+      <li class="left fragment">http://api.schemas.wrml.org/soccer/Player</li>
+      <li class="left fragment">http://api.schemas.wrml.org/soccer/Player-2</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Ответ</h4>
+
+    <pre class="javascript"><code>
+// +
+"tags": [
+  {"id": "125", "name": "Environment"},
+  {"id": "834", "name": "Water Quality"}
+]
+    </code></pre>
+
+    <pre class="javascript"><code>
+// -
+"tags": [
+  {"125": "Environment"},
+  {"834": "Water Quality"}
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Пагинация</h4>
+
+    <ul>
+      <li class="left fragment">limit по-умолчанию</li>
+      <li class="left fragment">информация о пагинации включена в ответ</li>
+      <li class="left fragment">GET /api/v1/users?limit=25&offset=50</li>
+    </ul>
+
+    <pre class="javascript fragment"><code>
+{
+    "metadata": {
+      "count": 308,
+      "offset": 50,
+      "limit": 25
+    },
+    "users": [ ... ]
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Сортировка, фильтрация</h4>
+
+    <pre class="javascript"><code>
+GET /users?sort=last_name|first_name|-hire_date
+GET /users?filter=name::todd|city::denver
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Ошибки</h4>
+
+    <pre class="javascript"><code>
+{
+  "message": "The Error",
+  "code": "server-error",
+  "status": 500,
+
+  // optional
+  "developerMessage": "Hi developer!",
+  "moreInfo": "http://example.com/server-error"
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Заголовки</h4>
+
+    <ul>
+      <li class="left fragment">Content-Type, Accept</li>
+      <li class="left fragment">Cache-Control, Expires, ETag для GET</li>
+      <li class="left fragment">Location для POST</li>
+      <li class="left fragment">If-Unmodified-Since для PUT</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - HATEOAS</h4>
+
+    <pre class="javascript"><code>
+// Hypertext As The Engine Of Application State
+// GET /api/v1/
+{
+  "links": {
+    "users": "/api/v1/users"
+    "posts": "/api/v1/posts/"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - HATEOAS</h4>
+
+    <pre class="javascript"><code>
+// Hypertext As The Engine Of Application State
+// GET /api/v1/posts
+{
+  "links": {
+    "post": "/api/v1/posts/:id"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - HATEOAS</h4>
+
+    <pre class="javascript"><code>
+// Hypertext As The Engine Of Application State
+// GET /api/v1/posts/42
+{
+  "links": {
+    "comments": "/api/v1/posts/42/comments"
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Примеры</h4>
+
+    <ul>
+      <li class="left fragment"><a href="https://developer.github.com/v3/" target="_blank">Github</a></li>
+      <li class="left fragment"><a href="https://www.twilio.com/docs/api" target="_blank">Twilio</a></li>
+      <li class="left fragment"><a href="https://www.instagram.com/developer/endpoints/" target="_blank">Instagram</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Примеры</h4>
+
+    <ul>
+      <li class="left fragment">/api/sessions - GET, POST, DELETE</li>
+      <li class="left fragment">/api/users/{login}/password - PUT</li>
+      <li class="left fragment">/api/users/{login}/tokens - DELETE</li>
+      <li class="left fragment">/api/alerts/{id}/activation - GET/POST</li>
+      <li class="left fragment">/api/alerts/{id}/cancellation - GET/POST</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST - Примеры</h4>
+
+    <ul>
+      <li class="left fragment">GET /media/{media-id}</li>
+      <li class="left fragment">GET /media/search?lat=48.858844&lng=2.294351</li>
+      <li class="left fragment">GET /media/{media-id}/likes</li>
+      <li class="left fragment">POST /media/{media-id}/likes</li>
+      <li class="left fragment">DELETE /media/{media-id}/likes</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>REST + Express</h4>
+
+    <pre class="javascript"><code>
+// controllers/base.js
+...
+this.routes = {
+  '/': [
+    { method: 'get', cb: readAll },
+    { method: 'post', cb: create }
+  ],
+  '/:id': [
+    { method: 'get', cb: read },
+    { method: 'put', cb: update },
+    { method: 'delete', cb: del }
+  ]
+};
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST + Express</h4>
+
+    <pre class="javascript"><code>
+// controllers/base.js
+...
+function update(req, res) {
+  req.body.id = req.params.id;
+  ...
+}
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>REST - Литература</h4>
+
+    <ul>
+      <li class="left fragment">RESTful Service Best Practices / Todd Fredrich</li>
+      <li class="left fragment">REST API Design Rulebook / Mark Masse</li>
+    </ul>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

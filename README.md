@@ -15,6 +15,11 @@
 [CWP/LECTION/12 - npm / yarn](https://accetone.github.io/cwp/12)  
 [CWP/LECTION/13 - Handlebars](https://accetone.github.io/cwp/13)  
 [CWP/LECTION/14 - Promises in Depth](https://accetone.github.io/cwp/14)  
+[CWP/LECTION/15 - JSON / YAML](https://accetone.github.io/cwp/15)  
+[CWP/LECTION/16 - HTTP](https://accetone.github.io/cwp/16)  
+[CWP/LECTION/17 - REST](https://accetone.github.io/cwp/17)  
+[CWP/LECTION/18 - Swagger](https://accetone.github.io/cwp/18)  
+[CWP/LECTION/19 - GraphQL](https://accetone.github.io/cwp/19)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)   

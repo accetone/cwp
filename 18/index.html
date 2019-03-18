@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP18</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Swagger</h2>
+    <p class="author">
+        <small>Лекция 18</small>
+    </p>
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <ul>
+      <li class="left fragment">The World's Most Popular API Tooling</li>
+      <li class="left fragment">OpenAPI Specification</li>
+      <li class="left fragment">простой инструмент для визуализации вашего RESTful API</li>
+      <li class="left fragment">YAML-based</li>
+      <li class="left fragment">написание API</li>
+      <li class="left fragment">генерация из уже существующего</li>
+      <li class="left fragment">кодогенерация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <pre class="xml"><code>
+http://swagger.io/
+    </code></pre>
+
+    <pre class="xml"><code>
+http://editor.swagger.io/#/
+    </code></pre>
+
+    <pre class="xml"><code>
+http://swagger.io/open-source-integrations/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <img class="fullscreen" src="images/swagger-example.png">
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <pre class="xml"><code>
+swagger: "2.0"
+
+info:
+  title: News API
+  version: "1.0.0"
+
+host: news.xyz
+schemes:
+  - http
+basePath: /api/v1
+
+produces:
+  - application/json
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <pre class="xml"><code>
+...
+
+paths:
+  ...
+
+definitions:
+  ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news:
+  get:
+    summary: Return news with paggination
+    tags:
+      - News
+    parameters:
+      - name: limit
+        in: query
+        type: number
+        format: integer
+      - name: offset
+        in: query
+        type: number
+        format: integer
+    responses:
+      ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news:
+  get:
+    ...
+    responses:
+      200:
+        description: News portion
+        schema:
+          type: object
+          properties:
+            metadata:
+              $ref: '#/definitions/Pagging'
+            news:
+              type: array
+              items:
+                $ref: '#/definitions/News'
+      ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news:
+  get:
+    ...
+    responses:
+      ...
+      500:
+        description: Server error
+        schema:
+          $ref: '#/definitions/Error'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <img class="fullscreen" src="images/swagger-news-get.png">
+  </section>
+
+  <section>
+    <h4>Swagger</h4>
+
+    <img class="fullscreen" src="images/swagger-try.png">
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news:
+  post:
+    summary: Create news
+    tags:
+      - News
+    parameters:
+      - name: token
+        in: header
+        required: true
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/News'
+    ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news:
+  post:
+    ...
+    responses:
+      201:
+        description: News created
+        schema:
+          $ref: '#/definitions/News'
+      409:
+        description: Already exist
+        schema:
+          $ref: '#/definitions/Error'
+      500:
+        description: Server error
+        schema:
+          $ref: '#/definitions/Error'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  get:
+    summary: Return one news item by id
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+    responses:
+      200:
+        description: News item
+        schema:
+          $ref: '#/definitions/News'
+      ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  get:
+    ...
+    responses:
+      ...
+      404:
+        description: Not found
+        schema:
+          $ref: '#/definitions/Error'
+      500:
+        description: Server error
+        schema:
+          $ref: '#/definitions/Error'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  put:
+    summary: Update news
+    tags:
+      - News
+    parameters:
+      - name: token
+        in: header
+        required: true
+        type: string
+      - name: id
+        in: path
+        required: true
+        type: string
+      ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  put:
+    ...
+    parameters:
+      ...
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/News'
+    responses:
+      200:
+        description: News updated
+        schema:
+          $ref: '#/definitions/News'
+      500: ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  delete:
+    summary: Delete news
+    tags:
+      - News
+    parameters:
+      - name: token
+        in: header
+        required: true
+        type: string
+      - name: id
+        in: path
+        required: true
+        type: string
+    ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Paths</h4>
+
+    <pre class="xml"><code>
+/news/{id}:
+  delete:
+    ...
+    responses:
+      200:
+        description: News deleted
+        schema:
+          $ref: '#/definitions/News'
+      500:
+        description: Server error
+        schema:
+          $ref: '#/definitions/Error'
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Definitions</h4>
+
+    <pre class="xml"><code>
+Error:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: number
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Definitions</h4>
+
+    <pre class="xml"><code>
+Pagging:
+  type: object
+  properties:
+    count:
+      type: number
+      format: integer
+    offset:
+      type: number
+      format: integer
+    limit:
+      type: number
+      format: integer
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Definitions</h4>
+
+    <pre class="xml"><code>
+News:
+  type: object
+  properties:
+    id:
+      type: number
+      format: integer
+    title:
+      type: string
+    content:
+      type: string
+    date:
+      type: string
+      format: date
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="xml"><code>
+https://github.com/krakenjs/swaggerize-express
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="xml"><code>
+npm install yo generator-swaggerize --save-dev
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="xml"><code>
+npx yo swaggerize
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <img class="fullscreen" src="images/swagger-codegen.png">
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="javascript"><code>
+// server.js
+var Http = require('http');
+var Express = require('express');
+var BodyParser = require('body-parser');
+var Swaggerize = require('swaggerize-express');
+var Path = require('path');
+
+var App = Express();
+
+var Server = Http.createServer(App);
+
+App.use(BodyParser.json());
+App.use(BodyParser.urlencoded({
+    extended: true
+}));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="javascript"><code>
+// server.js
+App.use(Swaggerize({
+    api: Path.resolve('./config/swagger.yaml'),
+    handlers: Path.resolve('./handlers')
+}));
+
+Server.listen(8000, function () {
+    App.swagger.api.host =
+      this.address().address
+      + ':'
+      + this.address().port;
+
+    console.log('App running on %s:%d',
+      this.address().address,
+      this.address().port);
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="javascript"><code>
+// handlers/news.js
+var dataProvider = require('../data/news.js');
+
+module.exports = {
+    get: function (req, res, next) {
+      ...
+    },
+    post: function (req, res, next) {
+      ...
+    }
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <pre class="javascript"><code>
+// handlers/news/{id}.js
+var dataProvider
+  = require('../../data/news/{id}.js');
+
+module.exports = {
+    get: function (req, res, next) {
+      ...
+    },
+    put: function (req, res, next) {
+      ...
+    },
+    delete: function (req, res, next) {
+      ...
+    }
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Swagger - Codegen</h4>
+
+    <img src="images/swagger-codegen-dummy-data.png">
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
