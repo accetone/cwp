@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CWP20</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../css/reveal.css">
+  <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+  <link rel="stylesheet" href="../lib/css/zenburn.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Аутентификация</h2>
+    <p class="author">
+      <small>Лекция 20</small>
+    </p>
+  </section>
+
+  <section>
+    <h3><span class="red">Ч</span>то это?</h3>
+  </section>
+
+  <section>
+    <h4>Что это?</h4>
+
+    <img src="images/stages.png">
+  </section>
+
+  <section>
+    <h4>Аутентификация</h4>
+
+    <ul>
+      <li class="left fragment">проверка, что пользователь тот кем представился</li>
+      <li class="left fragment">логин - кем представился</li>
+      <li class="left fragment">пароль, код из смс, токен из письма, ... - подтверждение</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">О</span>днофакторная аутентификация</h3>
+  </section>
+
+  <section>
+    <h4>Факторы</h4>
+
+    <ul>
+      <li class="left fragment">фактор знания (пароль)</li>
+      <li class="left fragment">фактор владения (телефон, смарт-карта, брелок)</li>
+      <li class="left fragment">фактор свойста (биометрика)</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="left">
+      1. Клиент запрашивает аутентификацию, присылая логин+пароль
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      2. Сервер ищёт пользователя по логину в БД
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      2.1 Если не находит - возвращает ошибку 401
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      3. Сервер сравнивает хэш присланного пароля с тем, что получен из БД
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      3.1 Если не совпадают - возвращает ошибку 401
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      4. Сервер создаёт токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      4.1 Для statefull-серверов - id сессии
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      4.2 Для stateless-серверов - подписанная информация пользователя (id, login, ...)
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      5. Сервер отдаём токен клиенту
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.1 cookie
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.2 body
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.3 cookie+body
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      6. Клиент сохраняет токен у себя
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      6.1 browser - cookies / localStorage
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      7. К каждому запросу клиент прикрепляет токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      7.1 cookie / прикрепляется браузером
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      7.2 header / Authorization: Bearer токен (пришло из OAuth 2.0)
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      7.3 body не используется т.к. <span class="fragment"> GET не имеет тела</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      8. Сервер проверяет токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      8.1 statefull-сервер - подгружает сессию в запрос
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      8.2 stateless-сервер - проверяет подпись, <span class="fragment">подгружает пользователя в запрос</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      9. Авторизация
+    </div>
+  </section>
+
+  <section>
+    <h4>Cookies vs Headers</h4>
+
+    <ul>
+      <li class="left fragment">куки проще поддерживать</li>
+      <li class="left fragment">куки можно защитить от доступа из JS</li>
+      <li class="left fragment">куки нельзя передавать между доменами</li>
+      <li class="left fragment">куки вмещают только 4Кб</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Нюансы</h4>
+
+    <ul>
+      <li class="left fragment">возвращаемые ошибки - безопасность / UX</li>
+      <li class="left fragment">stateless-сервер может иметь сессии, но клиент об этом не знает</li>
+      <li class="left fragment">полезно: возвращать дополнительную информацию - имя, логин, срок действия токена</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Нюансы</h4>
+
+    <ul>
+      <li class="left fragment">можно: продлевать токен после успешного запроса</li>
+      <li class="left fragment">комбинация http-only cookie и токена в хедере (защита от JS и CSRF) - guid в токен, хэш от guid в куки</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">Д</span>вухфакторная аутентификация</h3>
+  </section>
+
+  <section>
+    <div class="left">
+      1. Клиент запрашивает аутентификацию, присылая логин+пароль
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      2. Сервер ищёт пользователя по логину в БД
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      2.1 Если не находит - возвращает ошибку 401
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      3. Сервер сравнивает хэш присланного пароля с тем, что получен из БД
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      3.1 Если не совпадают - возвращает ошибку 401
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      4. Сервер создаёт частичный короткоживущий токен
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      5. Сервер отдаёт частичный токен и запрашивает второй фактор
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.1 SMS / push-уведомление / звонок / ...
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      6. Клиент отсылает серверу второй фактор и токен
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      7. Сервер проверяет токен и второй фактор
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      7.1 Если не верны - возвращает ошибку 401
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      8. Сервер создаёт полноценный токен
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      9. Сервер отправляет токен клиенту
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      10. Клиент сохраняет токен у себя
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      11. К каждому запросу клиент прикрепляет токен
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      12. Сервер проверяет токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      12.1 statefull-сервер - подгружает сессию в запрос
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      12.2 stateless-сервер - проверяет подпись, <span class="fragment">подгружает пользователя в запрос</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      13. Авторизация
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">S</span>ingle sign-on</h3>
+  </section>
+
+  <section>
+    <h4>SSO</h4>
+
+    <ul>
+      <li class="left fragment">технология единого входа</li>
+      <li class="left fragment">разные приложения авторизуются через одно специальное</li>
+      <li class="left fragment">в вебе - приложения на разных доменах разделяют пользователя (habrahabr, microsoft, google)</li>
+      <li class="left fragment">на одном домене, но с разными поддоменами можно разделить куки</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="left">
+      1. Приложению habrahabr.ru требуется аутентификация
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      1.1 Перенаправление на приложение id.tmtm.ru
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      2. Аутентификация
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      2.1 Однофакторная, двухфакторная, ...
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      2.2 Сервер устанавливает cookie с токеном для id.tmtm.ru для повторных обращений
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      3. Перенаправление на приложение habrahabr.ru с передачей токена в query string
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      3.1 Сохранение в cookies / localStorage
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">O</span>Auth</h3>
+  </section>
+
+  <section>
+    <h4>OAuth</h4>
+
+    <ul>
+      <li class="left fragment">открытый протокол, текущий OAuth 2.0</li>
+      <li class="left fragment">аутентификация через единого провайдера для несвязанных приложений</li>
+      <li class="left fragment">пользователю не нужно раскрывать логин/пароль приложению</li>
+      <li class="left fragment">провайдер также может предоставлять доступ к информации пользователя</li>
+      <li class="left fragment">доступ к информации может быть разграничен</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="left">
+      1. Клиент запрашивает аутентификацию
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      1.1 Перенаправление на провайдера
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      2. Клиент проходит аутентификацию у провайдера
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      3. Перенаправление на приложение с передачей токена в query string
+    </div>
+  </section>
+
+  <section>
+    <h4>OAuth vs SSO</h4>
+
+    <ul>
+      <li class="left fragment">приложения не могут иметь прямого доступа к данным пользователя</li>
+      <li class="left fragment">разделение доступа к данным пользователя</li>
+      <li class="left fragment">валидность токена может подтверждаться как подписью, так и провайдером</li>
+      <li class="left fragment">приложение может самостоятельно обновлять токен у провайдера</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">С</span>брос пароля через email</h3>
+  </section>
+
+  <section>
+    <div class="left">
+      1. Клиент запрашивает сброс пароля прислав email
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      2. Сервер ищет пользователя в БД
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      2.1 Если не находит - может вернуть ошибку или успех
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      3. Сервер генерирует короткоживущий токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      3.1 Токен сохраняется в БД или кэш
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      4. Сервер отправляет письмо со ссылкой на форму сброса и токеном в query string
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      4.1 https://domain.xyz/reset-password.html?reset-token=ABCDEFG123456789
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      5. Клиент переходит по ссылке из письма
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.1 Заполняет форму
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      5.2 Отправляет на сервер
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      6. Сервер проверяет токен
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      6.1 Подпись?
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      6.2 Просрочен?
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      6.3 Совпадает с токеном в БД или кэше?
+    </div>
+  </section>
+
+  <section>
+    <div class="left">
+      7. Сервер устанавливает новый пароль
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      7.1 Удаляет токен из БД или кэша
+    </div>
+
+    <div class="left fragment">
+      7.2 Хорошая идея запоминать время сброса пароля и не принимать токены выпущенные до этого момента
+    </div>
+  </section>
+
+
+  <section>
+    <div class="left">
+      8. Сервер перенаправляет на страницу входа
+    </div>
+
+    <br>
+
+    <div class="left fragment">
+      8.1 Либо может сразу аутентифицировать пользователя
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">Х</span>эширование</h3>
+  </section>
+
+  <section>
+    <h4>Хэширование</h4>
+
+    <ul>
+      <li class="left fragment">преобразование строки произвольной длины в строку фиксированной</li>
+      <li class="left fragment">скорость</li>
+      <li class="left fragment">коллизии</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Хэширование паролей</h4>
+
+    <ul>
+      <li class="left fragment">никаких MD5 / SHA1 / SHA256</li>
+      <li class="left fragment">обязательное соление - защита от радужных таблиц</li>
+      <li class="left fragment">только математически медленные хэш-алгоритмы - PBKDF2, bcrypt</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>bcrypt</h4>
+
+    <pre class="bash"><code>
+npm install bcryptjs
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+bcrypt.hash('password', 12, (err, hash) => {
+  // process result
+});
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+bcrypt.compare('password', hash, (err, result) => {
+  // check result
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">J</span>WT</h3>
+  </section>
+
+  <section>
+    <h4>JWT</h4>
+
+    <ul>
+      <li class="left fragment">JSON Web Tokens</li>
+      <li class="left fragment">открытый стандарт</li>
+      <li class="left fragment">определяет формат токенов</li>
+      <li class="left fragment"><a target="_blank" href="https://jwt.io/">официальный сайт</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Формат</h4>
+
+    <div><span class="fragment">заголовок</span><span class="fragment">.данные</span><span class="fragment">.подпись</span></div>
+  </section>
+
+  <section>
+    <h4>JWT - Заголовок</h4>
+
+    <ul>
+      <li class="left fragment">алгоритм</li>
+      <li class="left fragment">тип токена (JWT)</li>
+      <li class="left fragment">в формате base64</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Данные</h4>
+
+    <ul>
+      <li class="left fragment">полезная нагрузка</li>
+      <li class="left fragment">в формате base64</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Подпись</h4>
+
+    <ul>
+      <li class="left fragment">криптографический хэш</li>
+      <li class="left fragment">алгоритм(base64(заголовок) + '.' + base64(данные), ключ)</li>
+      <li class="left fragment">в формате base64</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Токены</h4>
+
+    <ul>
+      <li class="left fragment">access_token</li>
+      <li class="left fragment">иногда refresh_token</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Refresh token</h4>
+
+    <ul>
+      <li class="left fragment">используется когда access_token истёк</li>
+      <li class="left fragment">отправляется на специальный url</li>
+      <li class="left fragment">возвращается access_token + refresh_token</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Refresh token</h4>
+
+    <ul>
+      <li class="left fragment">при краже access_token им можно пользоваться ограниченное время</li>
+      <li class="left fragment">при краже refresh_token он становится бесполезным при ре-логине</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>JWT - Node.js</h4>
+
+    <pre class="javascript"><code>
+npm install jsonwebtoken
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT - Node.js</h4>
+
+    <pre class="javascript"><code>
+jwt.sign(payload, secretOrPrivateKey, options,
+  [callback])
+
+/*
+  payload - строка, объект или буфер
+  secretOrPrivateKey - строка или буфер
+  callback - функция
+  options - объект
+    algorithms - массив допустимых алгоритмов
+    expiresIn - 60, "2 days", "10h", "7d"
+      -> https://github.com/zeit/ms
+*/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT - Node.js</h4>
+
+    <pre class="javascript"><code>
+jwt.verify(token, secretOrPublicKey,
+  [options, callback])
+/*
+  token - строка
+  secretOrPrivateKey - строка или буфер
+  callback - функция
+  options - объект
+    ignoreExpiration - true/false
+    clockTolerance - число секунд просрочки
+*/
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>JWT - Node.js</h4>
+
+    <pre class="javascript"><code>
+const jwt = require('jsonwebtoken');
+
+const token = jwt.sign({ id: 42 },
+  config['jwt-secret'],
+  { expiresIn: config['jwt-expires'] });
+
+jwt.verify(token, config['jwt-secret'],
+  (err, payload) => {
+      console.log(payload.id); // 42
+  });
+
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>assport.js</h3>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <ul>
+      <li class="left fragment">500+ стратегий аутентификации</li>
+      <li class="left fragment">OpenID и OAuth</li>
+      <li class="left fragment">простота обработки удачных и неудачных попыток</li>
+      <li class="left fragment">долговременные (persistent) сессии</li>
+      <li class="left fragment">динамическая система прав</li>
+      <li class="left fragment">не монтирует свои роуты</li>
+      <li class="left fragment">можно разрабатывать свои стратегии</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+app.post('/login',
+  passport.authenticate('local'),
+  function(req, res) {
+    // If this function gets called,
+    // authentication was successful.
+    // `req.user` contains the authenticated user
+    res.redirect('/users/' + req.user.username);
+  });
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const authRoutes = {
+  successRedirect: '/',
+  failureRedirect: '/login'
+};
+
+app.post('/login',
+  passport.authenticate('local', authRoutes));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+app.get('/login', function(req, res, next) {
+  passport.authenticate('local',
+    (err, user, info) => {
+      ...
+    })(req, res, next);
+});
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport-local
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const passport = require('passport');
+const LocalStrategy
+  = require('passport-local').Strategy;
+
+app.use(passport.initialize());
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+const auth = (login, password, done) => {
+  User.findOne({login: login}, (err, user) =>
+    if (err) return done(err);
+    if (!user)
+      return done(null,false,{message: '...'});
+    if (!user.validPassword(password))
+      return done(null,false,{message: '...'});
+
+    return done(null, user);
+  );
+};
+
+passport.use(new LocalStrategy(auth));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js</h4>
+
+    <pre class="javascript"><code>
+npm install passport-facebook
+npm install passport-twitter
+npm install passport-google-oauth
+npm install passport-vkontakte
+npm install passport-github2
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <a href="https://apps.twitter.com/">apps.twitter.com</a>
+
+    <img src="images/twitter-app-create.png">
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <a href="https://apps.twitter.com/">apps.twitter.com</a>
+
+    <img src="images/twitter-app-keys.png">
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+npm i express
+npm i express-session
+npm i passport
+npm i passport-twitter
+
+npm i sequelize
+npm i mysql2
+
+npm i bluebird
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+{
+  "db": {
+    "host": "127.0.0.1",
+    "name": "db",
+    "user": "user",
+    "password": "password"
+  },
+  "twitter": {
+    "key": "TWITTER_KEY",
+    "secret": "TWITTER_SECRET",
+    "callback":
+      "http://127.0.0.1:3000/auth/twitter/callback"
+  }
+}
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const app = express();
+
+const session = require('express-session');
+
+const config = require('./config');
+const Sequelize = require('sequelize');
+const passport = require('passport');
+const TwitterStrategy
+  = require('passport-twitter');
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+const options = {
+  host: config.db.host,
+  dialect: 'mysql',
+  logging: false,
+  define: { timestamps: false }
+};
+
+const sequelize = new Sequelize(
+  config.db.name,
+  config.db.user,
+  config.db.password,
+  options
+);
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+const User = sequelize.define('users', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
+  twitterId: Sequelize.STRING
+});
+     </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+passport.use(new TwitterStrategy({
+    consumerKey: config.twitter.key,
+    consumerSecret: config.twitter.secret,
+    callbackURL: config.twitter.callback
+  }, (token, tokenSecret, profile, cb) => {
+    User
+      .findOrCreate({
+        where: { twitterId: profile.id }
+      })
+      .then(function (user) {
+        cb(null, user[0].dataValues);
+      });
+  }
+));
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+passport.serializeUser(
+  (user, done) => done(null, user)
+);
+
+passport.deserializeUser(
+  (user, done) => done(null, user)
+);
+
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: 'keyboard cat'
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+app.get('/auth/twitter',
+  passport.authenticate('twitter'));
+
+app.get('/auth/twitter/callback',
+  passport.authenticate(
+      'twitter',
+      { failureRedirect: '/login' }
+  ), (req, res) => {
+      res.redirect('/')
+  });
+        </code></pre>
+  </section>
+
+  <section>
+    <h4>Passport.js - Twitter Auth</h4>
+
+    <pre class="javascript"><code>
+app.get('/', function (req, res) {
+  // req.isAuthenticated() or:
+  if (req.user) {
+    res.send('Hello #' + req.user.twitterId + '!');
+  } else {
+    res.send('Hello stranger!')
+  }
+});
+
+sequelize
+  .sync({ force: true })
+  .then(function() {
+    app.listen(3000, function () {
+      console.log('Running');
+    });
+  });
+        </code></pre>
+  </section>
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
