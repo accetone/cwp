@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP21</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Авторизация</h2>
+      <p class="author">
+          <small>Лекция 19</small>
+      </p>
+  </section>
+
+  <section>
+    <h3><span class="red">Ч</span>то это?</h3>
+  </section>
+
+  <section>
+    <h4>Что это?</h4>
+
+    <img src="images/stages.png">
+  </section>
+
+  <section>
+    <h4>Авторизация</h4>
+
+    <ul>
+      <li class="left fragment">предоставление доступа к определенному ресурсу/действию</li>
+      <li class="left fragment">на основании каких-то признаков (флагов, ролей, привилегий, ...)</li>
+    </ul>
+  </section>
+  <section>
+    <h4>Виды</h4>
+
+    <ul>
+      <li class="left fragment">дискреционное управление доступом (DAC)</li>
+      <li class="left fragment">пользователю user_1 разрешено читать файл file_1</li>
+      <li class="left fragment">пользователю user_2 разрешено читать и писать в файл file_1</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Виды</h4>
+
+    <ul>
+      <li class="left fragment">мандатное управление доступом (MAC)</li>
+      <li class="left fragment">разделение пользователей по уровням допуска</li>
+      <li class="left fragment">пользователю с уровнем допуска L1 разрешено читать файл file_1</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Виды</h4>
+
+    <ul>
+      <li class="left fragment">управление доступом на основе ролей (RBAC)</li>
+      <li class="left fragment">пользователю с ролью role_1 разрешено читать файл file_1</li>
+      <li class="left fragment">наиболее часто используется в веб-приложениях</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Варианты реализации</h4>
+
+    <ul>
+      <li class="left fragment">флаг (isAdmin)</li>
+      <li class="left fragment">роли (одна, несколько)</li>
+      <li class="left fragment">роли + привилегии</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Сервис авторизации</h4>
+
+    <pre class="javascript"><code>
+const permissions = {
+  '/posts/create': 'user',
+  ...
+};
+
+class AuthorizationService {
+  async checkPermissions(user, route) {
+    if (!permissions[route]) {
+      return;
+    }
+
+    if(!user) {
+      throw this.errors.accessDenied;
+    }
+    ...
+  }
+}
+   </code></pre>
+  </section>
+
+  <section>
+    <h4>Флаг</h4>
+
+    <pre class="javascript"><code>
+async checkPermissions(user, route) {
+  ...
+
+  const role = user.isAdmin ? 'admin' : 'user';
+
+  if (permissions[route] !== role) {
+      throw this.errors.accessDenied;
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Роли</h4>
+
+    <pre class="javascript"><code>
+async checkPermissions(user, route) {
+  ...
+
+  const role = await this.rolesRepository
+    .findOne({
+      where: {
+        name: permissions[route]
+      }
+    });
+
+  const hasRole = await user.hasRole(role);
+
+  if (!hasRole) {
+    throw this.errors.accessDenied;
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Роли + привилегии</h4>
+
+    <pre class="javascript"><code>
+const permissions = {
+  '/posts/create': [{
+      resource: 'post',
+      action: 'create'
+  }],
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Роли + привилегии</h4>
+
+    <pre class="javascript"><code>
+async checkPermissions(user, route) {
+  ...
+
+  if (!user.can(permissions[route])) {
+    throw this.errors.accessDenied;
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Middleware авторизации</h4>
+
+    <pre class="javascript"><code>
+const shouldHave = permissions =>
+  async (req, res, next) => {
+    await authorizationService
+      .checkPermissions(req.user, permissions);
+
+    next();
+  };
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Middleware авторизации</h4>
+
+    <pre class="javascript"><code>
+class PostsController {
+  constructor(postsService, cahceService) {
+    ...
+    this.routes['/create'].unshift({
+      method: 'post',
+      cb: shouldHave([{
+        resource: 'post',
+        action: 'create'
+      }])
+    });
+  }
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">N</span>ode ACL</h3>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <ul>
+      <li class="left fragment">Access Control Lists for Node</li>
+      <li class="left fragment">встроенная интеграция с redis, mongo</li>
+      <li class="left fragment">возможно использование RAM</li>
+      <li class="left fragment"><a href="https://github.com/OptimalBits/node_acl" target="_blank">github.com/OptimalBits/node_acl</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+npm install acl
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+const acl = require('acl');
+
+acl = new acl(new acl.memoryBackend());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+// guest is allowed to view blogs
+acl.allow('guest', 'blogs', 'view')
+
+// allow function accepts arrays as any parameter
+acl.allow(
+  'member',
+  'blogs',
+  ['edit', 'view', 'delete']
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+acl.addUserRoles('joed', 'guest')
+
+acl.addRoleParents('baz', ['foo', 'bar'])
+
+acl.allow('admin', ['blogs', 'forums'], '*')
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+acl.isAllowed('joed', 'blogs', 'view', (err, res) => {
+  if(res){
+    console.log("User joed is allowed to view blogs")
+  }
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+acl.isAllowed(
+  'jsmith',
+  'blogs',
+  ['edit', 'view', 'delete']
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+acl.allowedPermissions(
+  'james',
+  ['blogs', 'forums'],
+  (err, permissions) => console.log(permissions)
+)
+
+[
+  {'blogs': ['get', 'delete']},
+  {'forums':['get', 'put']}
+]
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+// req.url
+// req.session.userId
+app.put(
+  '/blogs/:id',
+  acl.middleware(),
+  (req, res, next) => { ... }
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+addUserRoles
+removeUserRoles
+
+userId   {String|Number}
+roles    {String|Array}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+userRoles
+
+userId   {String|Number}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+roleUsers
+
+rolename {String|Number}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+hasRole
+
+userId   {String|Number}
+rolename {String|Number}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+addRoleParents
+removeRoleParents
+
+role     {String}
+parents  {String|Array}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+removeRole
+
+role     {String}
+callback {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+allow
+
+roles       {String|Array}
+resources   {String|Array}
+permissions {String|Array}
+callback    {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+removeAllow
+
+role        {String}
+resources   {String|Array}
+permissions {String|Array}
+callback    {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+allowedPermissions
+
+userId    {String|Number}
+resources {String|Array}
+callback  {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+isAllowed
+
+userId      {String|Number}
+resource    {String}
+permissions {String|Array}
+callback    {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+areAnyRolesAllowed
+
+roles       {String|Array}
+resource    {String}
+permissions {String|Array}
+callback    {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+whatResources
+
+role        {String|Array}
+permissions {String|Array} # optional
+callback    {Function}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Node ACL</h4>
+
+    <pre class="javascript"><code>
+middleware
+
+numPathComponents {Number}
+userId            {String|Number|Function}
+permissions       {String|Array}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">C</span>ASL</h3>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <ul>
+      <li class="left fragment">изоморфная библиотека</li>
+      <li class="left fragment">возможность задавать условия доступа</li>
+      <li class="left fragment">есть интеграция с mongo</li>
+      <li class="left fragment"><a href="https://stalniy.github.io/casl/" target="_blank">документация</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+npm install casl
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+const { AbilityBuilder } = require('casl');
+
+...
+
+const ability = AbilityBuilder.define((can, cannot) => {
+  can('read', 'all');
+
+  can('manage', 'Post', { author: req.user.id });
+
+  cannot('delete', 'Post',
+    { 'comments.0': { $exists: true } }
+  );
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+ability.can('read', 'Post') // true
+ability.can('create', 'Post') // true
+ability.can('comment', 'Post') // false
+
+const post = new Post({ title: 'What is CASL?' })
+ability.can('read', post) // true
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+function defineAbilitiesFor(user) {
+  return new Promise(resolve => {
+    resolve(AbilityBuilder.define((can, cannot) => {
+      can('read', 'Post');
+
+      if (user && user.hasRole('regular')) {
+        can('comment', 'Post'});
+      }
+
+      if (user && user.hasRole('premium')) {
+        can('comment', 'Post'});
+        can('manage', 'Post'}, { author: user.id });
+      }
+
+      if (user && user.hasRole('admin')) {
+        can('comment', 'Post'});
+        can('manage', 'Post'});
+      }
+    }));
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+const { AbilityBuilder, Ability } = require('casl')
+
+function defineAbilitiesFor(user) {
+  return new Promise(resolve => {
+    const { rules, can, cannot }
+        = AbilityBuilder.extract()
+
+    ...
+
+    resolve(new Ability(rules));
+  });
+
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+can('manage', 'Post') // CRUD
+can('read', 'all')
+can(['update', 'delete'], ['Post', 'Comment'])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+Ability.addAlias('modify', ['update', 'delete'])
+
+AbilityBuilder.define(can => {
+ can('modify', 'Post')
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+can(
+  'read',
+  'Project',
+  { active: true, ownerId: user.id }
+)
+
+can(
+  'delete',
+  'Post',
+  { 'comments.0': { $exists: false } }
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+// OR
+can('read', 'Post', { published: true })
+can('read', 'Post', { preview: true })
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+// Override
+can('manage', 'Post')
+cannot('delete', 'Post')
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+ability.update([]) // removes all rules
+ability.update([{ subject: 'all', actions: 'read' }])
+
+ability.on('update', ({ rules, ability }) => {
+  ...
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+try {
+  const post = new Post({ private: true })
+
+  ability.throwUnlessCan('delete', post)
+
+  post.destroy()
+} catch (error) {
+  if (error instanceof ForbiddenError) {
+    console.log('Access denied!')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <pre class="javascript"><code>
+res.json({
+  ...,
+  rules: req.ability.rules
+});
+
+... on client side ...
+
+const ability = new Ability(rules);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>CASL</h4>
+
+    <ul>
+      <li class="left fragment">в глобальном контроллере аутентификации собираем ability, сохраняем его в req/res</li>
+      <li class="left fragment">пишем middleware авторизации (если не нужно проверять данные)</li>
+      <li class="left fragment">либо делаем проверки в сервисах, передавая туда ability</li>
+    </ul>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
