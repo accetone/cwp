@@ -23,6 +23,7 @@
 [CWP/LECTION/20 - Аутентификация](https://accetone.github.io/cwp/20)  
 [CWP/LECTION/21 - Авторизация](https://accetone.github.io/cwp/21)  
 [CWP/LECTION/22 - Деплой](https://accetone.github.io/cwp/22)  
+[CWP/LECTION/23 - Тестирование](https://accetone.github.io/cwp/23)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)   
