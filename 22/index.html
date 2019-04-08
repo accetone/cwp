@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP22</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+    <h2>Деплой</h2>
+    <p class="author">
+      <small>Лекция 22</small>
+    </p>
+  </section>
+
+  <section>
+    <h3><span class="red">H</span>eroku</h3>
+  </section>
+
+  <section>
+    <h4>Heroku</h4>
+
+    <ul>
+      <li class="left fragment">облачный сервис: легкость управления и масштабирования</li>
+      <li class="left fragment">перепродают ресурсы AWS</li>
+      <li class="left fragment">Node, Ruby, Java, PHP, Python, Go, Scala, Clojure</li>
+      <li class="left fragment">автодеплой с github</li>
+      <li class="left fragment"><a href="https://devcenter.heroku.com/categories/nodejs">документация для node.js</a></li>
+      <li class="left fragment"><a href="https://www.heroku.com/pricing">цены</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Heroku - Free Tier</h4>
+
+    <ul>
+      <li class="left fragment">Dyno - 512 MB RAM │ 1 web/1 worker</li>
+      <li class="left fragment">засыпает после 30 минут неактивности</li>
+      <li class="left fragment">550 (1000) бесплатных часов</li>
+      <li class="left fragment">Postgres - 10K строк, 5 баз</li>
+      <li class="left fragment">Redis - 25 MB RAM, 20 подключений</li>
+      <li class="left fragment">Mongo - 496 MB</li>
+    </ul>
+  </section>
+
+  <section>
+    <img src="images/1.png" height="568" width="320"/>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction">Гайд</a><br>
+      <img src="images/2.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Создаём аккаунт<br>
+      <img src="images/5.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Устанавливаем Heroku CLI<br>
+      <img src="images/3.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Логинимся<br>
+      <pre class="javascript"><code>
+> heroku login
+        </code></pre>
+      <img src="images/4.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> node --version
+> npm --version
+> git --version
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Клонируем проект<br>
+      <pre class="javascript"><code>
+> git clone https://github.com/heroku/node-js-getting-started.git
+> cd node-js-getting-started
+        </code></pre>
+      <img src="images/6.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Создаем новое приложение<br>
+      <pre class="javascript"><code>
+> heroku create
+        </code></pre>
+      <img src="images/7.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Создаем новое приложение<br>
+      <img src="images/8.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Создаем новое приложение<br>
+      <img src="images/9.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Создаем новое приложение<br>
+      <img src="images/10.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Деплоим<br>
+      <pre class="javascript"><code>
+> git push heroku master
+        </code></pre>
+      <img src="images/11.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Деплоим<br>
+      <img src="images/12.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Getting Started</h4>
+
+    <div class="left">
+      Деплоим<br>
+      <img src="images/13.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> mkdir hello-world
+> cd hello-world
+        </code></pre>
+      <img src="images/14.png"/>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      package.json
+      <pre class="javascript"><code>
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
+
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> npm i --save express
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+'use strict';
+
+const express = require('express');
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, function () {
+  console.log(`Server running on ${port}`);
+});
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      .gitignore
+      <pre class="javascript"><code>
+.idea/
+node_modules/
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> git init
+
+> git add *
+
+> git commit -m 'init project'
+
+> heroku create
+
+> git push heroku master
+
+> heroku open
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <img src="images/16.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+'use strict';
+
+const express = require('express');
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello New World!');
+});
+
+app.listen(port, function () {
+  console.log(`Server running on ${port}`);
+});
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> git add *
+
+> git commit -m 'changes'
+
+> git push heroku master
+
+> heroku open
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hello world</h4>
+
+    <div class="left">
+      <img src="images/17.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> cd hello-world
+
+> heroku addons:create heroku-postgresql:hobby-dev
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <img src="images/18.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> npm i --save sequelize pg pg-hstore
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <img src="images/19.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      config.json
+      <pre class="javascript"><code>
+{
+  "db": {
+    "host": "ec2-54-243-185-99.compute-1.amazonaws.com",
+    "name": "da2f9fja1hin72",
+    "user": "hbbnkhapmikhuw",
+    "password": "95b2baec4326e5f3f25866addd55bad874570746a9f0f63040d87cdb02a40ad7",
+    "dialect": "postgres"
+  }
+}
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+'use strict';
+
+const express = require('express');
+const Sequelize = require('sequelize');
+
+const port = process.env.PORT || 3000;
+const config = require('./config');
+
+const dbcontext = require('./context/db')
+  (Sequelize, config);
+
+const app = express();
+
+...
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+...
+
+app.get('/', (req, res) =>{...});
+app.get('/generate', (req, res) => {...});
+
+dbcontext.sequelize
+  .sync()
+  .then(() => {
+    app.listen(port, () => {
+        console.log(`Running on ${port} port`);
+    });
+  });
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+app.get('/', (req, res) =>{
+  dbcontext.rand
+    .findAll({ raw: true })
+    .then((rands) => res.json(rands));
+});
+
+app.get('/generate', (req, res) => {
+  dbcontext.rand
+    .create({
+      value: Math.random()
+    })
+    .then((rand) => res.json(rand));
+});
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      context/db.js
+      <pre class="javascript"><code>
+'use strict';
+
+module.exports = (Sequelize, config) => {
+  const options = { host: config.db.host,
+    dialect: config.db.dialect,
+    dialectOptions: { ssl: true } };
+
+  const sequelize = new Sequelize(config.db.name,
+    config.db.user, config.db.password, options);
+  const Rand = require('../models/rand')
+    (Sequelize, sequelize);
+
+  return { rand: Rand, sequelize: sequelize };
+};
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      models/rand.js
+      <pre class="javascript"><code>
+'use strict';
+
+module.exports = (Sequelize, sequelize) => {
+  return sequelize.define('rands', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    value: Sequelize.INTEGER
+  });
+};
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> git add *
+
+> git commit -m 'add database'
+
+> git push heroku master
+
+> heroku open
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Database</h4>
+
+    <div class="left">
+      <img src="images/20.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hints</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+'use strict';
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hints</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+global.isProduction
+    = process.env.NODE_ENV === 'production';
+        </code></pre>
+
+      <img src="images/15.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hints</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "6.9.4"
+  }
+}
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hints</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
+    "heroku-postbuild": "echo This runs afterwards."
+  }
+}
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Heroku - Hints</h4>
+
+    <div class="left">
+      <img src="images/21.png">
+    </div>
+  </section>
+  </section>
+
+  <section>
+    <h3><span class="red">C</span>I / CD</h3>
+    <h4>Непрерывная интеграция / Непрерывная доставка</h4>
+  </section>
+
+  <section>
+    <h4>CI/CD</h4>
+
+    <ul>
+      <li class="left fragment">практика программирования</li>
+      <li class="left fragment">частое слияние feature-веток с master</li>
+      <li class="left fragment">автоматизированные сборки</li>
+      <li class="left fragment">автоматизированное выполнение тестов</li>
+      <li class="left fragment">автоматизированный деплой</li>
+      <li class="left fragment">отправка отчетов</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CI/CD - Запуск</h4>
+
+    <ul>
+      <li class="left fragment">вручную</li>
+      <li class="left fragment">по расписанию</li>
+      <li class="left fragment">по изменениям в репозитории</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/22.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/23.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/24.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/25.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>CI/CD - Heroku+Github</h4>
+
+    <div class="left">
+      <img src="images/26.png">
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">P</span>M2</h3>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <ul>
+      <li class="left fragment">менеджер процессов для node.js</li>
+      <li class="left fragment">несколько потоков</li>
+      <li class="left fragment">запуск при перезагрузке сервера</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>PM2 - Quick Start</h4>
+
+    <div class="left">
+      index.js
+      <pre class="javascript"><code>
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end('Hello World\n');
+});
+
+server.listen(3000, '127.0.0.1', () => {
+  console.log('Running');
+});
+
+setTimeout(() => {
+  throw new Error('Surprise');
+}, 5000);
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <img src="images/27.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> npm install pm2@latest -g
+
+> pm2 start index.js
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <img src="images/28.png">
+    </div>
+  </section>
+
+  <section>
+    <h4>PM2</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+> pm2 stop index
+
+> pm2 startup
+
+> pm2 start index.js -i max
+> pm2 reload index
+
+> pm2 logs
+> pm2 flush
+        </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Для виртуальных машин</h4>
+
+    <ul>
+      <li class="left fragment">получаем ключи для подключения по SSH</li>
+      <li class="left fragment">устанавливаем node.js, nginx и другие пакеты</li>
+      <li class="left fragment">заливаем проект (git, sftp, scp, ...)</li>
+      <li class="left fragment">npm i --production</li>
+      <li class="left fragment">запускаем через pm2</li>
+      <li class="left fragment">настраиваем nginx для маршрутизации сетевого трафика на приложение</li>
+    </ul>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
