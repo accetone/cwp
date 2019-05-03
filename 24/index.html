@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP24</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Serverless</h2>
+      <p class="author">
+          <small>Лекция 24</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Serverless</h4>
+
+    <ul>
+      <li class="fragment">не статические сайты</li>
+      <li class="fragment">сервера есть</li>
+      <li class="fragment">нет необходимости администрировать</li>
+      <li class="fragment">легко масштабироваться</li>
+      <li class="fragment">высокая доступность</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Platform as a Service</h4>
+
+    <ul>
+      <li class="fragment">полный контроль над кодом</li>
+      <li class="fragment">минимальный контроль над окружением</li>
+      <li class="fragment">AWS Elastic Beanstalk, Heroku Apps</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Backend as a Service</h4>
+
+    <ul>
+      <li class="fragment">минимальный контроль над серверным кодом</li>
+      <li class="fragment">нет контроля над окружением</li>
+      <li class="fragment">логика описывается на стороне клиента</li>
+      <li class="fragment">Parse, Firebase - данные</li>
+      <li class="fragment">Auth0, AWS Cognito - аутентификация</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Function as a Service</h4>
+
+    <ul>
+      <li class="fragment">минимальный контроль над окружением</li>
+      <li class="fragment">event-driven контейнеры</li>
+      <li class="fragment">AWS Lambda, Azure Functions</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Traditional</h4>
+
+    <img src="images/ps.svg" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Serverless</h4>
+
+    <img src="images/sps.svg" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Pros</h4>
+
+    <ul>
+      <li class="fragment">можно снизить операционные затраты</li>
+      <li class="fragment">снижение затрат на разработку</li>
+      <li class="fragment">снижение затрат на масштабирование</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Cons</h4>
+
+    <ul>
+      <li class="fragment">зависимость от вендора</li>
+      <li class="fragment">мультиаренда</li>
+      <li class="fragment">безопасность</li>
+      <li class="fragment">нет возможности тонкой оптимизации</li>
+      <li class="fragment">ограничения реализаций</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-1.png">
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-2.png">
+  </section>
+
+  <section>
+    <h4>Cases</h4>
+
+    <img src="images/case-3.png" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h3><span class="red">D</span>emo</h3>
+  </section>
+
+  <!--
+
+  1.
+
+  module.exports = async function (event, context) {
+    context.succeed({
+      200,
+      body: 'Hello World!',
+      headers: {
+        'content-type': 'application/json',
+        'access-control-allow-origin': '*'
+      },
+    });
+  };
+
+  2.
+
+  AWS.config.logger = console;
+
+  const AWS = require('aws-sdk');
+
+  const s3 = new AWS.S3();
+
+  s3.getObject
+
+  const dynamodb = new AWS.DynamoDB();
+
+  dynamodb.getItem
+
+  AWS.DynamoDB.Converter.unmarshall
+
+
+
+
+  const AWS = require('aws-sdk');
+const dynamodb = new AWS.DynamoDB();
+
+exports.handler = async (event) => {
+    const { Item } = await dynamodb.getItem({
+        TableName: `mpAreaExpertise`,
+        Key: {
+            id: { S: `ebde3470-36a6-11e9-872d-4f6fcaf8b154` },
+            domainName: { S: `www.myproperty.co.za` },
+        }
+    }).promise();
+    
+    
+    
+    return {
+        statusCode: 200,
+        body: JSON.stringify(AWS.DynamoDB.Converter.unmarshall(Item)),
+        headers: {
+          'content-type': 'application/json',
+          'access-control-allow-origin': '*'
+        }
+    };
+};
+
+
+  -->
+
+  <section>
+    <h3><span class="red">I</span>solates</h3>
+  </section>
+
+  <section>
+    <h4>Pros</h4>
+
+    <ul>
+      <li class="fragment">экономия на cold start</li>
+      <li class="fragment">экономия на context switch shared-сервера</li>
+      <li class="fragment">экономия памяти (3Mb < 35Mb)</li>
+      <li class="fragment">экономия денег</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Context Switch</h4>
+
+    <img src="images/isolates-2.png" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Compare with Containers</h4>
+
+    <img src="images/isolates-4.png" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Compare with Competitors</h4>
+
+    <img src="images/isolates-3.png" style="background-color: #fff !important;">
+  </section>
+
+  <section>
+    <h4>Cons</h4>
+
+    <ul>
+      <li class="fragment">надо бандлить</li>
+      <li class="fragment">надо выбирать между JS и WASM</li>
+    </ul>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
