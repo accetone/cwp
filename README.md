@@ -81,4 +81,4 @@
 
 #### Дополнительно
 [Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exam/Q1.pdf)  
-[Вопросы, 1 семестр](https://github.com/accetone/cwp/tree/gh-pages/exam/Q2.pdf)  
+[Вопросы, 2 семестр](https://github.com/accetone/cwp/tree/gh-pages/exam/Q2.pdf)  
