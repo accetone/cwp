@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP29</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Redux Actions</h2>
+      <p class="author">
+          <small>Лекция 29</small>
+      </p>
+  </section>
+  
+  <section>
+    <h4>Redux Actions</h4>
+
+    <ul class="left">
+      <li class="fragment"><a href="https://redux-actions.js.org/">оффициальный сайт</a></li>
+      <li class="fragment">уменьшение boilerplate</li>
+      <li class="fragment">constants + creators + reducers</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+npm install redux-actions
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import { createAction, handleAction }
+  from 'redux-actions';
+
+const increment = createAction('INCREMENT');
+
+const reducer = handleAction(
+  increment,
+  (state, action) => ({
+    counter: state.counter + 1
+  }),
+  { counter: 0 }
+);
+
+...
+
+store.dispatch(increment());
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const decrement = createAction('DECREMENT');
+
+const reducer = handleActions({
+  [increment](state) {
+    return { counter: state.counter + 1 }
+  },
+  [decrement](state) {
+    return { counter: state.counter - 1 }
+  }
+}, { counter: 0 });
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const { increment, decrement }
+    = createActions('INCREMENT', 'DECREMENT');
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const { increment, decrement } = createActions({
+  'INCREMENT': amount => ({ amount: 1 }),
+  'DECREMENT': amount => ({ amount: -1 })
+});
+
+const reducer = handleActions({
+  [increment](state, { payload: { amount } }) {
+    return { counter: state.counter + amount }
+  },
+  [decrement](state, { payload: { amount } }) {
+    return { counter: state.counter + amount }
+  }
+}, { counter: 0 });
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const reducer = handleActions({
+  [combineActions(increment, decrement)]
+      (state, { payload: { amount } }) {
+    return {
+      ...state,
+      counter: state.counter + amount
+    };
+  }
+}, { counter: 0 });
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+createAction(
+  type,
+  payloadCreator = Identity,
+  ?metaCreator
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const updateAdminUser = createAction(
+  'UPDATE_ADMIN_USER',
+  (updates) => updates,
+  () => ({ admin: true })
+)
+
+updateAdminUser({ name: 'Foo' })
+// {
+//   type: 'UPDATE_ADMIN_USER',
+//   payload: { name: 'Foo' },
+//   meta: { admin: true },
+// }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+createActions(
+  actionMap,
+  ?...identityActions,
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const { actionOne, actionTwo, actionThree } =
+  createActions({
+    ACTION_ONE: (key, value) => ({ [key]: value }),
+
+    ACTION_TWO: [
+      (first) => [first],
+      (first, second) => ({ second })
+    ],
+
+}, 'ACTION_THREE');
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+handleAction(
+  type,
+  reducer | reducerMap = Identity,
+  defaultState,
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+handleActions(
+  reducerMap,
+  defaultState,
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+combineActions(
+  ...types,
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - API</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+combineActions(
+  ...types,
+)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - Utils</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import { createAction } from 'redux-actions';
+import { lowerCamelcase } from '../utils/lower-camelcase';
+
+export default (componentName, customActions = []) => {
+  componentName = componentName
+    .replace(/ /g, '_')
+    .toUpperCase();
+
+  return customActions.reduce((result, action) => {
+    result[
+      lowerCamelcase(action).replace(/ /g, '')
+    ] = createAction(
+      `${componentName}_${action.replace(/ /g, '_').toUpperCase()}`
+    );
+
+    return result;
+  }, {});
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Redux Actions - Utils</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+actions('todo', [
+  'add',
+  'remove',
+  'toggle',
+  'toggle all',
+]);
+
+/*
+{
+  add: ActionCreator(TODO_ADD),
+  remove: ActionCreator(TODO_REMOVE),
+  toggle: ActionCreator(TODO_TOGGLE),
+  toggleAll: ActionCreator(TODO_TOGGLE_ALL),
+}
+*/
+      </code></pre>
+    </div>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

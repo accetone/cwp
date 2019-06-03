@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo: Flux</title>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    .todo__title {
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .todo-info {
+      margin: 16px 0 8px;
+    }
+
+    .todo-info__completed {
+      color: #d8d8d8;
+    }
+
+    .todo__toggle-all, .todo__item {
+      position: relative;
+      height: 30px;
+      line-height: 30px;
+    }
+
+    .todo__checkbox {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+      -webkit-appearance: none;
+      border: 1px solid #d8d8d8;
+      border-radius: 16px;
+      outline: none;
+      position: relative;
+      top: 5px;
+    }
+
+    .todo__checkbox:checked:after {
+      content: 'X';
+      color: #d8d8d8;
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 10px;
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      line-height: 16px;
+    }
+
+    .todo__checkbox:hover {
+      color: #F44336;
+      border-color: #F44336;
+      cursor: pointer;
+    }
+
+    .todo__checkbox:hover:checked:after {
+      color: #F44336;
+      cursor: pointer;
+    }
+
+    .todo__text-input {
+      width: 172px;
+      margin: 12px 0;
+      outline: none;
+      border: none;
+      border-bottom: 2px solid #d8d8d8;
+      padding: 8px 4px;
+    }
+
+    .todo__text-input:focus {
+      border-bottom-color: #F44336;
+    }
+
+    .todo__clear {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #F44336;
+      color: #fff;
+      width: 148px;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .todo__clear:hover {
+      background: #EF5350;
+    }
+
+    .todo__clear:active {
+      background: #E53935;
+    }
+
+    .todo__text_completed {
+      text-decoration: line-through;
+    }
+
+    .todo__text_editing {
+
+    }
+
+    .todo__destroy {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      line-height: 16px;
+      text-align: center;
+      border: 1px solid #d8d8d8;
+      color: #d8d8d8;
+      cursor: pointer;
+      border-radius: 24px;
+      margin-left: 4px;
+    }
+
+    .todo__destroy:hover {
+      color: #F44336;
+      border-color: #F44336;
+    }
+
+    .nav__item {
+      display: inline-block;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .nav__item_active {
+      font-weight: bold;
+      color: #B71C1C;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://unpkg.com/react@16.2.0/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/flux@3.1.2/dist/Flux.js"></script>
+<script src="https://unpkg.com/flux@3.1.2/dist/FluxUtils.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+<script src="https://unpkg.com/babel-polyfill@6.26.0//dist/polyfill.min.js"></script>
+
+<script type="text/babel">
+const TodoConstants = {
+    TODO_INIT: 'TODO_INIT',
+    TODO_ADD: 'TODO_ADD',
+    TODO_REMOVE: 'TODO_REMOVE',
+    TODO_UPDATE: 'TODO_UPDATE',
+    TODO_TOGGLE: 'TODO_TOGGLE',
+    TODO_TOGGLE_ALL: 'TODO_TOGGLE_ALL',
+    TODO_CLEAR: 'TODO_CLEAR'
+};
+
+const NavConstants = {
+    NAV_INIT: 'NAV_INIT',
+    NAV_ACTIVATE: 'NAV_ACTIVATE'
+};
+
+const Dispatcher = {
+    subscribers: [],
+
+    subscribe: function (handler) {
+        this.subscribers.push(handler);
+    },
+
+    dispatch: function (action) {
+        for (let i = 0; i < this.subscribers.length; i++)
+            this.subscribers[i](action);
+    }
+};
+
+const TodoActions = {
+    init: function () {
+        TodoActions.add('Sleep');
+        TodoActions.add('Eat');
+        TodoActions.add('Code');
+        TodoActions.add('Repeat');
+    },
+
+    add: function (text) {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_ADD,
+            text: text
+        });
+    },
+
+    remove: function (id) {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_REMOVE,
+            id: id
+        });
+    },
+
+    update: function (id, text) {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_UPDATE,
+            id: id,
+            text: text
+        });
+    },
+
+    toggle: function (id) {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_TOGGLE,
+            id: id
+        });
+    },
+
+    toggleAll: function () {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_TOGGLE_ALL
+        });
+    },
+
+    clear: function () {
+        Dispatcher.dispatch({
+            actionType: TodoConstants.TODO_CLEAR
+        });
+    }
+};
+
+const NavActions = {
+    init: function () {
+        Dispatcher.dispatch({
+            actionType: NavConstants.NAV_INIT
+        });
+    },
+
+    activate: function (link) {
+        Dispatcher.dispatch({
+            actionType: NavConstants.NAV_ACTIVATE,
+            link: link
+        });
+    }
+};
+
+class TodoStore {
+    constructor() {
+        this.list = [];
+        this.subscribers = [];
+    }
+
+    getItems() {
+        if (!this.activeLink || this.activeLink.title === 'All') {
+            return this.list;
+        } else if (this.activeLink.title === 'Completed') {
+            return this.list.filter(x => x.completed);
+        } else {
+            return this.list.filter(x => !x.completed);
+        }
+    }
+
+    getActiveCount() {
+        return this.list.filter(x => !x.completed).length;
+    }
+
+    getCompletedCount() {
+        return this.list.filter(x => x.completed).length;
+    }
+
+    areAllCompleted() {
+        return this.getActiveCount() === 0;
+    }
+
+    addItem(text) {
+        let item = {
+            id: Date.now() + this.list.length,
+            text: text,
+            completed: false
+        };
+
+        this.list.push(item);
+
+        return item;
+    }
+
+    removeItem(id) {
+        let index = this.list.findIndex(x => x.id === id);
+        this.list.splice(index, 1);
+    }
+
+    removeCompleted() {
+        this.list = this.list.filter(x => !x.completed);
+    }
+
+    updateItem(id, text) {
+        let index = this.list.findIndex(x => x.id === id);
+        this.list[index].text = text;
+    }
+
+    toggleItem(id) {
+        let index = this.list.findIndex(x => x.id === id);
+        this.list[index].completed = !this.list[index].completed;
+    }
+
+    switchAllTo(completed) {
+        this.list.forEach(x => x.completed = completed);
+    }
+
+    emit() {
+        for (let i = 0; i < this.subscribers.length; i++){
+            this.subscribers[i]();
+        }
+    }
+
+    subscribe(handler) {
+        this.subscribers.push(handler);
+    }
+
+    unsubscribe(handler) {
+        const index = this.subscribers.indexOf(handler);
+
+        this.subscribers.splice(index, 1);
+    }
+}
+
+const todoStore = new TodoStore();
+
+Dispatcher.subscribe((action) => {
+    const type = action.actionType;
+
+    if (type === TodoConstants.TODO_ADD) {
+        todoStore.addItem(action.text);
+    } else if (type === TodoConstants.TODO_REMOVE) {
+        todoStore.removeItem(action.id);
+    } else if (type === TodoConstants.TODO_UPDATE) {
+        todoStore.updateItem(action.id, action.text);
+    } else if (type === TodoConstants.TODO_TOGGLE) {
+        todoStore.toggleItem(action.id);
+    } else if (type === TodoConstants.TODO_TOGGLE_ALL) {
+        todoStore.toggleAll(
+            !todoStore.areAllCompleted()
+        );
+    } else if (type === TodoConstants.TODO_CLEAR) {
+        todoStore.removeCompleted();
+    } else if (type === NavConstants.NAV_ACTIVATE) {
+        todoStore.activeLink = action.link;
+        return;
+    } else {
+        return;
+    }
+
+    todoStore.emit();
+});
+
+class NavStore {
+    constructor() {
+        this.links = [
+            { title: 'All' },
+            { title: 'Active' },
+            { title: 'Completed' }
+        ];
+
+        this.subscribers = [];
+    }
+
+    getLinks() {
+        return this.links;
+    }
+
+    getActive() {
+        return this.active;
+    }
+
+    setActive(link) {
+        this.active = link;
+    }
+
+    emit() {
+        for (let i = 0; i < this.subscribers.length; i++){
+            this.subscribers[i]();
+        }
+    }
+
+    subscribe(handler) {
+        this.subscribers.push(handler);
+    }
+
+    unsubscribe(handler) {
+        const index = this.subscribers.indexOf(handler);
+
+        this.subscribers.splice(index, 1);
+    }
+}
+
+const navStore = new NavStore();
+
+Dispatcher.subscribe((action) => {
+    const type = action.actionType;
+
+    console.log(action);
+
+    if (type === NavConstants.NAV_INIT){
+        navStore.setActive(navStore.links[0]);
+        console.log(navStore.getActive());
+    } else if (type === NavConstants.NAV_ACTIVATE) {
+        navStore.setActive(action.link);
+    } else {
+        return;
+    }
+
+    navStore.emit();
+});
+
+
+class ToDoSummary extends React.Component {
+  render() {
+    return (
+      <div className="todo-info">
+        <span className="todo-info__remains">
+          {this.props.remains} remains
+        </span>
+        {' '}
+        <span className="todo-info__completed">
+          / {this.props.completed} completed
+        </span>
+      </div>
+    );
+  }
+}
+
+class ToDoTextInput extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._save = this._save.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._onKeyDown = this._onKeyDown.bind(this);
+
+    this.state = {
+      text: this.props.text ? this.props.text : ''
+    };
+  }
+
+  render() {
+    return (
+      <input className={this.props.className}
+             placeholder={this.props.placeholder}
+             value={this.state.text}
+             onChange={this._onChange}
+             onKeyDown={this._onKeyDown}/>
+    );
+  }
+
+  _save() {
+    this.props.onSave(this.state.text);
+    this.setState({ text: '' });
+  }
+
+  _onChange(event) {
+    this.setState({
+      text: event.target.value
+    });
+  }
+
+  _onKeyDown(event) {
+    if (event.keyCode !== 13) return;
+
+    this._save();
+  }
+}
+
+class ToDoItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._edit = this._edit.bind(this);
+    this._save = this._save.bind(this);
+    this._toggleItem = this._toggleItem.bind(this);
+    this._removeItem = this._removeItem.bind(this);
+
+    this.state = {
+      isEditing: false
+    };
+  }
+
+  render() {
+    const text = this.state.isEditing
+      ? (
+        <ToDoTextInput className="todo__text todo__text_editing"
+                       text={this.props.task.text}
+                       onSave={this._save}/>
+      )
+      : (
+        <span className={'todo__text' + (this.props.task.completed ? ' todo__text_completed' : '')}
+              onDoubleClick={this._edit}>{this.props.task.text}</span>
+      );
+
+    return (
+      <div className="todo__item">
+        <input type="checkbox" className="todo__checkbox"
+               checked={this.props.task.completed}
+               onChange={this._toggleItem}/>
+        <span className="todo__destroy"
+              onClick={this._removeItem}>-</span>
+        {' '}
+        {text}
+
+      </div>
+    );
+  }
+
+  _edit() {
+    this.setState({ isEditing: true });
+  }
+
+  _save(text) {
+    this.setState({ isEditing: false });
+    this.props.updateItem(this.props.task.id, text);
+  }
+
+  _toggleItem() {
+    this.props.toggleItem(this.props.task.id);
+  }
+
+  _removeItem() {
+    this.props.removeItem(this.props.task.id);
+  }
+}
+
+class ToDoList extends React.Component {
+  render() {
+    const items = this.props.tasks.map((task) => {
+      return (
+        <ToDoItem key={task.id} task={task}
+                  toggleItem={this.props.toggleItem}
+                  removeItem={this.props.removeItem}
+                  updateItem={this.props.updateItem}
+        />
+      );
+    });
+
+    return (
+      <div className="todo__list">
+        <div className="todo__toggle-all">
+          <input type="checkbox"
+                 className="todo__checkbox"
+                 checked={this.props.areAllComplete}
+                 onChange={this.props.toggleAll}/>
+          {' '}
+          Complete all
+        </div>
+
+        {items}
+      </div>
+    );
+  }
+}
+
+class ToDoForm extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._save = this._save.bind(this);
+  }
+
+  render() {
+    return (
+      <div className="todo__form">
+        <ToDoTextInput
+          className="todo__text-input"
+          placeholder="I need to do..."
+          onSave={this._save}/>
+      </div>
+    );
+  }
+
+  _save(text) {
+    this.props.addItem(text);
+  }
+}
+
+class ToDoClear extends React.Component {
+  render() {
+    return (
+      <div className="todo__clear"
+           onClick={this.props.removeCompleted}>
+        Clear
+      </div>
+    );
+  }
+}
+
+class NavItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._navigate = this._navigate.bind(this);
+  }
+
+  render() {
+    return (
+      <div className={'nav__item' + (this.props.isActive ? ' nav__item_active' : '')} onClick={this._navigate}>
+        {this.props.link.title}
+      </div>
+    );
+  }
+
+  _navigate() {
+    this.props.navigate(this.props.link)
+  }
+}
+
+class Nav extends React.Component {
+  render() {
+    const items = this.props.links.map((link) => {
+      return (
+        <NavItem key={link.title} link={link}
+                 navigate={this.props.navigate}
+                 isActive={link.title === this.props.activeLink.title} />
+      )
+    });
+
+    return (
+      <div className="nav">
+        {items}
+      </div>
+    );
+  }
+}
+
+class ToDo extends React.Component {
+  constructor(props) {
+    super(props);
+
+    TodoActions.init();
+    NavActions.init();
+
+    this.state = ToDo.getState();
+  }
+
+  render() {
+    return (
+      <div className="todo">
+        <div className="todo__title">Flux ToDo</div>
+        <Nav links={this.state.links} activeLink={this.state.activeLink}
+             navigate={this._navigate}/>
+        <ToDoSummary remains={this.state.remains} completed={this.state.completed}/>
+        <ToDoList tasks={this.state.tasks} areAllComplete={this.state.areAllCompleted}
+                  toggleItem={this._toggleItem} toggleAll={this._toogleAll}
+                  removeItem={this._removeItem} updateItem={this._updateItem}
+        />
+        <ToDoForm addItem={this._addItem}/>
+        <ToDoClear removeCompleted={this._removeCompleted}/>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    todoStore.subscribe(this._rerender);
+    navStore.subscribe(this._rerender);
+  }
+
+  componentWillUnmount() {
+    todoStore.unsubscribe(this._rerender);
+    navStore.unsubscribe(this._rerender);
+  }
+
+  static getState() {
+    return {
+      remains: todoStore.getActiveCount(),
+      completed: todoStore.getCompletedCount(),
+      areAllCompleted: todoStore.areAllCompleted(),
+      tasks: todoStore.getItems(),
+
+      links: navStore.getLinks(),
+      activeLink: navStore.getActive()
+    };
+  }
+
+  _rerender = () => {
+    this.setState(ToDo.getState());
+  }
+
+  _toggleItem(id) {
+    TodoActions.toggle(id);
+  }
+
+  _toogleAll() {
+    TodoActions.toggleAll();
+  }
+
+  _removeItem(id) {
+    TodoActions.remove(id);
+  }
+
+  _addItem(text) {
+    TodoActions.add(text);
+  }
+
+  _updateItem(id, text) {
+    TodoActions.update(id, text);
+  }
+
+  _removeCompleted() {
+    TodoActions.clear();
+  }
+
+  _navigate(link) {
+    NavActions.activate(link);
+  }
+}
+
+ReactDOM.render(<ToDo/>, document.getElementById('app'));
+</script>
+</body>
+</html>

@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP27</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Иммутабельность</h2>
+      <p class="author">
+          <small>Лекция 27</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Immutability - Pros</h4>
+
+    <ul class="left">
+      <li class="fragment">код предсказуемей</li>
+      <li class="fragment">быстрое сравнение</li>
+      <li class="fragment">безопасность многопоточности</li>
+      <li class="fragment">облегчает работу GC засчёт отмены defensive copy</li>
+      <li class="fragment">путешествия во времени</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Immutability - Cons</h4>
+
+    <ul class="left">
+      <li class="fragment">может упасть производительность</li>
+      <li class="fragment">может вырасти потребление памяти</li>
+      <li class="fragment">написание требует больше времени</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Immutable.js</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// https://facebook.github.io/immutable-js
+npm install immutable
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Example</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import { Map } from 'immutable';
+
+const a = Map({
+  name: 'Carl Grimes',
+  status: 'alive'
+});
+
+const b = a.set('status', 'dead');
+
+console.log(a.get('name'), a.get('status'));
+console.log(b.get('name'), b.get('status'));
+console.log(a !== b);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const emptyList = List()
+
+const listFromPlainArray = List([ 1, 2, 3, 4 ])
+
+const plainSet = Set([ 1, 2, 3, 4 ])
+const listFromPlainSet = List(plainSet)
+
+const arrayIterator = plainArray[Symbol.iterator]()
+const listFromCollectionArray = List(arrayIterator)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List.isList([]); // false
+List.isList(List()); // true
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List.of(1, 2, 3, 4)
+List.of({x:1}, 2, [3], 4)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const originalList = List([ 0 ]);
+// List [ 0 ]
+
+originalList.set(1, 1);
+// List [ 0, 1 ]
+
+originalList.set(0, 'overwritten');
+// List [ "overwritten" ]
+
+originalList.set(2, 2);
+// List [ 0, undefined, 2 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 0, 1, 2, 3, 4 ]).delete(0);
+// List [ 1, 2, 3, 4 ]
+
+List([ 0, 1, 2, 3, 4 ]).delete(-1);
+// List [ 0, 1, 2, 3 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).clear()
+// List []
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).push(5)
+// List [ 1, 2, 3, 4, 5 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3, 4 ]).pop()
+// List[ 1, 2, 3 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 2, 3, 4]).unshift(1);
+// List [ 1, 2, 3, 4 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 'a', 'b', 'c' ])
+const result = list.update(2, val => val + val)
+// List [ "a", "b", "cc" ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 0, 1, 2, List([ 3, 4 ])])
+list.setIn([3, 0], 999);
+// List [ 0, 1, 2, List [ 999, 4 ] ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 0, 1, 2, { plain: 'object' }])
+list.setIn([3, 'plain'], 'value');
+// List([ 0, 1, 2, { plain: 'value' }])
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 0, 1, 2, List([ 3, 4 ])])
+list.deleteIn([3, 0]);
+// List [ 0, 1, 2, List [ 4 ] ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([ 0, 1, 2, { plain: 'object' }])
+list.removeIn([3, 'plain']);
+// List([ 0, 1, 2, {}])
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List(['a', 'b', 'c'])
+list.concat(['d', 'e'])
+// ["a", "b", "c", "d", "e"]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2 ]).map(x => 10 * x)
+// List [ 10, 20 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List(['a', List(['b', 'c'])]).flatten(true)
+// ['a', 'b', 'c']
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const list = List([1, 2, 3])
+
+list.flatMap(x => List([x, x]))
+list.map(x => List([x, x])).flatten(true)
+// [1, 1, 2, 2, 3, 3]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3, 4]).filter(x => x % 2 === 0)
+// [2, 4]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3, 4]).filterNot(x => x % 2 === 0)
+// [1, 3]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const a = List([ 1, 2, 3 ]);
+const b = List([ 4, 5, 6 ]);
+const c = a.zip(b);
+// List [ [ 1, 4 ], [ 2, 5 ], [ 3, 6 ] ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const a = List([ 1, 2 ]);
+const b = List([ 3, 4, 5 ]);
+const c = a.zipAll(b);
+// List [ [ 1, 3 ], [ 2, 4 ], [ undefined, 5 ] ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const a = List([ 1, 2, 3 ]);
+const b = List([ 4, 5, 6 ]);
+const c = a.zipWith((a, b) => a + b, b);
+// List [ 5, 7, 9 ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+reverse()
+sort(comparator?)
+sortBy(comparatorValueMapper, comparator?)
+groupBy()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+toJS() // deep
+toArray() // shallow
+toJSON()
+toObject() // indexes = keys
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+get(index)
+has(index)
+getIn(path)
+hasIn(path)
+includes(value)
+first()
+last()
+min()
+max()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+indexOf()
+lastIndexOf()
+findIndex()
+findLastIndex()
+find()
+findLast()
+every()
+some()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3]).interpose('x')
+// [1, "x", 2, "x", 3]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 1, 2, 3 ]).interleave(
+  List([ 'A', 'B', 'C' ])
+)
+// List [ 1, "A", 2, "B", 3, "C"" ]
+
+List([ 1, 2, 3 ]).interleave(
+  List([ 'A', 'B' ]),
+  List([ 'X', 'Y', 'Z' ])
+)
+// List [ 1, "A", "X", 2, "B", "Y"" ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3]).rest()
+// [2, 3]
+
+List([1, 2, 3]).butLast()
+// [1, 2]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3]).skip(2)
+// [3]
+
+List([1, 2, 3]).skipLast(2)
+// [1]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 'dog', 'frog', 'cat', 'hat', 'god' ])
+  .skipWhile(x => x.match(/g/))
+// List [ "cat", "hat", "god"" ]
+
+List([ 'dog', 'frog', 'cat', 'hat', 'god' ])
+  .skipUntil(x => x.match(/hat/))
+// List [ "hat", "god"" ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([1, 2, 3]).take(2)
+// [1, 2]
+
+List([1, 2, 3]).takeLast(2)
+// [2, 3]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - List</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+List([ 'dog', 'frog', 'cat', 'hat', 'god' ])
+  .takeWhile(x => x.match(/o/))
+// List [ "dog", "frog" ]
+
+List([ 'dog', 'frog', 'cat', 'hat', 'god' ])
+  .takeUntil(x => x.match(/at/))
+// List [ "dog", "frog" ]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Map({ key: "value" })
+Map([ [ "key", "value" ] ])
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+get(key)
+getIn(path)
+set(key, value)
+setIn(path, value)
+delete(key)
+deleteIn(path, key)
+deleteAll([ keys ])
+clear()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const aMap = Map({ key: 'value' })
+
+aMap.update('key', value => value + value)
+// { "key": "valuevalue" }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const one = Map({ a: 10, b: 20, c: 30 })
+const two = Map({ b: 40, a: 50, d: 60 })
+
+one.merge(two)
+// Map { "a": 50, "b": 40, "c": 30, "d": 60 }
+
+two.merge(one)
+// Map { "b": 20, "a": 10, "d": 60, "c": 30 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const one = Map({ a: 10, b: 20, c: 30 })
+const two = Map({ b: 40, a: 50, d: 60 })
+
+one.mergeWith((x, y) => x / y, two)
+// { "a": 0.2, "b": 0.5, "c": 30, "d": 60 }
+
+two.mergeWith((x, y) => x / y, one)
+// { "b": 2, "a": 5, "d": 60, "c": 30 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const one = Map({
+  a: Map({ x: 10, y: 10 }),
+  b: Map({ x: 20, y: 50 })
+})
+
+const two = Map({
+  a: Map({ x: 2 }),
+  b: Map({ y: 5 }),
+  c: Map({ z: 3 })
+})
+
+one.mergeDeep(two)
+/  {
+//   "a": { "x": 2, "y": 10 },
+//   "b": { "x": 20, "y": 5 },
+//   "c": { "z": 3 }
+// }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const map1 = Map()
+
+const map2 = map1.withMutations(map => {
+  map.set('a', 1).set('b', 2).set('c', 3)
+})
+
+assert.equal(map1.size, 0)
+assert.equal(map2.size, 3)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const map = Map();
+
+const map1 = map.asMutable();
+const map2 = map1.set('a', 1);
+const map3 = map1.set('b', 2);
+const map4 = map1.asImmutable();
+const map5 = map4.set('c', 3);
+
+console.log(map1 === map2);
+console.log(map1 === map3);
+console.log(map1 === map4);
+console.log(map5 !== map4);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Map({ a: 1, b: 2 }).map(x => 10 * x)
+// Map { a: 10, b: 20 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Map({ a: 1, b: 2 }).mapKeys(x => x.toUpperCase())
+// Map { "A": 1, "B": 2 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Map({ a: 1, b: 2 })
+  .mapEntries(([ k, v ]) =>
+      [ k.toUpperCase(), v * 2 ])
+// Map { "A": 2, "B": 4 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const map = Map({ a: 1, b: 2, c: 3 });
+
+map.filter(v => v !== 1)
+map.filter((v, k) => k !== 'a')
+// { b: 2, c: 3 }
+
+map.filterNot(v => v !== 1)
+map.filterNot((v, k) => k !== 'a')
+// { a: 1 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Map({ a: 1, b: 2, c: 3 }).flip()
+// { 1: 'a', 2: 'b', 3: 'c' }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+reverse()
+sort()
+sortBy()
+groupBy()
+toJS()
+toJSON()
+toArray()
+toObject()
+equals()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Map</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+includes()
+first()
+last()
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Set</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+let s = Set();
+
+s = s.add('a');
+s = s.add('a');
+// ['a']
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Stack</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+shift() / pop() // O(1)
+unshift() / push() // O(1)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Range</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Range() // [ 0, 1, 2, 3, ... ]
+Range(10) // [ 10, 11, 12, 13, ... ]
+Range(10, 15) // [ 10, 11, 12, 13, 14 ]
+Range(10, 30, 5) // [ 10, 15, 20, 25 ]
+Range(30, 10, 5) // [ 30, 25, 20, 15 ]
+Range(30, 30, 5) // []
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Record</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const ABRecordFactory = Record({ a: 1, b: 2 })
+const myRecord = new ABRecordFactory({ b: 3, c: 4 })
+// { a: 1, b: 3 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Sequence</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const oddSquares = Seq([1, 2, 3, 4, 5, 6, 7, 8])
+  .filter(x => {
+    console.log('Lazy');
+    return x % 2 !== 0
+  })
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Sequence</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const oddSquares = Seq([1, 2, 3, 4, 5, 6, 7, 8])
+  .filter(x => {
+    console.log('filter', x);
+    return x % 2 !== 0
+  })
+
+
+oddSquares.get(1);
+// filter 1
+// filter 2
+// filter 3
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Immutable.js - Sequence</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+Range(1, Infinity)
+  .skip(1000)
+  .map(n => -n)
+  .filter(n => n % 2 === 0)
+  .take(2)
+  // lazy / after iterate
+  // [-1002, -1004]
+      </code></pre>
+    </div>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

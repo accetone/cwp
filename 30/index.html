@@ -1,0 +1,1406 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP30</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Redux Saga</h2>
+      <p class="author">
+          <small>Лекция 30</small>
+      </p>
+  </section>
+
+  <section>
+    <img src="images/redux-saga-logo.png">
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <ul>
+      <li class="fragment">удобная работа с сайд-эффектами</li>
+      <li class="fragment">на генераторах</li>
+      <li class="fragment">декларативная</li>
+      <li class="fragment">легкое тестирование</li>
+      <li class="fragment"><a href="https://redux-saga.js.org/">redux-saga.js.org</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+npm install redux-saga
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script
+  src=&quot;https://unpkg.com/redux-saga/dist/redux-saga.js&quot;
+&gt;&lt;/script&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { call, put } from 'redux-saga/effects'
+
+export function * fetchData(action) {
+ try {
+  const data = yield call(
+    Api.fetchUser,
+    action.payload.url
+  )
+
+  yield put({type: "FETCH_SUCCEEDED", data})
+ } catch (error) {
+  yield put({type: "FETCH_FAILED", error})
+ }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga/effects'
+
+function * watchFetchData() {
+  yield takeEvery('FETCH_REQUESTED', fetchData)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import {
+  createStore,
+  applyMiddleware
+} from 'redux';
+
+import createSagaMiddleware from 'redux-saga'
+
+import reducer from './reducers';
+
+import sagas from './sagas/watchFetchData';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+    reducer,
+    /* initial state */,
+    applyMiddleware(sagaMiddleware)
+);
+
+sagaMiddleware.run(sagas);
+
+export default store;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga'
+
+// FETCH_USERS
+function* fetchUsers(action) { ... }
+
+// CREATE_USER
+function* createUser(action) { ... }
+
+// use them in parallel
+export default function* rootSaga() {
+  yield takeEvery('FETCH_USERS', fetchUsers)
+  yield takeEvery('CREATE_USER', createUser)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Effects</h4>
+
+    <pre class="javascript"><code>
+// эффект - объект с инструкциями
+// для sagaMiddleware о необходимых действиях
+yield call(
+  Api.fetchUser,
+  action.payload.url
+)
+
+=>
+
+{
+  CALL: {
+    fn: Api.fetch,
+    args: ['/users/42']
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery } from 'redux-saga/effects'
+import Api from './path/to/api'
+
+function* watchFetchProducts() {
+  yield takeEvery(
+    'PRODUCTS_REQUESTED',
+    fetchProducts
+  )
+}
+
+function* fetchProducts() {
+  // yield a Promise
+  const products = yield Api.fetch('/products')
+
+  console.log(products)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+// trying write a test
+const iterator = fetchProducts()
+assert.deepEqual(iterator.next().value, ??)
+
+// need to mock Api.fetch
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { call } from 'redux-saga/effects'
+
+function* fetchProducts() {
+  const products = yield call(
+    Api.fetch,
+    '/products'
+  )
+}
+
+=>
+
+{
+  CALL: {
+    fn: Api.fetch,
+    args: ['./products']
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Why Effects?</h4>
+
+    <pre class="javascript"><code>
+import { call } from 'redux-saga/effects'
+import Api from '...'
+
+const iterator = fetchProducts()
+
+assert.deepEqual(
+  iterator.next().value,
+  call(Api.fetch, '/products')
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Complex logic</h4>
+
+    <pre class="javascript"><code>
+import { take, put } from 'redux-saga/effects'
+
+function* watchFirstThreeTodosCreation() {
+  for (let i = 0; i < 3; i++) {
+    const action = yield take('TODO_CREATED')
+  }
+
+  yield put({type: 'SHOW_CONGRATULATION'})
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+import { fork, call, take, put, cancel }
+  from 'redux-saga/effects'
+import Api from '...'
+
+function* authorize(user, password) {
+  try {
+    const token = yield call(
+      Api.authorize,
+      user, password
+    )
+    yield put({type: 'LOGIN_SUCCESS', token})
+    yield call(Api.storeItem, {token})
+  } catch(error) {
+    yield put({type: 'LOGIN_ERROR', error})
+  }
+}
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+...
+function* loginFlow() {
+  while (true) {
+    const {user, password}
+      = yield take('LOGIN_REQUEST')
+
+    const task = yield fork(authorize, user, password)
+
+    const action
+      = yield take(['LOGOUT', 'LOGIN_ERROR'])
+
+    if (action.type === 'LOGOUT')
+      yield cancel(task)
+
+    yield call(Api.clearItem, 'token')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Non-blocking</h4>
+
+    <pre class="javascript"><code>
+function* authorize(user, password) {
+  try {
+    ...
+  } catch(error) {
+    ...
+  } finally {
+    if (yield cancelled()) {
+      // cancellation handling code here
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Parallel</h4>
+
+    <pre class="javascript"><code>
+import { all, call } from 'redux-saga/effects'
+
+// correct, effects will get executed in parallel
+const [users, repos]  = yield all([
+  call(fetch, '/users'),
+  call(fetch, '/repos')
+])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Race</h4>
+
+    <pre class="javascript"><code>
+import { race, take, put } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+
+function* fetchPostsWithTimeout() {
+  const {posts, timeout} = yield race({
+    posts: call(fetchApi, '/posts'),
+    timeout: call(delay, 1000)
+  })
+
+  if (posts)
+    put({type: 'POSTS_RECEIVED', posts})
+  else
+    put({type: 'TIMEOUT_ERROR'})
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Race</h4>
+
+    <pre class="javascript"><code>
+// other tasks are autocancel
+import { race, take, put } from 'redux-saga/effects'
+
+function* backgroundTask() {
+  while (true) { ... }
+}
+
+function* watchStartBackgroundTask() {
+  while (true) {
+    yield take('START_BACKGROUND_TASK')
+    yield race({
+      task: call(backgroundTask),
+      cancel: take('CANCEL_TASK')
+    })
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Outside of Redux</h4>
+
+    <pre class="javascript"><code>
+import { runSaga } from 'redux-saga'
+
+function* saga() { ... }
+
+const myIO = {
+  subscribe: ...,
+  dispatch: ...,
+  getState: ...,
+}
+
+runSaga(
+  myIO
+  saga,
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+import { take, actionChannel, call, ... }
+  from 'redux-saga/effects'
+
+function* watchRequests() {
+  // will buffer messages
+  const requestChan
+    = yield actionChannel('REQUEST')
+
+  while (true) {
+    const {payload} = yield take(requestChan)
+
+    yield call(handleRequest, payload)
+  }
+}
+
+function* handleRequest(payload) { ... }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+import { eventChannel, END } from 'redux-saga'
+
+function countdown(secs) {
+  return eventChannel(emitter => {
+      const iv = setInterval(() => {
+        secs -= 1
+        if (secs > 0) emitter(secs)
+        else emitter(END)
+      }, 1000);
+
+      return () => {
+        clearInterval(iv)
+      }
+    }
+  )
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* saga() {
+  const chan = yield call(countdown, value)
+
+  try {
+    while (true) {
+      // take(END) will cause the saga
+      // to terminate by jumping
+      // to the finally block
+      let seconds = yield take(chan)
+
+      console.log(`countdown: ${seconds}`)
+    }
+  } finally {
+    console.log('countdown terminated')
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function createSocketChannel(socket) {
+  return eventChannel(emit => {
+    const pingHandler = (event)
+      => emit(event.payload)
+
+    socket.on('ping', pingHandler)
+
+    return ()
+      => socket.off('ping', pingHandler)
+  })
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* pong(socket) {
+  yield call(delay, 5000)
+  yield apply(socket, socket.emit, ['pong'])
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Channels</h4>
+
+    <pre class="javascript"><code>
+function* watchOnPings() {
+  const socketChannel
+    = yield call(createSocketChannel, socket)
+
+  while (true) {
+    const payload = yield take(socketChannel)
+
+    yield put({
+      type: INCOMING_PONG_PAYLOAD, payload
+    })
+
+    yield fork(pong, socket)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Throttling</h4>
+
+    <pre class="javascript"><code>
+import { throttle } from 'redux-saga/effects'
+
+function* handleInput(input) {
+  // ...
+}
+
+function* watchInput() {
+  yield throttle(500,
+    'INPUT_CHANGED',
+    handleInput
+  )
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Debouncing</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga'
+
+function* handleInput(input) {
+  yield call(delay, 500)
+  ...
+}
+
+function* watchInput() {
+  let task
+  while (true) {
+    const { input } = yield take('INPUT_CHANGED')
+
+    if (task) yield cancel(task)
+
+    task = yield fork(handleInput, input)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Debouncing</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga'
+
+function* handleInput({ input }) {
+  yield call(delay, 500)
+  ...
+}
+
+function* watchInput() {
+  // will cancel current running handleInput task
+  yield takeLatest('INPUT_CHANGED', handleInput);
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Retry</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga'
+import { call, put, take } from 'redux-saga/effects'
+
+function* updateApi(data) {
+  ...
+}
+
+export default function* updateResource() {
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Retry</h4>
+
+    <pre class="javascript"><code>
+// updateApi
+for(let i = 0; i < 5; i++) {
+  try {
+    return yield call(
+      apiRequest, { data }
+    );
+  } catch(err) {
+    if(i < 4) {
+      yield call(delay, 2000);
+    }
+  }
+}
+
+// attempts failed after 5 attempts
+throw new Error('API request failed');
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Retry</h4>
+
+    <pre class="javascript"><code>
+// updateResource
+while (true) {
+  const { data } = yield take('UPDATE_START');
+  try {
+    const apiResponse = yield call(updateApi, data);
+    yield put({
+      type: 'UPDATE_SUCCESS',
+      payload: apiResponse.body,
+    });
+  } catch (error) {
+    yield put({
+      type: 'UPDATE_ERROR',
+      error
+    });
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Undo</h4>
+
+    <pre class="javascript"><code>
+import { take, put, call, spawn, race } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+import { updateThreadApi, actions } from 'somewhere'
+
+function* onArchive(action) {
+  ...
+}
+
+export default function* main() {
+  while (true) {
+    const action = yield take('ARCHIVE_THREAD')
+
+    yield spawn(onArchive, action)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Undo</h4>
+
+    <pre class="javascript"><code>
+// onArchive
+const { threadId } = action
+const undoId = `UNDO_ARCHIVE_${threadId}`
+
+const thread = { id: threadId, archived: true }
+
+yield put(actions.showUndo(undoId))
+yield put(actions.updateThread(thread))
+
+const { undo, archive } = yield race({
+  undo: take(action => action.type === 'UNDO'
+      && action.undoId === undoId),
+  archive: call(delay, 5000)
+})
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - Undo</h4>
+
+    <pre class="javascript"><code>
+// onArchive
+...
+
+yield put(actions.hideUndo(undoId))
+
+if (undo) {
+  yield put(actions.updateThread({
+    id: threadId,
+    archived: false
+  }))
+} else if (archive) {
+  yield call(updateThreadApi, thread)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # takeEvery</h4>
+
+    <pre class="javascript"><code>
+takeEvery(pattern, saga, ...args)
+takeEvery(channel, saga, ...args)
+// pattern: String | Array | Function
+// saga: Generator
+// args: Array
+// channel: Channel
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # takeLatest</h4>
+
+    <pre class="javascript"><code>
+takeLatest(pattern, saga, ...args)
+takeLatest(channel, saga, ...args)
+// pattern: String | Array | Function
+// saga: Generator
+// args: Array
+// channel: Channel
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # throttle</h4>
+
+    <pre class="javascript"><code>
+throttle(ms, pattern, saga, ...args)
+// ms: Number
+// pattern: String | Array | Function
+// saga: Generator
+// args: Array
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # take</h4>
+
+    <pre class="javascript"><code>
+take(pattern)
+take(channel)
+
+take()
+take('*')
+
+// саги не уничтожаются после специального
+// события END
+take.maybe(pattern)
+take.maybe(channel)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # put</h4>
+
+    <pre class="javascript"><code>
+put(action)
+put(channel, action)
+
+// ждёт работу редьюсеров
+// и получит ошибку, если она
+// произошла при обработке
+put.resolve(action)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # call</h4>
+
+    <pre class="javascript"><code>
+call(fn, ...args)
+call([context, fn], ...args)
+call([context, fnName], ...args)
+// fn: Generator, Async Function, Function
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # apply</h4>
+
+    <pre class="javascript"><code>
+apply(context, fn, [args])
+// alias - call([context, fn], ...args)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # cps</h4>
+
+    <pre class="javascript"><code>
+// call для асинхронных методов в стиле Node.js
+cps(fn, ...args)
+cps([context, fn], ...args)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # fork</h4>
+
+    <pre class="javascript"><code>
+// не блокирующий запуск саги привязанной к родителю
+fork(fn, ...args)
+fork([context, fn], ...args)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # spawn / join</h4>
+
+    <pre class="javascript"><code>
+// не блокирующий запуск саги без привязки
+spawn(fn, ...args)
+spawn([context, fn], ...args)
+
+// привязка
+join(task)
+join(...tasks)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # cancel</h4>
+
+    <pre class="javascript"><code>
+cancel(task)
+cancel(...tasks)
+cancel()
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # cancel</h4>
+
+    <pre class="javascript"><code>
+import { CANCEL } from 'redux-saga'
+import { fork, cancel } from 'redux-saga/effects'
+
+function myApi() {
+  const promise = myXhr(...)
+
+  promise[CANCEL] = () => myXhr.abort()
+  return promise
+}
+
+function* mySaga() {
+  const task = yield fork(myApi)
+
+  yield cancel(task)
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # select</h4>
+
+    <pre class="javascript"><code>
+select(selector, ...args)
+// selector(getState(), ...args)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # actionChannel</h4>
+
+    <pre class="javascript"><code>
+actionChannel(pattern, [buffer])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # actionChannel</h4>
+
+    <pre class="javascript"><code>
+import { actionChannel, call } from 'redux-saga/effects'
+import api from '...'
+
+function* takeOneAtMost() {
+  const chan = yield actionChannel('USER_REQUEST')
+  while (true) {
+    const {payload} = yield take(chan)
+    yield call(api.getUser, payload)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # flush</h4>
+
+    <pre class="javascript"><code>
+// стереть все события из буфера
+flush(channel)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # flush</h4>
+
+    <pre class="javascript"><code>
+function* saga() {
+  const chan = yield actionChannel('ACTION')
+
+  try {
+    while (true) {
+      const action = yield take(chan)
+      // ...
+    }
+  } finally {
+    const actions = yield flush(chan)
+    // ...
+  }
+}
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h4>Redux Saga - API # cancelled</h4>
+
+    <pre class="javascript"><code>
+cancelled()
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # cancelled</h4>
+
+    <pre class="javascript"><code>
+function* saga() {
+  try {
+    // ...
+  } finally {
+    if (yield cancelled()) {
+      // logic that should execute only on Cancellation
+    }
+    // logic that should execute in all situations (e.g. closing a channel)
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # context</h4>
+
+    <pre class="javascript"><code>
+setContext(props)
+getContext(prop)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # race</h4>
+
+    <pre class="javascript"><code>
+race(effects)
+race([...effects])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - API # all</h4>
+
+    <pre class="javascript"><code>
+all(effects)
+all([...effects])
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Suggestions</h4>
+
+    <pre class="javascript"><code>
+import { delay } from 'redux-saga';
+import { put, call, select } from 'redux-saga/effects';
+
+import { getSuggestions } from '../api';
+import PlacesActions from '../actions/places';
+
+export default function* (action) {
+  ...
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Suggestions</h4>
+
+    <pre class="javascript"><code>
+const state = yield select();
+
+if (!state.maps.isApiLoaded) {
+  return;
+}
+
+if (!action.payload) {
+  yield put(PlacesActions.suggestions([]));
+  yield put(PlacesActions.select(undefined));
+  return;
+}
+
+yield call(delay, 250);
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Suggestions</h4>
+
+    <pre class="javascript"><code>
+...
+
+const suggestions = yield call(
+  getSuggestions,
+  state.maps.autocompleteService,
+  state.countryCode,
+  action.payload
+);
+
+yield put(PlacesActions.suggestions(
+  suggestions || []
+));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Suggestions</h4>
+
+    <pre class="javascript"><code>
+import { takeEvery, takeLatest, fork } from 'redux-saga/effects';
+
+import PlacesActions from '../actions/places';
+import PlacesSuggestionsSaga from './places-suggestions';
+
+export default function* sagas() {
+  yield takeLatest(
+    PlacesActions.changeQuery,
+    PlacesSuggestionsSaga
+  );
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Window Event Notifier</h4>
+
+    <pre class="javascript"><code>
+import { eventChannel } from 'redux-saga';
+import { take, put, race } from 'redux-saga/effects';
+
+import { ComponentActions } from '../../actions/component';
+
+export function notifyAboutWindowEventFactory(
+  events,
+  action
+) {
+  let onWindowEvent;
+  let destroyed = false;
+
+  if (!(events instanceof Array)) {
+    events = [events];
+  }
+
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Window Event Notifier</h4>
+
+    <pre class="javascript"><code>
+...
+function windowEventChannel() {
+  return eventChannel(emitter => {
+    onWindowEvent = event => emitter(event);
+
+    events.forEach(eventName =>
+      window.addEventListener(
+        eventName, onWindowEvent
+      )
+    );
+
+    return () => {
+      events.forEach(eventName => window.removeEventListener(eventName, onWindowEvent));
+    };
+  });
+}
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Window Event Notifier</h4>
+
+    <pre class="javascript"><code>
+...
+return function* () {
+  yield take(ComponentActions.init);
+
+  const channel = yield windowEventChannel();
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Window Event Notifier</h4>
+
+    <pre class="javascript"><code>
+...
+return function* () {
+  ...
+  while (!destroyed) {
+    const { event } = yield race({
+      event: take(channel),
+      destroy: take(ComponentActions.destroy),
+    });
+
+    if (event) {
+      yield put(action(event));
+    } else {
+      channel.close();
+      destroyed = true;
+    }
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Notifications on Blur</h4>
+
+    <pre class="javascript"><code>
+function requestPermission() {
+  return eventChannel(emitter => {
+    Notification.requestPermission((permission) => {
+      emitter(permission);
+      emitter(END);
+    });
+
+    return () => {};
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Notifications on Blur</h4>
+
+    <pre class="javascript"><code>
+function onClick(notification) {
+  return eventChannel(emitter => {
+    notification.onclick = () => {
+      emitter('clicked!');
+      emitter(END);
+    };
+
+    return () => {
+      notification.onclick = null;
+    };
+  });
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Notifications on Blur</h4>
+
+    <pre class="javascript"><code>
+function* notificationsSaga(action) {
+  const state = yield select();
+
+  if (state.window.inFocus) {
+    return;
+  }
+
+  let channel = yield call(requestPermission);
+  const permission = yield take(channel);
+
+  if (permission !== 'granted') {
+    return;
+  }
+
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Notifications on Blur</h4>
+
+    <pre class="javascript"><code>
+function* notificationsSaga(action) {
+  ...
+
+  const notification = new Notification(
+    `You have ${action.payload.jobs.length} new job posts`,
+    { icon: 'assets/new-jobs.png' }
+  );
+
+  channel = yield call(onClick, notification);
+
+  const {click, timeout} = yield race({
+    click: take(channel),
+    timeout: call(delay, 5000)
+  });
+
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Notifications on Blur</h4>
+
+    <pre class="javascript"><code>
+function* notificationsSaga(action) {
+  ...
+
+  if (click) {
+    yield put(JobsActions.show());
+    window.focus();
+    window.scrollTo(0,0);
+  }
+
+  notification.close();
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Web Sockets</h4>
+
+    <pre class="javascript"><code>
+import { eventChannel, buffers } from 'redux-saga';
+import { take, call, put } from 'redux-saga/effects';
+
+import Api from '../api';
+import JobsActions from '../actions/jobs';
+
+function readFreshJobs() {
+  ...
+}
+
+export default function* saga() {
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Web Sockets</h4>
+
+    <pre class="javascript"><code>
+// readFreshJobs() {
+return eventChannel(emitter => {
+  const emit = (jobs) => {
+    emitter(jobs);
+  };
+
+  Api.socket.on(Api.events.jobsFresh, emit);
+
+  return () => Api.socket.removeListener(
+    Api.events.jobsFresh,
+    emit
+  );
+}, buffers.fixed());
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Web Sockets</h4>
+
+    <pre class="javascript"><code>
+// saga
+const channel = yield call(readFreshJobs);
+
+while (true) {
+  let jobs = yield take(channel);
+
+  yield put(JobsActions.fresh(jobs));
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Global Event Bus</h4>
+
+    <pre class="javascript"><code>
+import { eventChannel } from 'redux-saga';
+import { take, put, fork, race } from 'redux-saga/effects';
+import EventEmmiter from 'events'
+
+import ComponentActions
+  from '../../shared/actions/component';
+
+...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Global Event Bus</h4>
+
+    <pre class="javascript"><code>
+...
+
+if (!window.GlobalEventBus) {
+  window.GlobalEventBus = new EventEmmiter();
+}
+
+let handler, bus = window.GlobalEventBus,
+  destroyed = false;
+
+function globalEventChannel() {
+  ...
+}
+
+export const globalEventBusSagaFactory
+  = function (allowedActions) {
+    return function * () {...}
+  };
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Global Event Bus</h4>
+
+    <pre class="javascript"><code>
+// globalEventChannel
+return eventChannel(emitter => {
+  handler = event => emitter({
+    ...event,
+    external: true
+  });
+
+  bus.on('global.event', handler);
+
+  return () => {
+    bus.removeListener('global.event', handler);
+  };
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Global Event Bus</h4>
+
+    <pre class="javascript"><code>
+// globalEventBusSagaFactory
+yield take(ComponentActions.init);
+
+const channel = yield globalEventChannel();
+
+while (!destroyed) {
+  const {
+    local,
+    external,
+    destroy
+  } = yield race({
+    destroy: take(ComponentActions.destroy),
+    external: take(channel),
+    local: take(),
+  });
+
+  ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux Saga - IRL # Global Event Bus</h4>
+
+    <pre class="javascript"><code>
+// globalEventBusSagaFactory
+  ...
+
+  if (external
+      && allowedActions.some(action =>
+          action === external.type)) {
+    yield put(external);
+  }
+
+  if (local && !local.external && allowedActions.some(action => action === local.type)) {
+    bus.emit('global.event', local);
+  }
+
+  if (destroy) {
+    bus.removeListener('global.event', handler);
+    destroyed = true;
+  }
+}
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

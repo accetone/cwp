@@ -26,6 +26,15 @@
 [CWP/LECTION/23 - Тестирование](https://accetone.github.io/cwp/23)  
 [CWP/LECTION/24 - Serverless](https://accetone.github.io/cwp/24)  
 [CWP/LECTION/25 - React](https://accetone.github.io/cwp/25)  
+[CWP/LECTION/26 - Инструменты сборки](https://accetone.github.io/cwp/26)  
+[CWP/LECTION/27 - Иммутабельность](https://accetone.github.io/cwp/27)  
+[CWP/LECTION/28 - Flux / Redux](https://accetone.github.io/cwp/28)  
+[CWP/LECTION/29 - Redux Actions](https://accetone.github.io/cwp/29)  
+[CWP/LECTION/30 - Redux Saga](https://accetone.github.io/cwp/30)  
+[CWP/LECTION/31 - React Router](https://accetone.github.io/cwp/31)  
+[CWP/LECTION/32 - Reselect](https://accetone.github.io/cwp/32)  
+[CWP/LECTION/33 - Recompose](https://accetone.github.io/cwp/33)  
+[CWP/LECTION/34 - PropTypes](https://accetone.github.io/cwp/34)  
 
 #### Задания
 [CWP/TASK/00 - Знакомство с Git](https://accetone.github.io/cwp/tasks/00.html)   

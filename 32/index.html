@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP32</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Reselect</h2>
+      <p class="author">
+          <small>Лекция 32</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Reselect</h4>
+
+    <ul>
+      <li class="fragment">селекторы</li>
+      <li class="fragment">мемоизация</li>
+      <li class="fragment">композиция</li>
+      <li class="fragment"><a href="https://github.com/reduxjs/reselect">reduxjs/reselect</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Reselect - Install</h4>
+
+    <pre class="javascript"><code>
+npm install reselect
+    </code></pre>
+  </section>
+
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+import { createSelector } from 'reselect';
+
+const shopItemsSelector
+    = state => state.shop.items;
+
+const taxPercentSelector
+    = state => state.shop.taxPercent;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+const subtotalSelector = createSelector(
+  shopItemsSelector,
+
+  items => items.reduce(
+    (acc, item) => acc + item.value,
+    0
+  )
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+const taxSelector = createSelector(
+  subtotalSelector,
+  taxPercentSelector,
+
+  (subtotal, taxPercent) =>
+      subtotal * (taxPercent / 100)
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+export const totalSelector = createSelector(
+  subtotalSelector,
+  taxSelector,
+
+  (subtotal, tax) => subtotal + tax
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+const exampleState = {
+  shop: {
+    taxPercent: 8,
+    items: [
+      { name: 'apple', value: 1.20 },
+      { name: 'orange', value: 0.95 },
+    ]
+  }
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Example</h4>
+
+    <pre class="javascript"><code>
+console.log(subtotalSelector(exampleState))
+// 2.15
+
+console.log(taxSelector(exampleState))
+// 0.172
+
+console.log(totalSelector(exampleState))
+// 2.322
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelector</h4>
+
+    <pre class="javascript"><code>
+createSelector(
+  ...inputSelectors | [inputSelectors],
+  resultFunc
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelector</h4>
+
+    <pre class="javascript"><code>
+const mySelector = createSelector(
+  state => state.values.value1,
+  state => state.values.value2,
+  (value1, value2) => value1 + value2
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelector</h4>
+
+    <pre class="javascript"><code>
+const totalSelector = createSelector(
+  [
+    state => state.values.value1,
+    state => state.values.value2
+  ],
+  (value1, value2) => value1 + value2
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelector</h4>
+
+    <pre class="javascript"><code>
+const mySelector = createSelector(
+  (input1, input2) => input1.value + input2.value,
+  (input1, input2) => input1.value - input2.value,
+  (value1, value2) => value1 + value2
+)
+
+mySelector({ value: 4 }, { value: 2 })
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - defaultMemoize</h4>
+
+    <pre class="javascript"><code>
+defaultMemoize(
+  func,
+  equalityCheck = defaultEqualityCheck
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelectorCreator</h4>
+
+    <pre class="javascript"><code>
+createSelectorCreator(
+  memoize,
+  ...memoizeOptions
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelectorCreator</h4>
+
+    <pre class="javascript"><code>
+const custom = createSelectorCreator(
+  customMemoize,
+  option1, // 2nd param to customMemoize
+  option2, // 3rd
+  option3, // 4th
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createSelectorCreator</h4>
+
+    <pre class="javascript"><code>
+const customSelector = custom(
+  input1,
+  input2,
+  resultFunc // 1st param to customMemoize
+)
+
+// customMemoize(resultFunc, option1, option2, option3)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Deep equal</h4>
+
+    <pre class="javascript"><code>
+import {
+  createSelectorCreator,
+  defaultMemoize
+} from 'reselect';
+
+import isEqual from 'lodash.isEqual';
+
+const deep = createSelectorCreator(
+  defaultMemoize,
+  isEqual
+);
+
+const mySelector = deep(
+  state => state.values.filter(val => val < 5),
+  values => ...
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Unlimited cache</h4>
+
+    <pre class="javascript"><code>
+import {
+  createSelectorCreator
+} from 'reselect';
+
+import memoize from 'lodash.memoize'
+
+const hash = (...args) => args.reduce(
+  (acc, val) => acc + '-' + JSON.stringify(val),
+  ''
+);
+
+const unlimited = createSelectorCreator(
+  memoize,
+  hashFn
+);
+
+const selector = unlimited(...);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createStructuredSelector</h4>
+
+    <pre class="javascript"><code>
+createStructuredSelector(
+  {inputSelectors},
+  selectorCreator = createSelector
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createStructuredSelector</h4>
+
+    <pre class="javascript"><code>
+const mySelectorA = state => state.a;
+const mySelectorB = state => state.b;
+
+const structuredSelector
+  = createStructuredSelector({
+    x: mySelectorA,
+    y: mySelectorB
+  });
+
+const result = structuredSelector({ a: 1, b: 2 });
+// { x: 1, y: 2 }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - createStructuredSelector</h4>
+
+    <pre class="javascript"><code>
+const nestedSelector = createStructuredSelector({
+  subA: createStructuredSelector({
+    selectorA,
+    selectorB
+  }),
+  subB: createStructuredSelector({
+    selectorC,
+    selectorD
+  })
+})
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Reselect - Factory</h4>
+
+    <pre class="javascript"><code>
+const expensiveItemSelectorFactory = minValue =>
+  createSelector(
+    shopItemsSelector,
+    items =>
+      items.filter(item => item.value > minValue)
+  );
+
+const subtotalSelector = createSelector(
+  expensiveItemSelectorFactory(200),
+  ...
+);
+    </code></pre>
+  </section>
+
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

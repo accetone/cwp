@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP33</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Recompose</h2>
+      <p class="author">
+          <small>Лекция 33</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Recompose</h4>
+
+    <ul>
+      <li class="fragment">набор хелперов для создания HOC</li>
+      <li class="fragment"><a href="https://github.com/acdlite/recompose">acdlite/recompose</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Recompose - Install</h4>
+
+    <pre class="javascript"><code>
+npm install recompose
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - HOC</h4>
+
+    <pre class="javascript"><code>
+const EnhancedComponent = hoc(BaseComponent)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - HOC's composition</h4>
+
+    <pre class="javascript"><code>
+const composedHoc = compose(hoc1, hoc2, hoc3)
+
+// Same as
+const composedHoc = BaseComponent =>
+  hoc1(
+    hoc2(
+      hoc3(
+        BaseComponent
+      )
+    )
+  )
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - Wrap state</h4>
+
+    <pre class="javascript"><code>
+const enhance = withState(
+  'counter',
+  'setCounter',
+  0
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - Wrap state</h4>
+
+    <pre class="javascript"><code>
+const Counter = enhance(
+  ({ counter, setCounter }) =&gt;
+    &lt;div&gt;
+      Count: {counter}
+
+      &lt;button
+        onClick={() =&gt; setCounter(n =&gt; n + 1)}
+      &gt;
+        Increment
+      &lt;/button&gt;
+      &lt;button
+        onClick={() =&gt; setCounter(n =&gt; n - 1)}
+      &gt;
+        Decrement
+      &lt;/button&gt;
+    &lt;/div&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - mapProps</h4>
+
+    <pre class="javascript"><code>
+// трансформировать props
+mapProps(
+  propsMapper: (ownerProps: Object) => Object,
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - mapProps</h4>
+
+    <pre class="javascript"><code>
+// исключить некоторые ключи
+const omitProps
+  = keys =>
+      mapProps(
+        props => Object
+          .keys(props)
+          .filter(x => keys.every(y => y !== x))
+          .reduce((r, x) => {
+            r[x] = props[x];
+            return r;
+          }, {})
+      )
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withProps</h4>
+
+    <pre class="javascript"><code>
+// сливает пропсы с созданными или переданными
+withProps(
+  createProps: (ownerProps: Object) => Object | Object
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withPropsOnChange</h4>
+
+    <pre class="javascript"><code>
+// сливает пропсы с созданными или переданными
+// только при изменении ключей или условия
+withPropsOnChange(
+  shouldMapOrKeys: Array&lt;string&gt;
+    | (props: Object, nextProps: Object) =&gt; boolean,
+
+  createProps: (ownerProps: Object) =&gt; Object
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withHandlers</h4>
+
+    <pre class="javascript"><code>
+// создаёт иммутабельные колбеки в пропсах
+withHandlers(
+  handlerCreators: {
+    [handlerName: string]: (props: Object) => Function
+  } |
+  handlerCreatorsFactory: (initialProps) => {
+    [handlerName: string]: (props: Object) => Function
+  }
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withHandlers</h4>
+
+    <pre class="javascript"><code>
+const enhance = compose(
+  withState('value', 'updateValue', ''),
+  withHandlers({
+    onChange: props => event => {
+      props.updateValue(event.target.value)
+    },
+    onSubmit: props => event => {
+      event.preventDefault()
+      submitForm(props.value)
+    }
+  })
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withHandlers</h4>
+
+    <pre class="javascript"><code>
+const Form = enhance(
+  ({ value, onChange, onSubmit }) =&gt;
+    &lt;form onSubmit={onSubmit}&gt;
+      &lt;label&gt;Value
+        &lt;input
+          type=&quot;text&quot;
+          value={value}
+          onChange={onChange}
+        /&gt;
+      &lt;/label&gt;
+    &lt;/form&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - defaultProps</h4>
+
+    <pre class="javascript"><code>
+// сливает дефолтные пропсы с переданными
+defaultProps(
+  props: Object
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renameProp</h4>
+
+    <pre class="javascript"><code>
+// переименовывает пропс
+renameProp(
+  oldName: string,
+  newName: string
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renameProps</h4>
+
+    <pre class="javascript"><code>
+// переименовывает пропсы
+renameProps(
+  nameMap: { [key: string]: string }
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - flattenProp</h4>
+
+    <pre class="javascript"><code>
+// спридит пропс в корень пропсов
+flattenProp(
+  propName: string
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - flattenProp</h4>
+
+    <pre class="javascript"><code>
+const enhance = compose(
+  withProps({
+    object: { a: 'a', b: 'b' },
+    c: 'c'
+  }),
+  flattenProp('object')
+)
+
+const Abc = enhance(BaseComponent)
+
+// Base component receives props:
+// { a: 'a', b: 'b', c: 'c', object: { a: 'a', b: 'b' } }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - flattenProp</h4>
+
+    <pre class="javascript"><code>
+const Post = ({
+  post: { title, content, author }
+}) =&gt;
+  &lt;article&gt;
+    &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;h2&gt;By {author.name}&lt;/h2&gt;
+    &lt;div&gt;{content}&lt;/div&gt;
+  &lt;/article&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - flattenProp</h4>
+
+    <pre class="javascript"><code>
+const enhance = flattenProp('post')
+
+const Post = enhance(({
+  title, content, author
+}) =&gt;
+  &lt;article&gt;
+    &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;h2&gt;By {author.name}&lt;/h2&gt;
+    &lt;div&gt;{content}&lt;/div&gt;
+  &lt;/article&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withState</h4>
+
+    <pre class="javascript"><code>
+// добавляет состояние и метод обновления
+withState(
+  stateName: string,
+  stateUpdaterName: string,
+  initialState: any | (props: Object) => any
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withState</h4>
+
+    <pre class="javascript"><code>
+const addCounting = compose(
+  withState('counter', 'setCounter', 0),
+
+  withHandlers({
+    increment: ({ setCounter }) =>
+      () => setCounter(n => n + 1),
+
+    decrement: ({ setCounter }) =>
+      () => setCounter(n => n - 1),
+
+    reset: ({ setCounter }) =>
+      () => setCounter(0)
+  })
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withStateHandlers</h4>
+
+    <pre class="javascript"><code>
+// добавляет состояние и несколько методов
+// для обновления
+withStateHandlers(
+  initialState: Object | (props: Object) => any,
+  stateUpdaters: {
+    [key: string]: (state:Object, props:Object)
+      => (...payload: any[]) => Object
+  }
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withStateHandlers</h4>
+
+    <pre class="javascript"><code>
+const addCounting = withStateHandlers(
+  ({ initialCounter = 0 }) => ({
+    counter: initialCounter,
+  }),
+  {
+    incrementOn: ({ counter }) => (value) => ({
+      counter: counter + value,
+    }),
+    decrementOn: ({ counter }) => (value) => ({
+      counter: counter - value,
+    }),
+    resetCounter: (_, { initialCounter = 0 }) => () => ({
+      counter: initialCounter,
+    }),
+  }
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withReducer</h4>
+
+    <pre class="javascript"><code>
+// добавляет состояние
+// метод для диспетчеризации
+// и обновление через редьюсер
+withReducer&lt;S, A&gt;(
+  stateName: string,
+  dispatchName: string,
+  reducer: (state: S, action: A) =&gt; S,
+  initialState: S | (ownerProps: Object) =&gt; S
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - branch</h4>
+
+    <pre class="javascript"><code>
+// условный рендеринг
+branch(
+  test: (props: Object) => boolean,
+  left: HigherOrderComponent,
+  right: ?HigherOrderComponent
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renderComponent</h4>
+
+    <pre class="javascript"><code>
+// превращение в HOC
+renderComponent(
+  Component: ReactClass | ReactFunctionalComponent | string
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renderComponent</h4>
+
+    <pre class="javascript"><code>
+const spinnerWhileLoading = isLoading =>
+  branch(
+    isLoading,
+    renderComponent(Spinner)
+  )
+
+const enhance = spinnerWhileLoading(
+  props => !(props.title && props.content)
+)
+
+const Post = enhance(({ title, content }) =>
+  &lt;article&gt;
+    &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;div&gt;{content}&lt;/div&gt;
+  &lt;/article&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renderNothing</h4>
+
+    <pre class="javascript"><code>
+// всегда рендерит null
+renderNothing: HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - renderNothing</h4>
+
+    <pre class="javascript"><code>
+const hideIfNoData = hasNoData =>
+  branch(
+    hasNoData,
+    renderNothing
+  )
+
+const enhance = hideIfNoData(
+  props => !(props.title && props.content)
+)
+
+const Post = enhance(({ title, content }) =>
+  &lt;article&gt;
+    &lt;h1&gt;{title}&lt;/h1&gt;
+    &lt;div&gt;{content}&lt;/div&gt;
+  &lt;/article&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - shouldUpdate</h4>
+
+    <pre class="javascript"><code>
+// аналог shouldComponentUpdate
+shouldUpdate(
+  test: (props: Object, nextProps: Object) => boolean
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - pure</h4>
+
+    <pre class="javascript"><code>
+// аналог PureComponent
+pure: HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - onlyUpdateForKeys</h4>
+
+    <pre class="javascript"><code>
+// ре-рендер только если изменились
+// значения указанных ключей
+onlyUpdateForKeys(
+  propKeys: Array&lt;string&gt;
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - lifecycle</h4>
+
+    <pre class="javascript"><code>
+// навешивание обработчиков ЖЦ
+lifecycle(
+  spec: Object,
+): HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - lifecycle</h4>
+
+    <pre class="javascript"><code>
+const PostsList = ({ posts }) =&gt; (
+  &lt;ul&gt;{posts.map(p =&gt; &lt;li&gt;{p.title}&lt;/li&gt;)}&lt;/ul&gt;
+)
+
+const PostsListWithData = lifecycle({
+  componentDidMount() {
+    fetchPosts().then(posts =&gt; {
+      this.setState({ posts });
+    })
+  }
+})(PostsList);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - toClass</h4>
+
+    <pre class="javascript"><code>
+// оборачивает функциональный компонент
+// в класс
+toClass: HigherOrderComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withRenderProps</h4>
+
+    <pre class="javascript"><code>
+// создаёт компонент
+// к его children будет применён HOC
+withRenderProps(
+  hoc: HigherOrderComponent
+): ReactFunctionalComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - withRenderProps</h4>
+
+    <pre class="javascript"><code>
+const enhance = withProps(
+  ({ foo }) =&gt; ({ fooPlusOne: foo + 1 })
+)
+
+const Enhanced = withRenderProps(enhance)
+
+&lt;Enhanced foo={1}&gt;
+  {({ fooPlusOne }) =&gt; &lt;h1&gt;{fooPlusOne}&lt;/h1&gt;}
+&lt;/Enhanced&gt;
+// renders &lt;h1&gt;2&lt;/h1&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - compose</h4>
+
+    <pre class="javascript"><code>
+// делает композицию HOC's
+// справа налево
+compose(...functions: Array&lt;Function&gt;): Function
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - componentFromProp</h4>
+
+    <pre class="javascript"><code>
+// принимает компонент в пропсах
+// рендерит его с остальными пропсами
+componentFromProp(propName: string): ReactFunctionalComponent
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - componentFromProp</h4>
+
+    <pre class="javascript"><code>
+const enhance = defaultProps({
+  component: &#39;button&#39;
+})
+
+const Button = enhance(
+  componentFromProp(&#39;component&#39;)
+)
+
+&lt;Button foo=&quot;bar&quot; /&gt;
+// &lt;button foo=&quot;bar&quot; /&gt;
+
+&lt;Button component=&quot;a&quot; foo=&quot;bar&quot; /&gt;
+// &lt;a foo=&quot;bar&quot; /&gt;
+
+&lt;Button component={Link} foo=&quot;bar&quot; /&gt;
+// &lt;Link foo=&quot;bar&quot; /&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - nest</h4>
+
+    <pre class="javascript"><code>
+// композиция компонентов через вложенность
+nest(
+  ...Components: Array
+      &lt;ReactClass
+      | ReactFunctionalComponent
+      | string
+      &gt;
+): ReactClass
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>Recompose - nest</h4>
+
+    <pre class="javascript"><code>
+const ABC = nest(A, B, C)
+&lt;ABC pass=&quot;through&quot;&gt;Child&lt;/ABC&gt;
+
+// Effectively the same as
+&lt;A pass=&quot;through&quot;&gt;
+  &lt;B pass=&quot;through&quot;&gt;
+    &lt;C pass=&quot;through&quot;&gt;
+      Child
+    &lt;/C&gt;
+  &lt;/B&gt;
+&lt;/A&gt;
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP34</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>PropTypes</h2>
+      <p class="author">
+          <small>Лекция 34</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>PropTypes</h4>
+
+    <ul>
+      <li class="fragment">проверка типов</li>
+      <li class="fragment">во время выполнения</li>
+      <li class="fragment">в development режиме</li>
+      <li class="fragment"><a href="https://www.npmjs.com/package/prop-types">prop-types</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>PropTypes - Install</h4>
+
+    <pre class="javascript"><code>
+npm install prop-types
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Example</h4>
+
+    <pre class="javascript"><code>
+import React from 'react';
+import PropTypes from &#39;prop-types&#39;;
+
+class Greeting extends React.Component {
+  render() {
+    return (
+      &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;
+    );
+  }
+}
+
+Greeting.propTypes = {
+  name: PropTypes.string
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Basic Types</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalBool: PropTypes.bool,
+  optionalFunc: PropTypes.func,
+  optionalNumber: PropTypes.number,
+  optionalString: PropTypes.string,
+  optionalSymbol: PropTypes.symbol,
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Array</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalArray: PropTypes.array,
+  optionalArrayOf: PropTypes.arrayOf(
+    PropTypes.number
+  ),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Object</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalObject: PropTypes.object,
+  optionalObjectOf: PropTypes.objectOf(
+    PropTypes.number
+  ),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Node</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  // любой тип который React может отрендерить
+  // число, строка, элемент или массив с ними
+  optionalNode: PropTypes.node,
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Element</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  // React-элемент
+  optionalElement: PropTypes.element,
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Class</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalMessage: PropTypes.instanceOf(Message),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Enum</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalEnum: PropTypes.oneOf(
+    ['News', 'Photos']
+  ),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Union</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalUnion: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.instanceOf(Message)
+  ]),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Shape</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  optionalObjectWithShape: PropTypes.shape({
+    color: PropTypes.string,
+    fontSize: PropTypes.number
+  }),
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Required</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  requiredFunc: PropTypes.func.isRequired,
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Any</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  requiredAny: PropTypes.any.isRequired,
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Custom</h4>
+
+    <pre class="javascript"><code>
+MyComponent.propTypes = {
+  custom: (props, propName, componentName) => {
+    if (!/matchme/.test(props[propName])) {
+      return new Error('Invalid prop');
+    }
+  },
+
+  customArray: PropTypes.arrayOf(
+    (propValue, key, componentName, location, propFullName) => {...}
+  ),
+
+  customObject: PropTypes.objectOf(
+    ...
+  )
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>PropTypes - Default</h4>
+
+    <pre class="javascript"><code>
+class Greeting extends React.Component {
+  render() {
+    return (
+      &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;
+    );
+  }
+}
+
+// Specifies the default values for props:
+Greeting.defaultProps = {
+  name: &#39;Stranger&#39;
+};
+
+// Renders &quot;Hello, Stranger&quot;:
+ReactDOM.render(
+  &lt;Greeting /&gt;,
+  document.getElementById(&#39;example&#39;)
+);
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

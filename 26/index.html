@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP26</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Инструменты сборки</h2>
+      <p class="author">
+          <small>Лекция 26</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>Инструменты сборки</h4>
+
+    <ul class="left">
+      <li class="fragment">транспиляция js</li>
+      <li class="fragment">компиляция стилей</li>
+      <li class="fragment">компиляция шаблонов</li>
+      <li class="fragment">сборка html</li>
+      <li class="fragment">сборка спрайтов</li>
+      <li class="fragment">тестирование</li>
+      <li class="fragment">деплой</li>
+      <li class="fragment">...</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Инструменты сборки</h4>
+
+    <ul class="left">
+      <li class="fragment">локальная</li>
+      <li class="fragment">удаленная</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Инструменты сборки</h4>
+
+    <ul class="left">
+      <li class="fragment">таск-ранеры (grunt, gulp, branch)</li>
+      <li class="fragment">сборщики (webpack, rollup, browserify)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3><span class="red">W</span>ebpack</h3>
+  </section>
+
+  <section>
+    <h4>Webpack - JS</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const hello = name => console.log(`hello ${name}`);
+
+hello('stranger');
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - JS</h4>
+
+    <div class="left">
+      <pre class="bash"><code>
+npm i --save-dev webpack
+npm i --save-dev webpack-cli
+npm i --save-dev babel-core
+npm i --save-dev babel-loader
+npm i --save-dev babel-preset-env
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - JS</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// webpack.config.js
+module.exports = {
+  mode: 'development',
+  entry: './app.js',
+  output: {
+    path: '.',
+    filename: 'app.es5.js',
+  },
+  module: {
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      loader: 'babel-loader',
+      options: {
+        presets: ['babel-preset-env']
+      }
+    }]
+  }
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - JS</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+... код обёртки
+
+var hello = function hello(name) {
+  return console.log('hello ' + name);
+};
+
+hello('stranger');
+
+... код обёртки
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - React</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const Hello = props => (
+  &lt;div&gt;hello {props.name}&lt;/div&gt;
+);
+
+ReactDOM.render(
+  document.getElementById('app'),
+  &lt;Hello name="stranger"/&gt;
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - React</h4>
+
+    <div class="left">
+      <pre class="bash"><code>
+npm i react react-dom
+npm i --save-dev babel-preset-react
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - React</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// webpack.config.js
+module.exports = {
+  ...
+  module: {
+    rules: [{
+      ...
+      options: {
+        presets: [
+          'babel-preset-env',
+          'babel-preset-react',
+        ]
+      }
+    }]
+  }
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - React</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+... код обёртки
+
+var _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");
+var _react2 = _interopRequireDefault(_react);
+var _reactDom = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - React</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+...
+
+var Hello = function Hello(props) {
+  return _react2.default.createElement(
+    'div',
+    'hello ',
+    props.name
+  );
+};
+
+_reactDom2.default.render(
+  document.getElementById('app'),
+  _react2.default.createElement(
+    Hello,
+    { name: 'stranger' }
+  )
+);
+
+... код обёртки
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Entry</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+entry: './path/to/my/entry/file.js'
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Entry</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+entry: {
+  app: './src/app.js',
+  vendors: './src/vendors.js'
+}
+      </code></pre>
+
+      <pre class="javascript"><code>
+entry: {
+  pageOne: './src/pageOne/index.js',
+  pageTwo: './src/pageTwo/index.js',
+  pageThree: './src/pageThree/index.js'
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Output</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+output: {
+  filename: 'bundle.js',
+  path: '/home/proj/public/assets'
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Output</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+entry: {
+  app: './src/app.js',
+  search: './src/search.js'
+},
+output: {
+  filename: '[name]-[hash].js',
+  path: __dirname + '/dist'
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Mode</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+/* development:
+- process.env.NODE_ENV='development'
+- NamedModulesPlugin - относительные пути модулей
+*/
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Mode</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+/* production:
+- process.env.NODE_ENV='production'
+- UglifyJsPlugin
+- ModuleConcatenationPlugin
+- NoEmitOnErrorsPlugin - фейл при ошибках
+*/
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// работают на уровне файла
+module: {
+  rules: [
+    { test: /\.css$/, use: 'css-loader' },
+    { test: /\.ts$/, use: 'ts-loader' }
+  ]
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-env
+- babel-preset-latest
+  or
+- babel-preset-es2015
+- babel-preset-es2016
+- babel-preset-es2017
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-env
+"presets": [
+  ["env", {
+    "targets": {
+      "browsers": [
+        "last 2 versions",
+        "safari >= 7"
+      ]
+    }
+  }]
+]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-stage-0
+- stage 0-3 features
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-stage-0
+
+::this.func
+this.func.bind(this)
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-stage-0
+
+export * as ns from 'mod';
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Loaders</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// babel-preset-stage-0
+
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+console.log(x); // 1
+console.log(y); // 2
+console.log(z); // { a: 3, b: 4 }
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Plugins</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// работают на уровне бандла
+plugins:[
+  new webpack.DefinePlugin({
+    'REPLACE_TEXT': 'TO_THIS'
+  })
+]
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Resolution</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import foo from 'path/to/module'
+// or
+require('path/to/module')
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+npm i --save-dev webpack-dev-server
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// webpack.config.js
+const webpack = require('webpack');
+
+module.exports = {
+  mode: 'development',
+  entry: './app.js',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    hot: true
+  },
+  ...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// webpack.config.js
+  ...
+  module: {
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          'babel-preset-env',
+          'babel-preset-react'
+        ]
+      }
+    }]
+  },
+  ...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// webpack.config.js
+  ...
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  output: {
+    filename: 'app.js',
+    path: __dirname + '/dist'
+  }
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// app.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import { Hello } from './hello';
+
+ReactDOM.render(
+  &lt;Hello /&gt;,
+  document.getElementById('app')
+);
+
+if (module.hot) {
+  module.hot.accept();
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - HMR</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// hello.js
+import React from 'react';
+
+export class Hello extends React.Component {
+	render() {
+		return (
+			<div>
+				Hello Stranger!
+			</div>
+		);
+	}
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Code splitting</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import React from &#39;react&#39;;
+import ReactDOM from &#39;react-dom&#39;;
+
+const Hello = props =&gt; (
+  &lt;div&gt;hello {props.name}&lt;/div&gt;
+);
+
+ReactDOM.render(
+  document.getElementById(&#39;app&#39;),
+  &lt;Hello name=&quot;stranger&quot;/&gt;
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Code splitting</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+import React from &#39;react&#39;;
+import ReactDOM from &#39;react-dom&#39;;
+
+const Hello = props =&gt; (
+  &lt;div&gt;hello {props.name}&lt;/div&gt;
+);
+
+ReactDOM.render(
+  document.getElementById(&#39;app&#39;),
+  &lt;Hello name=&quot;ranger&quot;/&gt;
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Code splitting</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+module.exports = {
+  mode: 'development',
+  entry: {
+    app: './app.js',
+    app2: './app-2.js'
+  },
+  module: {
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      loader: 'babel-loader',
+      options: {
+        presets: ['babel-preset-env', 'babel-preset-react']
+      }
+    }]
+  },
+  ...
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Webpack - Code splitting</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+  ...
+  output: {
+    filename: '[name].js',
+    path: __dirname + '/dist'
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all"
+        }
+      }
+    }
+  },
+};
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">G</span>ulp</h3>
+  </section>
+
+  <section>
+    <h4>Gulp</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+npm i gulp --save-dev
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// gulpfile.js
+const gulp = require('gulp');
+
+gulp.task('hello', () => {
+  console.log('hello world');
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+npx gulp hello
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - Dependencies</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('task1', () => {
+  console.log('task1');
+});
+
+gulp.task('task2', () => {
+  console.log('task2');
+});
+
+gulp.task('hello', ['task1','task2'], () => {
+  console.log('hello world');
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - src & dest</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('copy', () => {
+  return gulp
+    .src('./js/app/index.js')
+    .dest('./js/app/copy.js');
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - globs</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('bundle__js', () => {
+    return gulp
+      .src([
+        './js/**/*.js',
+        '!./js/**/*.min.js'
+      ])
+      .pipe(...);
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - watch</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('watch__js', () => {
+  return gulp.watch(
+    'js/**/*.js',
+    ['uglify','reload']
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+const gulp = require('gulp');
+const browserSync = require('browser-sync')
+  .create();
+
+const sass = require('gulp-sass');
+const csso = require('gulp-csso');
+const autoprefixer = require('gulp-autoprefixer');
+
+const webpackStream = require('webpack-stream');
+
+const sourcemaps = require('gulp-sourcemaps');
+const rename = require('gulp-rename');
+const concat = require('gulp-concat');
+const gutil = require('gulp-util');
+const watch = require('gulp-watch');
+
+const webpackConfig = require('./webpack.config');
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('init__browser-sync', () => {
+  browserSync.init({
+    server: './public',
+    open: 'local'
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('compile__js', () => {
+  return gulp
+    .src('./js/app/index.js')
+
+    .pipe(webpackStream(webpackConfigProd))
+    .on('error', function (error) {
+      browserSync.notify('Error bundling JSX', 5000);
+
+      gutil.log('\n\n',
+        gutil.colors.red(error.stack),
+        '\n\n');
+
+      this.emit('end');
+    })
+
+    .pipe(rename('app.js'))
+    .pipe(gulp.dest('./public/js'))
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('bundle__js', () => {
+  return gulp
+    .src(['./js/**/*.js', '!./js/app/**/*'])
+    .pipe(gulp.dest('./public/js'));
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('build__js', ['compile__js', 'build__js'], () => {
+  browserSync.reload();
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('watch__js', () => {
+  watch(
+    './js/**/*.js',
+    { ignoreInitial: false },
+    () => {
+      gulp.start('build__js')
+    }
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('compile__css', () => {
+  return gulp.src(`./sass/*.scss`)
+
+    .pipe(sass())
+    .on('error', function (error) {
+      browserSync.notify('Error on compiling SCSS', 5000);
+      gutil.log('\n\n', gutil.colors.red(error.stack), '\n\n');
+      this.emit('end');
+    })
+
+    .pipe(autoprefixer())
+    .pipe(csso())
+
+    .pipe(concat(`site.css`))
+    .pipe(gulp.dest('./public/css'))
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('bundle__css', () => {
+  return gulp
+    .src('./css/**/*.css')
+    .pipe(gulp.dest('./public/css'));
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('build__css',
+  ['compile__css', 'bundle__css'],
+  () => {
+    gulp.src('./public/css/**/*.css')
+      .pipe(browserSync.stream({once: true}));
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('watch__css', () =>  {
+  watch('./sass/**/*.scss',
+    { ignoreInitial: false },
+    () => {
+      gulp.start('build__css');
+    }
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('build__html', () => {
+  return gulp
+    .src('./html/**/*.html')
+    .pipe(gulp.dest('./public'))
+    .pipe(browserSync.reload({stream:true}))
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('watch__html', () => {
+  watch('./html/**/*.html',
+    { ignoreInitial: false },
+    () => {
+      gulp.start('build__html');
+    }
+  );
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('build__images', () => {
+  return gulp
+    .src('./images/**/*')
+    .pipe(gulp.dest('./public/images'))
+    .pipe(browserSync.reload({stream:true}))
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task('watch__images', () => {
+  watch('./images/**/*', { ignoreInitial: false }, () => {
+    gulp.start('build__images');
+  });
+});
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>Gulp - IRL</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+gulp.task(
+  'development',
+  [
+    'init__browser-sync',
+    'watch__js',
+    'watch__css',
+    'watch__html',
+    'watch__images'
+  ],
+  () => {}
+);
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h3><span class="red">n</span>pm scripts</h3>
+  </section>
+
+  <section>
+    <h4>npm scripts</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+// package.json
+"scripts": {
+  "jshint": "jshint src/js/*.js",
+  "browsersync": "browser-sync start --server --files 'src/*'",
+  "uglify": "uglify src/js/**/*.js > dist/js/script.min.js",
+  "test": "mocha",
+  "clean": "rm -rf dist",
+  "sass:dist": "sass src/css/style.scss > dist/css/style.min.css",
+  "htmlmin": "htmlmin -cs dist/index.html tmp/index.html",
+  "imagemin": "imagemin src/images/* dist/images/* -p",
+  "build:js": "npm run jshint && npm run uglify",
+  "build": "npm run clean && npm run htmlmin && npm run build:js && npm run sass && npm runimagemin",
+  "watch": "watch 'npm run build' ."
+},
+      </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h4>npm scripts</h4>
+
+    <div class="left">
+      <pre class="javascript"><code>
+npm run build
+      </code></pre>
+    </div>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

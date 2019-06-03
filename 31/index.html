@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP31</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>React Router</h2>
+      <p class="author">
+          <small>Лекция 31</small>
+      </p>
+  </section>
+
+  <section>
+    <h4>React Router</h4>
+
+    <ul>
+      <li class="fragment">роутинг для React</li>
+      <li class="fragment">декларативный</li>
+      <li class="fragment">LEARN ONCE, ROUTE ANYWHERE</li>
+      <li class="fragment"><a href="https://reacttraining.com/react-router/">reacttraining.com/react-router</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React Router - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save react-router-dom
+    </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script
+  src=&quot;https://unpkg.com/react-router-dom/umd/react-router-dom.min.js&quot;
+&gt;&lt;/script&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Key Components</h4>
+
+    <ul>
+      <li class="fragment">BrowserRouter / HashRouter</li>
+      <li class="fragment">Route</li>
+      <li class="fragment">Link</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+import React from 'react';
+
+import {
+  HashRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const Home = () =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;Home&lt;/h2&gt;
+  &lt;/div&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const About = () =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;About&lt;/h2&gt;
+  &lt;/div&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const frameworks = [
+  {
+    name:'angular',
+    desc: 'Superheroic JavaScript MVW Framework'
+  },
+  {
+    name:'ember',
+    desc: 'A framework for creating ambitious web applications'
+  },
+  {
+    name:'react',
+    desc: 'A JavaScript library for building user interfaces'
+  }
+];
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const Framework = (props) =&gt; {
+  const framework = frameworks
+    .find(x =&gt;
+      x.name === props.match.params.name
+    );
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;{framework.name}&lt;/h3&gt;
+      &lt;p&gt;{framework.desc}&lt;/p&gt;
+    &lt;/div&gt;);
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const Frameworks = (props) =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;Frameworks&lt;/h2&gt;
+
+    {frameworks.map(x =&gt;
+      &lt;div key={x.name}&gt;
+        &lt;Link
+            to={`${props.match.url}/${x.name}`}&gt;
+          {x.name}
+        &lt;Link&gt;
+      &lt;/div&gt;
+    )}
+
+    &lt;hr/&gt;
+    ...
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const Frameworks = (props) =&gt; (
+  &lt;div&gt;
+    ...
+
+    &lt;Route
+      path={`${props.match.url}/:name`}
+      component={Framework}
+    /&gt;
+    &lt;Route
+      exact
+      path={props.match.url}
+      render={() =&gt; (
+        &lt;h3&gt;Please select a framework.&lt;/h3&gt;
+      )}
+    /&gt;
+  &lt;/div&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+const App = () =&gt; (
+  &lt;HashRouter&gt;
+    &lt;div&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;Link to=&quot;/&quot;&gt;Home&lt;/Link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;Link to=&quot;/frameworks&quot;&gt;Frameworks&lt;/Link&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+
+      &lt;hr/&gt;
+
+      &lt;Route exact path=&quot;/&quot; component={Home}/&gt;
+      &lt;Route path=&quot;/about&quot; component={About}/&gt;
+      &lt;Route path=&quot;/frameworks&quot; component={Frameworks} /&gt;
+    &lt;/div&gt;
+  &lt;/HashRouter&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Quick Start</h4>
+
+    <pre class="javascript"><code>
+ReactDOM.render(
+  &lt;App/&gt;,
+  document.getElementById('app')
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+function humans(state = [], action) {
+  switch (action.type) {
+    case 'HUMANS_ADD':
+      return [
+        ...state,
+        { name: action.name }
+      ];
+  }
+
+  return state;
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+function robots(state = [], action) {
+  switch (action.type) {
+    case 'ROBOTS_ADD':
+      return [
+        ...state,
+        {
+          name: action.name,
+          manufacturer: action.manufacturer
+        }
+      ];
+  }
+
+  return state;
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const reducer = Redux.combineReducers({
+  humans,
+  robots
+});
+
+const store = Redux.createStore(reducer, {
+  humans: [
+    { name: 'Leela' },
+    { name: 'Fry' }
+  ],
+  robots: [
+    { name: 'Bender', manufacturer: 'MomCorp'}
+  ]
+});
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const App = () =&gt; (
+  &lt;HashRouter&gt;
+    &lt;div&gt;
+      &lt;Link to=&quot;/&quot;&gt;
+        Home
+      &lt;/Link&gt;
+      {' '}
+      &lt;Link to=&quot;/humans&quot;&gt;
+        Humans
+      &lt;Link&gt;
+      {' '}
+      &lt;Link to=&quot;/robots&quot;&gt;
+        Robots
+      &lt;/Link&gt;
+      ...
+    &lt;/div&gt;
+  &lt;/HashRouter&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const App = () =&gt; (
+  &lt;HashRouter&gt;
+    &lt;div&gt;
+      ...
+      &lt;Route exact path=&quot;/&quot;
+        component={Home}/&gt;
+
+      &lt;Route path=&quot;/humans&quot;
+        component={HumansContainer}/&gt;
+
+      &lt;Route path=&quot;/robots&quot;
+        component={RobotsContainer}/&gt;
+      ...
+    &lt;/div&gt;
+  &lt;/HashRouter&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const App = () =&gt; (
+  &lt;HashRouter&gt;
+    &lt;div&gt;
+      ...
+      &lt;br/&gt;
+
+      &lt;StatsContainer /&gt;
+    &lt;/div&gt;
+  &lt;/HashRouter&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const Home = () =&gt; (
+  &lt;h2&gt;Welcome to Futurama!&lt;/h2&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const HumansContainer = ReactRedux.connect(
+  humansMapStateToProps,
+  humansMapDispatchToProps
+)(Humans);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const humansMapStateToProps = (state) =&gt; {
+  return {
+    list: state.humans,
+  };
+};
+
+const humansMapDispatchToProps = (dispatch) =&gt; {
+  return {
+    add: (human) =&gt; {
+      dispatch({
+        type: 'HUMANS_ADD',
+        name: human.name
+      });
+    }
+  };
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const Humans = (props) =&gt; {
+  const items = props.list.map(item =&gt; (
+    &lt;div key={item.name}&gt;{item.name}&lt;/div&gt;
+  ));
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Humans&lt;/h2&gt;
+      {items}
+      &lt;br/&gt;
+      &lt;AddItem
+        fields={['name']}
+        add={props.add}
+      /&gt;
+    &lt;/div&gt;
+  );
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const RobotsContainer = ReactRedux.connect(
+  robotsMapStateToProps,
+  robotsMapDispatchToProps
+)(Robots);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const robotsMapStateToProps = (state) =&gt; {
+  return {
+    list: state.robots,
+  };
+};
+
+const robotsMapDispatchToProps = (dispatch) =&gt; {
+  return {
+    add: (robot) =&gt; {
+      dispatch({
+        type: 'ROBOTS_ADD',
+        name: robot.name,
+        manufacturer: robot.manufacturer
+      });
+    }
+  };
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const Robots = (props) =&gt; {
+  const items = props.list.map(item =&gt; (
+    &lt;div key={item.name}&gt;
+      {item.name} [{item.manufacturer}]
+    &lt;/div&gt;
+  ));
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Robots&lt;/h2&gt;
+      {items}
+      &lt;br/&gt;
+      &lt;AddItem fields={['name', 'manufacturer']}
+        add={props.add} /&gt;
+    &lt;/div&gt;
+  );
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+class AddItem extends React.Component {
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+constructor(props) {
+  super(props);
+
+  this.state = {};
+
+  props.fields.forEach(x =&gt; this.state[x] = '');
+
+  this.__change = this.__change.bind(this);
+  this.__add = this.__add.bind(this);
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+render() {
+  const inputs = this.props.fields.map(x =&gt; {
+    const handler = (event) =&gt; {
+      this.__change(x, event);
+    };
+
+    return &lt;input key={x}
+      value={this.state[x]}
+      placeholder={x} onChange={handler} /&gt;;
+  });
+
+  return (
+    &lt;div&gt;
+      {inputs}
+      &lt;button onClick={this.__add}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+__change(field, event) {
+  const state = {};
+
+  state[field] = event.target.value;
+
+  this.setState(state);
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+__add() {
+  this.props.add(this.state);
+
+  const state = {};
+
+  this.props.fields.forEach(x =&gt; state[x] = '');
+
+  this.setState(state);
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const Stats = (props) =&gt; (
+  &lt;div&gt;Humans to kill: &lt;b&gt;{props.toKill}&lt;/b&gt;&lt;/div&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+const statsMapStateToProps = (state) =&gt; {
+  return {
+    toKill: state.humans.length,
+  };
+};
+
+const StatsContainer = ReactRedux.connect(
+  statsMapStateToProps
+)(Stats);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redux</h4>
+
+    <pre class="javascript"><code>
+ReactDOM.render(
+  &lt;ReactRedux.Provider store={store}&gt;
+    &lt;App/&gt;
+  &lt;/ReactRedux.Provider&gt;,
+  document.getElementById('app')
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+const App = (props) =&gt; (
+  &lt;BrowserRouter&gt;
+    ...
+  &lt;/BrowserRouter&gt;
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+const express = require('express');
+const path = require('path');
+
+const app = express();
+
+app.use(express.static('public'));
+
+app.get('/api', ...);
+
+app.get('/*', (req, res) => {
+  res.sendFile(
+    path.join(__dirname, 'public/index.html')
+  );
+});
+
+app.listen(4000, () => { console.log('Running'); });
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+basename: string
+
+&lt;BrowserRouter basename=&quot;/calendar&quot;/&gt;
+&lt;Link to=&quot;/today&quot;/&gt;
+// renders &lt;a href=&quot;/calendar/today&quot;&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+getUserConfirmation: func
+
+// this is the default behavior
+const getConfirmation = (message, callback) => {
+  const allowTransition = window.confirm(message)
+
+  callback(allowTransition)
+}
+
+&lt;BrowserRouter
+  getUserConfirmation={getConfirmation}
+/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+forceRefresh: bool
+
+const supportsHistory
+  = 'pushState' in window.history;
+
+&lt;BrowserRouter
+  forceRefresh={!supportsHistory}
+/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Browser Router</h4>
+
+    <pre class="javascript"><code>
+keyLength: number
+
+// unique key in location stack
+// defaults to 6
+&lt;BrowserRouter
+  keyLength={12}
+/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Hash Router</h4>
+
+    <pre class="javascript"><code>
+basename: string
+getUserConfirmation: func
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Hash Router</h4>
+
+    <pre class="javascript"><code>
+hashType: string
+
+// defaults to "slash"
+"slash" - #/sunshine/lollipops
+"noslash" - #sunshine/lollipops
+"hashbang" - #!/sunshine/lollipops
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Link</h4>
+
+    <pre class="javascript"><code>
+to: string
+
+&lt;Link to=&quot;/courses&quot;/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Link</h4>
+
+    <pre class="javascript"><code>
+to: object
+
+&lt;Link to={{
+  pathname: '/courses',
+  search: '?sort=name',
+  hash: '#the-hash',
+  state: { fromDashboard: true }
+}}/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Link</h4>
+
+    <pre class="javascript"><code>
+replace: bool
+
+// replace current entity in history stack
+&lt;Link to=&quot;/courses&quot; replace /&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - NavLink</h4>
+
+    <pre class="javascript"><code>
+activeClassName: string
+
+&lt;NavLink
+  to=&quot;/faq&quot;
+  activeClassName=&quot;selected&quot;
+&gt;FAQs&lt;/NavLink&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - NavLink</h4>
+
+    <pre class="javascript"><code>
+activeStyle: object
+
+&lt;NavLink
+  to=&quot;/faq&quot;
+  activeStyle={{
+    fontWeight: 'bold',
+    color: 'red'
+   }}
+&gt;FAQs&lt;/NavLink&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - NavLink</h4>
+
+    <pre class="javascript"><code>
+exact: bool
+
+// active class/style only if exact match
+&lt;NavLink
+  to=&quot;/faq&quot;
+  exact
+  activeStyle={{
+    fontWeight: 'bold',
+    color: 'red'
+   }}
+&gt;FAQs&lt;/NavLink&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - NavLink</h4>
+
+    <pre class="javascript"><code>
+isActive: func
+
+const oddEvent = (match, location) => {
+  if (!match) {
+    return false
+  }
+  const eventID = parseInt(match.params.eventID)
+  return !isNaN(eventID) && eventID % 2 === 1
+}
+
+&lt;NavLink
+  to=&quot;/events/123&quot;
+  isActive={oddEvent}
+&gt;Event 123&lt;/NavLink&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redirect</h4>
+
+    <pre class="javascript"><code>
+import { Route, Redirect } from 'react-router'
+
+&lt;Route exact path=&quot;/&quot; render={() =&gt; (
+  loggedIn ? (
+    &lt;Redirect to=&quot;/dashboard&quot;/&gt;
+  ) : (
+    &lt;PublicHomePage/&gt;
+  )
+)}/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redirect</h4>
+
+    <pre class="javascript"><code>
+to: string
+
+&lt;Redirect to=&quot;/somewhere/else&quot;/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redirect</h4>
+
+    <pre class="javascript"><code>
+to: object
+
+&lt;Redirect to={{
+  pathname: '/login',
+  search: '?utm=your+face',
+  state: { referrer: currentLocation }
+}}/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Redirect</h4>
+
+    <pre class="javascript"><code>
+push: bool
+
+// add new entry to history, not replace
+&lt;Redirect push to=&quot;/somewhere/else&quot;/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom'
+
+&lt;Router&gt;
+  &lt;div&gt;
+    &lt;Route exact path=&quot;/&quot; component={Home}/&gt;
+    &lt;Route path=&quot;/news&quot; component={NewsFeed}/&gt;
+  &lt;/div&gt;
+&lt;/Router&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+// route '/'
+&lt;div&gt;
+  &lt;Home/&gt;
+  &lt;!-- react-empty: 2 --&gt;
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+// route '/news'
+&lt;div&gt;
+  &lt;!-- react-empty: 1 --&gt;
+  &lt;NewsFeed/&gt;
+&lt;/div&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+// 3 render ways:
+&lt;Route component&gt;
+&lt;Route render&gt;
+&lt;Route children&gt;
+
+// all render ways will receive 3 props:
+match
+location
+history
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+// uses React.createElement
+&lt;Route path=&quot;/user/:username&quot; component={User}/&gt;
+
+const User = ({ match }) =&gt; {
+  return &lt;h1&gt;Hello {match.params.username}!&lt;/h1&gt;
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="javascript"><code>
+// convenient inline rendering
+&lt;Route path=&quot;/home&quot;
+  render={() =&gt; &lt;div&gt;Home&lt;/div&gt;}
+/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="html"><code>
+// render even if URL is not match
+&lt;ul&gt;
+  &lt;ListItemLink to=&quot;/somewhere&quot;/&gt;
+  &lt;ListItemLink to=&quot;/somewhere-else&quot;/&gt;
+&lt;/ul&gt;
+
+const ListItemLink = ({ to, ...rest }) =&gt; (
+  &lt;Route path={to} children={({ match }) =&gt; (
+    &lt;li className={match ? 'active' : ''}&gt;
+      &lt;Link to={to} {...rest}/&gt;
+    &lt;/li&gt;
+  )}/&gt;
+)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="html"><code>
+path: string
+
+// routes without a path always match
+&lt;Route path=&quot;/users/:id&quot; component={User}/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="html"><code>
+exact: bool
+
+&lt;Route exact path=&quot;/one&quot; component={About}/&gt;
+    </code></pre>
+
+    <table class="fragment">
+      <thead>
+      <tr>
+        <th data-select-like-a-boss="1">path</th>
+        <th>location.pathname</th>
+        <th>exact</th>
+        <th>matches?</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><code>/one</code></td>
+        <td><code>/one/two</code></td>
+        <td><code>true</code></td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td><code>/one</code></td>
+        <td><code>/one/two</code></td>
+        <td><code>false</code></td>
+        <td>yes</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section>
+    <h4>React Router - Route</h4>
+
+    <pre class="html"><code>
+strict: bool
+
+&lt;Route strict path=&quot;/one/&quot; component={About}/&gt;
+    </code></pre>
+
+    <table class="fragment">
+      <thead>
+      <tr>
+        <th>path</th>
+        <th>location.pathname</th>
+        <th>matches?</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><code>/one/</code></td>
+        <td><code>/one</code></td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td><code>/one/</code></td>
+        <td><code>/one/</code></td>
+        <td>yes</td>
+      </tr>
+      <tr>
+        <td><code>/one/</code></td>
+        <td><code>/one/two</code></td>
+        <td>yes</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section>
+    <h4>React Router - Switch</h4>
+
+    <pre class="html"><code>
+&lt;Route path=&quot;/about&quot; component={About}/&gt;
+&lt;Route path=&quot;/about&quot; component={About}/&gt;
+&lt;Route path=&quot;/:user&quot; component={User}/&gt;
+&lt;Route component={NoMatch}/&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Switch</h4>
+
+    <pre class="html"><code>
+&lt;Switch&gt;
+  &lt;Route exact path=&quot;/&quot; component={Home}/&gt;
+  &lt;Route path=&quot;/about&quot; component={About}/&gt;
+  &lt;Route path=&quot;/:user&quot; component={User}/&gt;
+  &lt;Route component={NoMatch}/&gt;
+&lt;/Switch&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Switch</h4>
+
+    <pre class="html"><code>
+&lt;Switch&gt;
+  &lt;Route exact path=&quot;/&quot; component={Home}/&gt;
+
+  &lt;Route path=&quot;/users&quot; component={Users}/&gt;
+  &lt;Redirect from=&quot;/accounts&quot; to=&quot;/users&quot;/&gt;
+
+  &lt;Route component={NoMatch}/&gt;
+&lt;/Switch&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The number of entries in the history stack
+length - (number)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The current action (PUSH, REPLACE, or POP)
+action - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The current location
+location - (object)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The path of the URL
+location.pathname - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The URL query string
+location.search - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// The URL hash fragment
+location.hash - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// location-specific state that was provided
+// e.g. push(path, state)
+// only available in browser and memory history.
+location.state - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Pushes a new entry onto the history stack
+push(path, [state]) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Replaces the current entry on the history stack
+replace(path, [state]) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Moves the pointer in the history stack by n
+go(n) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Equivalent to go(-1)
+goBack() - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Equivalent to go(1)
+goForward() - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - history (prop)</h4>
+
+    <pre class="javascript"><code>
+// Prevents navigation
+block(prompt) - (function)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// Key/value pairs parsed from the URL
+// corresponding to the dynamic
+// segments of the path
+params - (object)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// true if the entire URL was matched
+isExact - (boolean)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+// The path pattern used to match.
+path - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="html"><code>
+// The matched portion of the URL
+url - (string)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - match (prop)</h4>
+
+    <pre class="javascript"><code>
+matchPath('/users/123', {
+  path: '/users/:id',
+  exact: true,
+  strict: false
+})
+
+=>
+
+{ isExact: true,
+  params: { id: "123" },
+  path: "/users/:id",
+  url: "/users/123" }
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+withRouter(connect(...)(MyComponent)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+class UpdateBlocker extends React.PureComponent {
+  render() {
+    return this.props.children
+  }
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="html"><code>
+// location = { pathname: '/about' }
+&lt;UpdateBlocker&gt;
+
+  &lt;NavLink to='/about'&gt;About&lt;/NavLink&gt;
+  // &lt;a href='/about' class='active'&gt;About&lt;/a&gt;
+
+  &lt;NavLink to='/faq'&gt;F.A.Q.&lt;/NavLink&gt;
+  // &lt;a href='/faq'&gt;F.A.Q.&lt;/a&gt;
+
+&lt;/UpdateBlocker&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="html"><code>
+// location = { pathname: '/faq' }
+&lt;UpdateBlocker&gt;
+
+  // the links will not re-render,
+  // so they retain their previous attributes
+
+  &lt;NavLink to='/about'&gt;About&lt;/NavLink&gt;
+  // &lt;a href='/about' class='active'&gt;About&lt;/a&gt;
+
+  &lt;NavLink to='/faq'&gt;F.A.Q.&lt;/NavLink&gt;
+  // &lt;a href='/faq'&gt;F.A.Q.&lt;/a&gt;
+
+&lt;/UpdateBlocker&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - withRouter</h4>
+
+    <pre class="javascript"><code>
+const BlockAvoider = withRouter(UpdateBlocker)
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - MemoryRouter</h4>
+
+    <pre class="javascript"><code>
+import { MemoryRouter } from 'react-router'
+
+/* for tests & non-browser envs */
+&lt;MemoryRouter&gt;
+  &lt;App/&gt;
+&lt;/MemoryRouter&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+npm i react-router-redux@next
+npm i history
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// store.js
+import {
+  createStore,
+  applyMiddleware,
+  compose } from 'redux';
+
+import createSagaMiddleware
+  from 'redux-saga';
+
+import createHistory
+  from 'history/createHashHistory';
+
+import { routerMiddleware }
+  from 'react-router-redux';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// store.js
+import reducer from './reducers';
+import sagas from './sagas';
+import initialState from './initial-state';
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// store.js
+const history = createHistory();
+const sagaMiddleware = createSagaMiddleware();
+
+let composeEnhancers = compose;
+
+if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
+    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+}
+
+const store = createStore(
+    reducer,
+    initialState,
+    composeEnhancers(
+      applyMiddleware(sagaMiddleware),
+      applyMiddleware(routerMiddleware(history))
+    )
+);
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// store.js
+sagaMiddleware.run(sagas);
+
+store.history = history;
+
+export default store;
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ConnectedRouter } from 'react-router-redux';
+import { Provider } from 'react-redux';
+import Store from './store';
+import App from './containers/app';
+
+const Root = ({ store }) =&gt; (
+  &lt;Provider store={store}&gt;
+    &lt;ConnectedRouter history={store.history}&gt;
+      &lt;App /&gt;
+    &lt;/ConnectedRouter&gt;
+  &lt;/Provider&gt;
+);
+
+ReactDOM.render(&lt;Root store={Store}/&gt;, document.getElementById(&#39;app&#39;));
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// dispatchers/goto.js
+import { push } from 'react-router-redux';
+
+export default (Actions, route) =>
+  dispatch =>
+    name => {
+      dispatch( Actions.select({ name }) );
+      dispatch( push(`${route}/${name}`) );
+};
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// sagas/admins/create.js
+import { put, ... } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
+
+export default function * () {
+  ...
+
+  yield put(push(`/dashboard/admins/${login}`));
+
+  ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h4>React Router - Deep Redux Integration</h4>
+
+    <pre class="javascript"><code>
+// sagas/vfs/create.js
+import { select, ... } from 'redux-saga/effects';
+
+export default rootRoute => function * () {
+  ...
+  const { router: { location: { pathname } } }
+    = yield select();
+
+  if (pathname !== rootRoute
+      && pathname !== rootRoute + '/'
+  ) {
+    name = `${pathname
+        .replace(rootRoute + '/', '')}
+      /${name}`;
+  }
+  ...
+}
+    </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>

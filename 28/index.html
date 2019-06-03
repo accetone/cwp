@@ -1,0 +1,2532 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>CWP28</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../css/reveal.css">
+    <link rel="stylesheet" href="../css/theme/yandex.css" id="theme">
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+    <link rel="stylesheet" href="../css/user.css">
+</head>
+<body class="yandex nodejs"><div class="reveal"><div class="slides">
+
+  <section class="large">
+      <h2>Flux / Redux</h2>
+      <p class="author">
+          <small>Лекция 28</small>
+      </p>
+  </section>
+
+  <section>
+    <img src="images/flux.png">
+  </section>
+
+  <section>
+    APPLICATION ARCHITECTURE<br>
+    FOR BUILDING USER INTERFACES
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <ul>
+      <li class="fragment"><a href="https://facebook.github.io/flux/">facebook.github.io/flux</a></li>
+      <li class="fragment">Архитектура</li>
+      <li class="fragment">Односторонний поток данных</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <img src="images/mvc.png">
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <img src="images/flux-simple.png">
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <img src="images/flux-real.png">
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <img src="images/flux-real-2.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Facebook Issue</h4>
+
+    <ul>
+      <li class="fragment">прислали сообщение</li>
+      <li class="fragment">увеличить счетчик непрочитанных</li>
+      <li class="fragment">добавить сообщение в боковой чат</li>
+      <li class="fragment">если открыта страница сообщений, добавить сообщение в нее</li>
+      <li class="fragment">если открыт собеседник или боковой чат в фокусе, уменьшить счетчик непрочитанных</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux</h4>
+
+    <img src="images/flux-extended.png">
+  </section>
+
+  <section>
+    <h4>Flux - Actions</h4>
+
+    <ul>
+      <li class="fragment">сделать какой-то асинхронный запрос (опционально)</li>
+      <li class="fragment">передать событие в Dispatcher</li>
+      <li class="fragment">событие - специальная константа + данные</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux - Actions</h4>
+
+    <pre class="javascript"><code>
+const FileConstants = {
+  FILE_ADD: 'FILE_ADD',
+  FILE_UPDATE_CONTENT: 'FILE_UPDATE_CONTENT',
+  COMPILE_AUTO: 'COMPILE_AUTO'
+};
+
+export default FileConstants;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Actions</h4>
+
+    <pre class="javascript"><code>
+import Dispatcher from '../dispatcher';
+import FileConstants from '../constants/file';
+import Api from '../api';
+
+const FileActions = {
+  add: function (name) {
+    Dispatcher.dispatch({
+      actionType: FileConstants.FILE_ADD,
+      name: name
+    });
+  },
+
+  ...
+};
+
+export default FileActions;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Actions</h4>
+
+    <pre class="javascript"><code>
+const FileActions = {
+  ...
+
+  compile: function (files, resultId) {
+    Api.compile(files).then((result) => {
+      Dispatcher.dispatch({
+        actionType: FileConstants.FILE_UPDATE_CONTENT,
+        id: resultId,
+        content: result
+      });
+    });
+  }
+};
+
+export default FileActions;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Dispatcher</h4>
+
+    <ul>
+      <li class="fragment">обеспечить передачу событий в Store</li>
+      <li class="fragment">управлять зависимостями Store (опционально)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+const Dispatcher = {
+  subscribers: [],
+
+  subscribe: function (handler) {
+    this.subscribers.push(handler);
+  },
+
+  dispatch: function (action) {
+    for (let i = 0; i < this.subscribers.length; i++)
+      this.subscribers[i](action);
+  }
+};
+
+export default Dispatcher;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <ul>
+      <li class="fragment">состояние</li>
+      <li class="fragment">бизнес-логика</li>
+      <li class="fragment">обеспечить оповещение об изменении данных для View</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+class Store {
+  constructor() {
+    this.seed = 0;
+    this.data = [];
+    this.subscribers = [];
+  }
+
+  getAll() {
+    return this.data;
+  }
+
+  ...
+}
+
+export default Store;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+class Store {
+  ...
+
+  getOne(id) {
+    return this.data.find(x => x.id);
+  }
+
+  add(item) {
+    item.id = Date.now() + this.seed++;
+    this.data.push(item);
+  }
+
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+class Store {
+ ...
+
+  update(item) {
+    const index = this.data
+      .findIndex(x => x.id === item.id);
+
+    this.data[index] = Object.assign({}, this.data[index], item);
+  }
+
+  remove(id) {
+    const index = this.data
+      .findIndex(x => x.id === id);
+
+    this.data.splice(index, 1);
+  }
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+class Store {
+  ...
+  emit() {
+    for (let i = 0; i < this.subscribers.length; i++){
+      this.subscribers[i]();
+    }
+  }
+
+  subscribe(handler) {
+    this.subscribers.push(handler);
+  }
+
+  unsubscribe(handler) {
+    const index = this.subscribers.indexOf(handler);
+
+    this.subscribers.splice(index, 1);
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+class FileStore extends Store {
+  find(name) {
+    return this.data.find(x => x.name === name);
+  }
+}
+
+const fileStore = new FileStore();
+
+...
+
+export default fileStore;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+Dispatcher.subscribe((action) => {
+  switch (action.actionType) {
+    case FileConstants.FILE_ADD: {
+      let file = fileStore.find(action.name);
+
+      if (!file) return;
+
+      file = { name: action.name, content: '' };
+      fileStore.add(file);
+      break;
+    }
+
+    ...
+  }
+
+  fileStore.emit();
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Store</h4>
+
+    <pre class="javascript"><code>
+Dispatcher.subscribe((action) => {
+  switch (action.actionType) {
+    ...
+
+    case FileConstants.FILE_UPDATE_CONTENT: {
+        fileStore.update({
+          id: action.id,
+          content: action.content
+        });
+
+        break;
+    }
+
+    default: return;
+  }
+
+  fileStore.emit();
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <ul>
+      <li class="fragment">отобразить интерфейс с данными</li>
+      <li class="fragment">подписаться на изменение данных</li>
+      <li class="fragment">Controller-View</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <pre class="javascript"><code>
+import React from 'react';
+
+import FileActions from './actions/file';
+import FileStore from './stores/file';
+
+class App extends React.Component {
+  render() {
+    return (&lt;div className=&quot;app-root&quot;&gt;
+      &lt;Tabs tabs={this.state.tabs}/&gt;
+      &lt;Textbox file={this.state.currentFile}
+        compile={this._compile}/&gt;
+    &lt;/div&gt;);
+  }
+
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <pre class="javascript"><code>
+class App extends React.Component {
+  ...
+
+  constructor(props) {
+    super(props);
+
+    this._onChange = ::this._onChange;
+    this._compile = ::this._onChange;
+
+    this.state = App.getState();
+  }
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <pre class="javascript"><code>
+class App extends React.Component {
+  ...
+
+  componentDidMount() {
+    TabStore.subscribe(this._onChange);
+    FileStore.subscribe(this._onChange);
+  }
+
+  componentWillUnmount() {
+    TabStore.unsubscribe(this._onChange);
+    FileStore.unsubscribe(this._onChange);
+  }
+
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <pre class="javascript"><code>
+class App extends React.Component {
+  ...
+
+  _onChange() {
+    this.setState(
+      App.getState()
+    );
+  }
+
+  _compile() {
+    FileActions.compile(
+      this.state.files
+    );
+  }
+
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - View</h4>
+
+    <pre class="javascript"><code>
+class App extends React.Component {
+  ...
+
+  static getState() {
+    return {
+      tabs: TabStore.getAll(),
+      files: FileStore.getAll(),
+      currentFile: FileStore.getOne(
+        TabStore.getCurrent().id
+      )
+    };
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-1.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-2.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-3.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-4.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-5.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-6.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-7.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-8.png" width="100%">
+  </section>
+
+  <section>
+    <h4>Flux - Lifecycle</h4>
+
+    <img src="images/flux-9.png" width="100%">
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>odo (Flux)</h3>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Constants</h4>
+
+    <pre class="javascript"><code>
+const TodoConstants = {
+  TODO_INIT: 'TODO_INIT',
+  TODO_ADD: 'TODO_ADD',
+  TODO_REMOVE: 'TODO_REMOVE',
+  TODO_UPDATE: 'TODO_UPDATE',
+  TODO_TOGGLE: 'TODO_TOGGLE',
+  TODO_TOGGLE_ALL: 'TODO_TOGGLE_ALL',
+  TODO_CLEAR: 'TODO_CLEAR'
+};
+
+const NavConstants = {
+  NAV_INIT: 'NAV_INIT',
+  NAV_ACTIVATE: 'NAV_ACTIVATE'
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  init: function () {
+    TodoActions.add('Sleep');
+    TodoActions.add('Eat');
+    TodoActions.add('Code');
+    TodoActions.add('Repeat');
+  },
+
+  add: function (text) {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_ADD,
+      text: text
+    });
+  },
+
+  ...
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  ...
+  remove: function (id) {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_REMOVE,
+      id: id
+    });
+  },
+
+  update: function (id, text) {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_UPDATE,
+      id: id,
+      text: text
+    });
+  },
+  ...
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  ...
+  toggle: function (id) {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_TOGGLE,
+      id: id
+    });
+  },
+
+  toggleAll: function () {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_TOGGLE_ALL
+    });
+  },
+  ...
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  ...
+  clear: function () {
+    Dispatcher.dispatch({
+      actionType: TodoConstants.TODO_CLEAR
+    });
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const NavActions = {
+  init: function () {
+    Dispatcher.dispatch({
+      actionType: NavConstants.NAV_INIT
+    });
+  },
+
+  activate: function (link) {
+    Dispatcher.dispatch({
+      actionType: NavConstants.NAV_ACTIVATE,
+      link: link
+    });
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+class TodoStore {
+  constructor() {...}
+  getActiveCount() {...}
+  getCompletedCount() {...}
+  areAllCompleted() {...}
+  addItem(text) {...}
+  removeItem(id) {...}
+  removeCompleted() {...}
+  updateItem(id, text) {...}
+  toggleItem(id) {...}
+  switchAllTo(completed) {...}
+  emit() {...}
+  subscribe(handler) {...}
+  unsubscribe(handler) {...}
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+class TodoStore {
+  ...
+
+  getItems() {
+    if (!this.activeLink
+      || this.activeLink.title === 'All'
+    ) {
+      return this.list;
+    } else if (
+      this.activeLink.title === 'Completed'
+    ) {
+      return this.list.filter(x => x.completed);
+    } else {
+      return this.list.filter(x => !x.completed);
+    }
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+const todoStore = new TodoStore();
+
+Dispatcher.subscribe((action) => {
+  const type = action.actionType;
+
+  if (type === TodoConstants.TODO_ADD) {
+    todoStore.addItem(action.text);
+  } else if (type === TodoConstants.TODO_REMOVE) {
+    todoStore.removeItem(action.id);
+  } else if (type === TodoConstants.TODO_UPDATE) {
+    todoStore.updateItem(action.id, action.text);
+  } else if (type === TodoConstants.TODO_TOGGLE) {
+    todoStore.toggleItem(action.id);
+  } else if ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+Dispatcher.subscribe((action) => {
+  ... else if (type
+      === TodoConstants.TODO_TOGGLE_ALL) {
+    todoStore.toggleAll(
+      !todoStore.areAllCompleted()
+    );
+  } else if (type === TodoConstants.TODO_CLEAR) {
+    todoStore.removeCompleted();
+  } else if (type === NavConstants.NAV_ACTIVATE) {
+    todoStore.activeLink = action.link;
+    return;
+  } else return;
+
+  todoStore.emit();
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+class NavStore {
+  constructor() {...}
+  getLinks() {...}
+  getActive() {...}
+  setActive(link) {...}
+  emit() {...}
+  subscribe(handler) {...}
+  unsubscribe(handler) {...}
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - Stores</h4>
+
+    <pre class="javascript"><code>
+const navStore = new NavStore();
+
+Dispatcher.subscribe((action) => {
+  const type = action.actionType;
+
+  if (type === NavConstants.NAV_INIT){
+    navStore.setActive(navStore.links[0]);
+  } else if (type === NavConstants.NAV_ACTIVATE) {
+    navStore.setActive(action.link);
+  } else return;
+
+  navStore.emit();
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+class ToDo extends React.Component {
+  render() {...}
+
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+constructor(props) {
+  super(props);
+
+  TodoActions.init();
+  NavActions.init();
+
+  this.state = ToDo.getState();
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+componentDidMount() {
+  todoStore.subscribe(this._rerender);
+  navStore.subscribe(this._rerender);
+}
+
+componentWillUnmount() {
+  todoStore.unsubscribe(this._rerender);
+  navStore.unsubscribe(this._rerender);
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+static getState() {
+  return {
+    remains: todoStore.getActiveCount(),
+    completed: todoStore.getCompletedCount(),
+    areAllCompleted: todoStore.areAllCompleted(),
+    tasks: todoStore.getItems(),
+
+    links: navStore.getLinks(),
+    activeLink: navStore.getActive()
+  };
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+_rerender = () =&gt; {
+  this.setState(ToDo.getState());
+}
+
+_toggleItem(id) {
+  TodoActions.toggle(id);
+}
+
+_toogleAll() {
+  TodoActions.toggleAll();
+}
+
+_removeItem(id) {
+  TodoActions.remove(id);
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Flux) - View</h4>
+
+    <pre class="javascript"><code>
+_addItem(text) {
+  TodoActions.add(text);
+}
+
+_updateItem(id, text) {
+  TodoActions.update(id, text);
+}
+
+_removeCompleted() {
+  TodoActions.clear();
+}
+
+_navigate(link) {
+  NavActions.activate(link);
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">F</span>lux Utils</h3>
+  </section>
+
+  <section>
+    <h4>Flux Utils</h4>
+
+    <ul>
+      <li class="fragment">набор утилит для Flux-архитектуры</li>
+      <li class="fragment">Dispatcher</li>
+      <li class="fragment">Store</li>
+      <li class="fragment">Reduce Store</li>
+      <li class="fragment">Container</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save flux
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://unpkg.com/flux@3.1.2/dist/Flux.js&quot;
+&gt;&lt;/script&gt;
+
+&lt;script src=
+  &quot;https://unpkg.com/flux@3.1.2/dist/FluxUtils.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+// or use Flux object if in sandbox
+import { Dispatcher } from 'flux';
+
+const dispatcher = new Dispatcher();
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+register(function callback): string
+
+unregister(string id): void
+
+waitFor(array&lt;string&gt; ids): void
+
+dispatch(object payload): void
+
+isDispatching(): boolean
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+const flightDispatcher = new Dispatcher();
+
+const CountryStore = {country: null};
+const CityStore = {city: null};
+
+const capitals = {
+  'france': 'paris',
+  'usa': 'washington',
+  'italy': 'rome'
+};
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+...
+CityStore.dispatchToken
+    = flightDispatcher.register((payload) => {
+
+  const type = payload.actionType;
+
+  if (type === 'city-update') {
+    CityStore.city = payload.selectedCity;
+  } else if (type === 'country-update') {
+    flightDispatcher
+      .waitFor([CountryStore.dispatchToken]);
+
+    CityStore.city
+      = capitals[CountryStore.country];
+  }
+
+});
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+...
+CountryStore.dispatchToken
+    = flightDispatcher.register((payload) => {
+
+  if (payload.actionType === 'country-update') {
+    CountryStore.country
+      = payload.selectedCountry;
+  }
+
+});
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Dispatcher</h4>
+
+    <pre class="javascript"><code>
+...
+flightDispatcher.dispatch({
+  actionType: 'country-update',
+  selectedCountry: 'usa'
+});
+
+flightDispatcher.dispatch({
+  actionType: 'city-update',
+  selectedCity: 'new york'
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+// or use FluxUtils object if in sandbox
+import { Store } from 'flux/utils';
+
+class MyStore extends Store {...}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+constructor(dispatcher: Dispatcher)
+
+addListener(callback: Function)
+  : {remove: Function}
+
+getDispatcher(): Dispatcher
+
+getDispatchToken(): DispatchToken
+
+hasChanged(): boolean
+
+__emitChange(): void
+
+__onDispatch(payload: Object): void
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+const flightDispatcher = new Flux.Dispatcher();
+
+const capitals = {
+  'france': 'paris',
+  'usa': 'washington',
+  'italy': 'rome'
+};
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+...
+class CountryStore extends FluxUtils.Store {
+  constructor(dispatcher) {
+    super(dispatcher);
+    this.country = null;
+  }
+
+  __onDispatch(payload) {
+    if (payload.actionType === 'country-update') {
+      this.country = payload.selectedCountry;
+    }
+  }
+
+  getCountry() {
+    return this.country;
+  }
+}
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+...
+class CityStore extends FluxUtils.Store {
+  constructor(dispatcher, countryStore, capitals) {
+    super(dispatcher);
+
+    this.city = null;
+    this.countryStore = countryStore;
+    this.capitals = capitals;
+  }
+
+  getCity() {
+    return this.city;
+  }
+  ...
+}
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+...
+__onDispatch(payload) {
+  const type = payload.actionType;
+
+  if (type === 'city-update') {
+    this.city = payload.selectedCity;
+  } else if (type === 'country-update') {
+    this.getDispatcher().waitFor([
+      this.countryStore.getDispatchToken()
+    ]);
+
+    this.city = this.capitals[
+      this.countryStore.getCountry()
+    ];
+  }
+}
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+...
+const countryStore = new CountryStore(
+  flightDispatcher
+);
+
+const cityStore = new CityStore(
+  flightDispatcher,
+  countryStore,
+  capitals
+);
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Store</h4>
+
+    <pre class="javascript"><code>
+...
+flightDispatcher.dispatch({
+  actionType: 'country-update',
+  selectedCountry: 'usa'
+});
+
+flightDispatcher.dispatch({
+  actionType: 'city-update',
+  selectedCity: 'new york'
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Reduce Store</h4>
+
+    <pre class="javascript"><code>
+// or use FluxUtils object if in sandbox
+import { ReduceStore } from 'flux/utils';
+
+class MyStore extends ReduceStore {...}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Reduce Store</h4>
+
+    <pre class="javascript"><code>
+extends Store
+
+getState(): T
+
+getInitialState(): T
+
+reduce(state: T, action: Object): T
+
+areEqual(one: T, two: T): boolean
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Container</h4>
+
+    <pre class="javascript"><code>
+// or use FluxUtils object if in sandbox
+import {Component} from 'react';
+import {Container} from 'flux/utils';
+
+class CounterContainer extends Component {
+  ...
+}
+
+const container = Container.create(
+  CounterContainer
+);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Flux Utils - Container</h4>
+
+    <pre class="javascript"><code>
+class CounterContainer extends Component {
+  static getStores() {
+    return [CounterStore];
+  }
+
+  static calculateState(prevState) {
+    return {
+      counter: CounterStore.getState(),
+    };
+  }
+
+  render() {
+    return &lt;CounterUI counter={this.state.counter} /&gt;;
+  }
+}
+      </code></pre>
+  </section>
+
+
+  <section>
+    <h3><span class="red">R</span>edux</h3>
+  </section>
+
+  <section>
+    <h4>Redux - About</h4>
+
+    <ul>
+      <li class="fragment"><a href="http://redux.js.org/">redux.js.org</a></li>
+      <li class="fragment">организует хранение состояния</li>
+      <li class="fragment">не только React</li>
+      <li class="fragment">Flux + CQRS + Event Sourcing</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux - Basics</h4>
+
+    <ul>
+      <li class="fragment">один Store для хранения состояния приложения</li>
+      <li class="fragment">reducer - чистая функция, которые на основании полученного состояния и события возвращают новое состояние</li>
+      <li class="fragment">состояние не изменяется (read-only)</li>
+      <li class="fragment">для больших приложений reducer разбивается на мелкие части</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Redux - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save redux
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://unpkg.com/redux@3.7.2/dist/redux.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Example</h4>
+
+    <pre class="javascript"><code>
+// or use 'Redux' object if in sandbox
+import { createStore } from 'redux';
+
+function counter(state = 0, action) {
+  switch (action.type) {
+  case 'INCREMENT':
+    return state + 1;
+  case 'DECREMENT':
+    return state - 1;
+  default:
+    return state;
+  }
+}
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Example</h4>
+
+    <pre class="javascript"><code>
+...
+
+let store = createStore(counter);
+
+store.subscribe(() =>
+  console.log(store.getState())
+);
+
+// 0
+store.dispatch({ type: 'INCREMENT' });
+// 1
+store.dispatch({ type: 'INCREMENT' });
+// 2
+store.dispatch({ type: 'DECREMENT' });
+// 1
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Complex Reducer</h4>
+
+    <pre class="javascript"><code>
+function humans(state = [], action) {
+  switch (action.type) {
+    case 'HUMANS_ADD':
+      return [
+        ...state,
+        { name: action.name }
+      ];
+  }
+
+  return state;
+}
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Complex Reducer</h4>
+
+    <pre class="javascript"><code>
+...
+function robots(state = [], action) {
+  switch (action.type) {
+    case 'ROBOTS_ADD':
+      return [
+        ...state,
+        {
+          name: action.name,
+          manufacturer: action.manufacturer
+        }
+      ];
+  }
+
+  return state;
+}
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Complex Reducer</h4>
+
+    <pre class="javascript"><code>
+...
+const reducer = Redux.combineReducers({
+  humans,
+  robots
+});
+
+const store = Redux.createStore(reducer);
+
+store.subscribe(() =>
+  console.log(store.getState())
+);
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Complex Reducer</h4>
+
+    <pre class="javascript"><code>
+...
+store.dispatch({
+  type: 'HUMANS_ADD',
+  name: 'Fry' });
+
+store.dispatch({
+  type: 'HUMANS_ADD',
+  name: 'Leela' });
+
+store.dispatch({
+  type: 'ROBOTS_ADD',
+  name: 'Bender',
+  manufacturer: 'MomCorp' });
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Redux - Initial State</h4>
+
+    <pre class="javascript"><code>
+const store = Redux.createStore(reducer, {
+  humans: [{ name: 'Pr. Farnsworth' }]
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>odo (Redux)</h3>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoConstants = {
+  TODO_ADD: 'TODO_ADD',
+  TODO_REMOVE: 'TODO_REMOVE',
+  TODO_UPDATE: 'TODO_UPDATE',
+  TODO_TOGGLE: 'TODO_TOGGLE',
+  TODO_TOGGLE_ALL: 'TODO_TOGGLE_ALL',
+  TODO_CLEAR: 'TODO_CLEAR'
+};
+
+const NavConstants = {
+  NAV_ACTIVATE: 'NAV_ACTIVATE'
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  add: function (text) {
+    return { type: TodoConstants.TODO_ADD, text };
+  },
+
+  remove: function (id) {
+    return { type: TodoConstants.TODO_REMOVE, id };
+  },
+
+  update: function (id, text) {
+    return { type: TodoConstants.TODO_UPDATE,
+      id, text};
+  },
+  ...
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const TodoActions = {
+  ...
+  toggle: function (id) {
+    return { type: TodoConstants.TODO_TOGGLE, id };
+  },
+
+  toggleAll: function (completed) {
+    return { type: TodoConstants.TODO_TOGGLE_ALL,
+      completed };
+  },
+
+  clear: function () {
+    return { type: TodoConstants.TODO_CLEAR };
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Actions</h4>
+
+    <pre class="javascript"><code>
+const NavActions = {
+  activate: function (link) {
+    return {
+      type: NavConstants.NAV_ACTIVATE,
+      link: link
+    };
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+function tasks(state = [], action) {
+  switch (action.type) {
+    ...
+
+    default:
+      return state;
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_ADD:
+  return [
+    ...state,
+    {
+      id: Date.now() + state.length,
+      text: action.text,
+      completed: false
+    }
+  ];
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_REMOVE:
+  return state.filter(
+    item => item.id !== action.id
+  );
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_UPDATE:
+  return state.map(item => {
+    if (item.id !== action.id) return item;
+
+    return {
+      ...item,
+      text: action.text
+    };
+  });
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_TOGGLE:
+  return state.map(item => {
+    if (item.id !== action.id) return item;
+
+    return {
+      ...item,
+      completed: !item.completed
+    };
+  });
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_TOGGLE_ALL:
+  return state.map(item => {
+    return {
+      ...item,
+      completed: action.completed
+    };
+  });
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+case TodoConstants.TODO_CLEAR:
+  return state.filter(item => !item.completed);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+function activeLink(state = {}, action) {
+  switch (action.type) {
+    case NavConstants.NAV_ACTIVATE:
+      return action.link;
+
+    default:
+      return state;
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+function links(state = []) {
+  return state;
+}
+      </code></pre>
+  </section>
+
+
+
+  <section>
+    <h4>Todo (Redux) - Reducers</h4>
+
+    <pre class="javascript"><code>
+const reducer = Redux.combineReducers({
+  tasks,
+  activeLink,
+  links
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - Store</h4>
+
+    <pre class="javascript"><code>
+const store = Redux.createStore(reducer, {
+  tasks: [
+    { id: 1, text: 'Sleep', completed: true },
+    { id: 2, text: 'Eat', completed: false },
+    { id: 3, text: 'Code', completed: false },
+    { id: 4, text: 'Repeat', completed: false }
+  ],
+
+  links: [
+    { title: 'All' },
+    { title: 'Active' },
+    { title: 'Completed' }
+  ],
+
+  activeLink: { title: 'All' }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+class ToDo extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = ToDo.getState();
+    this.state.subscription = store.subscribe(
+      this._rerender
+    );
+  }
+
+  render: function () {...}
+
+  ...
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+componentWillUnmount() {
+  this.state.subscription.unsubscribe();
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+static getState() {
+  const state = { ...store.getState() };
+
+  state.completed = state.tasks.filter(x => x.completed).length;
+  state.remains = state.tasks.length - state.completed;
+  state.areAllCompleted = state.remains === 0;
+
+  if (state.activeLink.title === 'Completed') {
+    state.tasks = state.tasks.filter(x => x.completed);
+  } else if (state.activeLink.title === 'Active') {
+    state.tasks = state.tasks.filter(x => !x.completed);
+  }
+
+  return state;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+_rerender = () => {
+  this.setState(ToDo.getState());
+}
+
+_toggleItem(id) {
+  store.dispatch(
+    TodoActions.toggle(id)
+  );
+}
+
+_toogleAll = () => {
+  store.dispatch(
+    TodoActions.toggleAll(!this.state.areAllCompleted)
+  );
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+_removeItem(id) {
+  store.dispatch(
+    TodoActions.remove(id)
+  );
+}
+
+_addItem(text) {
+  store.dispatch(
+    TodoActions.add(text)
+  );
+}
+
+_updateItem(id, text) {
+  store.dispatch(
+    TodoActions.update(id, text)
+  );
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Todo (Redux) - View</h4>
+
+    <pre class="javascript"><code>
+_removeCompleted() {
+  store.dispatch(
+    TodoActions.clear()
+  );
+}
+
+_navigate(link) {
+  store.dispatch(
+    NavActions.activate(link)
+  );
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">R</span>eact Redux</h3>
+  </section>
+
+  <section>
+    <h4>React Redux - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save react-redux
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.7/react-redux.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getVisibleTasks(tasks, link) {
+  if (link.title === 'All') {
+
+    return tasks;
+
+  } else if (link.title === 'Completed') {
+
+    return tasks.filter(x => x.completed);
+
+  } else {
+
+    return tasks.filter(x => !x.completed);
+
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getCompletedCount(tasks) {
+  return tasks.filter(x => x.completed).length;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function getRemainsCount(tasks) {
+  return tasks.filter(x => !x.completed).length;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+function areAllCompleted(tasks) {
+  return getRemainsCount(tasks) === 0;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    tasks: getVisibleTasks(
+      state.tasks,
+      state.activeLink
+    ),
+
+    completed: getCompletedCount(state.tasks),
+
+    remains: getRemainsCount(state.tasks),
+
+    areAllCompleted: areAllCompleted(state.tasks),
+
+    activeLink: state.activeLink,
+
+    links: state.links
+  }
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleItem: (id) => {
+      dispatch(
+        TodoActions.toggle(id)
+      );
+    },
+
+    toggleAll: (status) => {
+      dispatch(
+        TodoActions.toggleAll(status)
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    removeItem: (id) => {
+      dispatch(
+        TodoActions.remove(id)
+      );
+    },
+
+    addItem: (text) => {
+      dispatch(
+        TodoActions.add(text)
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    updateItem: (id, text) => {
+      dispatch(
+        TodoActions.update(id, text)
+      );
+    },
+
+    removeCompleted: () => {
+      dispatch(
+        TodoActions.clear()
+      );
+    },
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    navigate: (link) => {
+      dispatch(
+        NavActions.activate(link)
+      );
+    }
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+class ToDo extends React.Component {
+  render() {
+    return (...);
+  },
+
+  _toggleAll = () => {
+    this.props.toggleAll(
+      !this.props.areAllCompleted
+    );
+  }
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+  <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  &lt;div className=&quot;todo__title&quot;&gt;
+    React Redux ToDo
+  &lt;/div&gt;
+
+  &lt;Nav
+    links={this.props.links}
+    activeLink={this.props.activeLink}
+    navigate={this.props.navigate}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoSummary
+    remains={this.props.remains}
+    completed={this.props.completed}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoList
+    tasks={this.props.tasks}
+    areAllComplete={this.props.areAllCompleted}
+    toggleItem={this.props.toggleItem}
+    toggleAll={this._toggleAll}
+    removeItem={this.props.removeItem}
+    updateItem={this.props.updateItem}
+  /&gt;
+
+  ...
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="html"><code>
+&lt;div className=&quot;todo&quot;&gt;
+  ...
+
+  &lt;ToDoForm
+    addItem={this.props.addItem}
+  /&gt;
+
+  &lt;ToDoClear
+    removeCompleted={this.props.removeCompleted}
+  /&gt;
+&lt;/div&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+const ToDoContainer = ReactRedux.connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ToDo);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - ToDo</h4>
+
+    <pre class="javascript"><code>
+ReactDOM.render(
+  &lt;ReactRedux.Provider store={store}&gt;
+    &lt;ToDoContainer/&gt;
+  &lt;/ReactRedux.Provider&gt;,
+  document.getElementById('app')
+);
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Async Action Creator</h4>
+
+    <pre class="javascript"><code>
+export function fetchPosts(subreddit) {
+  return function (dispatch) {
+    dispatch(requestPosts(subreddit));
+
+    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
+      .then(
+        response => response.json(),
+        error => console.log('An error occurred.', error)
+      )
+      .then(json =>
+        dispatch(receivePosts(subreddit, json))
+      )
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+// logging, reports, side-effects, ...
+const logger = store => next => action => {
+  console.log('dispatching', action)
+
+  let result = next(action)
+
+  console.log('next state', store.getState())
+
+  return result
+}
+
+...
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+const crashReporter = store => next => action => {
+  try {
+    return next(action)
+  } catch (err) {
+    console.error('Caught an exception!', err)
+
+    // TODO: report error
+
+    throw err
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>React Redux - Middleware</h4>
+
+    <pre class="javascript"><code>
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware
+} from 'redux'
+
+const todoApp = combineReducers(reducers)
+
+const store = createStore(
+  todoApp,
+  applyMiddleware(logger, crashReporter)
+)
+      </code></pre>
+  </section>
+
+  <section>
+    <h3><span class="red">T</span>ime Travel</h3>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// simple state
+{
+  counter: 10
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// state for undo/redo feature
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ],
+    present: 10,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 1
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
+    present: 9,
+    future: [ 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// UNDO X 2
+{
+  counter: {
+    past: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+    present: 8,
+    future: [ 9, 10 ]
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+{
+  past: Array&lt;T&gt;,
+  present: T,
+  future: Array&lt;T&gt;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Global Undo/Redo
+{
+  past: [
+    { counterA: 1, counterB: 1 },
+    { counterA: 1, counterB: 0 },
+    { counterA: 0, counterB: 0 }
+  ],
+  present: { counterA: 2, counterB: 1 },
+  future: []
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel</h4>
+
+    <pre class="javascript"><code>
+// Separate Undo/Redo
+{
+  counterA: {
+    past: [ 1, 0 ],
+    present: 2,
+    future: []
+  },
+  counterB: {
+    past: [ 0 ],
+    present: 1,
+    future: []
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Undo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь последний элемент из past</li>
+      <li class="fragment">добавить present в начало future</li>
+      <li class="fragment">заменить present на извлеченный из past элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Redo Rules</h4>
+
+    <ul>
+      <li class="fragment">извлечь первый элемент из future</li>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">заменить present на извлеченный из future элемент</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Other Action Rules</h4>
+
+    <ul>
+      <li class="fragment">добавить present в конец past</li>
+      <li class="fragment">установить present в обновленный state</li>
+      <li class="fragment">очистить future</li>
+    </ul>
+  </section>
+
+  <section>
+    <h4>Time Travel - Install</h4>
+
+    <pre class="javascript"><code>
+npm install --save redux-undo
+      </code></pre>
+
+    <pre class="javascript fragment"><code>
+&lt;script src=
+  &quot;https://unpkg.com/redux-undo@1.0.0-beta7/dist/redux-undo.js&quot;
+&gt;&lt;/script&gt;
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import undoable from 'redux-undo';
+
+undoable(reducer)
+undoable(reducer, config)
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+import { ActionCreators } from 'redux-undo';
+
+store.dispatch(ActionCreators.undo());
+
+ActionCreators.undo()
+ActionCreators.redo()
+
+ActionCreators.jump(-2) // undo 2 steps
+ActionCreators.jump(5)  // redo 5 steps
+
+ActionCreators.jumpToPast(index)
+ActionCreators.jumpToFuture(index)
+
+ActionCreators.clearHistory()
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - Use</h4>
+
+    <pre class="javascript"><code>
+undoable(reducer, {
+  limit: false,
+  filter: () => true,
+  debug: false,
+  neverSkipReducer: false,
+
+  undoType: ActionTypes.UNDO,
+  redoType: ActionTypes.REDO,
+
+  jumpType: ActionTypes.JUMP,
+
+  jumpToPastType: ActionTypes.JUMP_TO_PAST,
+  jumpToFutureType: ActionTypes.JUMP_TO_FUTURE,
+
+  clearHistoryType: ActionTypes.CLEAR_HISTORY
+})
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const reducer = Redux.combineReducers({
+  tasks: ReduxUndo.default(tasks),
+  activeLink,
+  links
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const store = Redux.createStore(reducer, {
+  tasks: {
+    past: [],
+    present: [...],
+    future: []
+  },
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+class TimeTravelPanel extends React.Component {
+  render() {
+    return (&lt;div className=&quot;time-panel&quot;&gt;
+        &lt;div className={'time-panel__button '
+            + (this.props.canUndo ? ''
+              : 'time-panel__button_disabled')}
+          onClick={this.props.undo}&gt;Undo&lt;/div&gt;
+
+        &lt;div className={'time-panel__button '
+          + (this.props.canRedo ? ''
+            : 'time-panel__button_disabled')}
+          onClick={this.props.redo}&gt;Redo&lt;/div&gt;
+    &lt;/div&gt;);
+  }
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="html"><code>
+class ToDo extends React.Component {
+  render() {
+    return (
+      &lt;div className=&quot;todo&quot;&gt;
+        ...
+        &lt;TimeTravelPanel
+          undo={this.props.undo}
+          redo={this.props.redo}
+          canUndo={this.props.canUndo}
+          canRedo={this.props.canRedo}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+  ...
+});
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+function canUndo(model) {
+  return model.past
+    && model.past.length !== 0;
+}
+
+function canRedo(model) {
+  return model.future
+    && model.future.length !== 0;
+}
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    tasks: getVisibleTasks(
+      state.tasks.present,
+      state.activeLink
+    ),
+
+    completed: getCompletedCount(
+      state.tasks.present
+    ),
+
+    remains: getRemainsCount(
+      state.tasks.present
+    ),
+    ...
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapStateToProps = (state) => {
+  return {
+    ...
+    areAllCompleted: areAllCompleted(
+      state.tasks.present
+    ),
+
+    activeLink: state.activeLink,
+    links: state.links,
+
+    canUndo: canUndo(state.tasks),
+    canRedo: canRedo(state.tasks)
+  };
+};
+      </code></pre>
+  </section>
+
+  <section>
+    <h4>Time Travel - ToDo</h4>
+
+    <pre class="javascript"><code>
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...
+    undo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.undo()
+      );
+    },
+
+    redo: () => {
+      dispatch(
+        ReduxUndo.ActionCreators.redo()
+      );
+    }
+  };
+};
+      </code></pre>
+  </section>
+
+</div></div>
+
+<script src="../lib/js/head.min.js"></script>
+<script src="../js/reveal.js"></script>
+<script src="../js/init-slides.js"></script>
+</body>
+</html>
