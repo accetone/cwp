@@ -7,6 +7,6 @@
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.1",
     "mysql2": "^1.5.2",
-    "sequelize": "^4.35.1"
+    "sequelize": "^5.15.1"
   }
 }
